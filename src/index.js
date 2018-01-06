@@ -1,10 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'react-router-redux'
+import store, { history } from './redux/configureStore'
+
 import { Edumiga } from './containers';
+import Routes from './routes'
+
 import registerServiceWorker from './registerServiceWorker';
 import "semantic-ui-css/semantic.css"
 
 ReactDOM.render(
-  <Edumiga />, 
-  document.getElementById('root'));
+  <Provider store={store}>
+    <ConnectedRouter basename={process.env.PUBLIC_URL} history={history}>
+      <Routes Wrapper={Edumiga}/>
+    </ConnectedRouter>
+  </Provider>,
+
+  document.getElementById('root'))
+
 registerServiceWorker();
