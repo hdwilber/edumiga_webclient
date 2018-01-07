@@ -40,12 +40,25 @@ export function login(data) {
         return {
           session: data,
         }
+      },
+      (payload) => {
+        aService.storeSessionLocal(payload)
       })
   }
 }
 
 export function logout() {
+  aService.clearSessionLocal()
   return {
     type: SESSION_LOGOUT.START,
   }
 }
+
+export function sessionRestore() {
+  const payload = aService.restoreSessionLocal()
+  return {
+    type: SESSION_RESTORE.FULFILLED,
+    payload: payload, 
+  }
+}
+

@@ -72,7 +72,7 @@ export default function accountReducer(state = initialState, action) {
     case actions.SESSION_RESTORE.REJECTED: {
       return {
         ...state,
-        loading: true,
+        loading: false,
         session: null,
         identity: null,
         error: action.payload,
@@ -80,13 +80,16 @@ export default function accountReducer(state = initialState, action) {
     }
 
     case actions.SESSION_RESTORE.FULFILLED: {
-      return {
-        ...state,
-        loading: true,
-        session: action.payload.session,
-        identity: action.payload.identity,
+      if (action.payload) {
+        return {
+          ...state,
+          loading: false,
+          session: action.payload.session,
+          identity: action.payload.identity,
+        }
       }
     }
+    break
   }
   return state
 }

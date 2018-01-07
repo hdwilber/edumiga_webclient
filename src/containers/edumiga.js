@@ -12,6 +12,11 @@ class Edumiga extends Component {
     this.handleLogout = this.handleLogout.bind(this)
   }
 
+  componentDidMount() {
+    const { sessionRestore } = this.props
+    sessionRestore()
+  }
+
   handleLogout() {
     const { logout } = this.props
     logout()
@@ -31,4 +36,7 @@ class Edumiga extends Component {
 
 export default connect((state) => ({
   account: state.account,
-}), {...accountActions}) (Edumiga)
+}), (dispatch => ({
+  sessionRestore: () => dispatch(accountActions.sessionRestore()),
+  logout: () => dispatch(accountActions.logout()),
+  }))) (Edumiga)
