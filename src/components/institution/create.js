@@ -1,5 +1,5 @@
 import React from 'react'
-import { Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
+import { Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
 
 class Create extends React.Component {
 
@@ -8,12 +8,17 @@ class Create extends React.Component {
 
     this.handleClick = this.handleClick.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleInputFileChange = this.handleInputFileChange.bind(this)
     this.handleCreate = this.handleClick.bind(this)
 
     this.state = {
       name: '',
       description: '',
       locations: [],
+      logo: {
+        src: '',
+        files: []
+      }
     }
   }
 
@@ -31,6 +36,15 @@ class Create extends React.Component {
     })
   }
 
+  handleInputFileChange(e, props) {
+    this.setState({
+      logo: {
+        src: URL.createObjectURL(e.target.files[0]),
+        files: e.target.files,
+      }
+    })
+  }
+
   render() {
     const { loading, onCancel } = this.props
     return (
@@ -40,6 +54,9 @@ class Create extends React.Component {
           <label>Description</label>
           <TextArea name="description" onChange={this.handleInputChange} label="Password" type="password"/>
         </Form.Field>
+        
+        <Form.Input name="logo" onChange={this.handleInputFileChange} type="file" />
+        <Image src={this.state.logo.src} size="small" />
 
         <Button loading={loading} disabled={loading} 
           default
