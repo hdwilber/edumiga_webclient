@@ -31,4 +31,4 @@ class Edumiga extends Component {
 
 export default connect((state) => ({
   account: state.account,
-}), {...accountActions} )(Edumiga)
+}), {...accountActions}) (Edumiga)
