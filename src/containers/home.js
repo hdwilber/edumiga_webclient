@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Header } from 'semantic-ui-react'
 import Login from '../components/account/login'
-import InstitutionCreate from '../components/institution/create'
 
 import * as accountActions from '../redux/account/actions'
 import * as institutionActions from '../redux/institution/actions'
@@ -21,11 +20,6 @@ const Home = (props) => {
     accountCreate(data)
   }
 
-  function handleInstitutionCreate(data) {
-    const { institutionCreate } = props
-    institutionCreate(data)
-  }
-
   function handleInstitutionCancel(data) {
     console.log('asdf')
   }
@@ -34,14 +28,12 @@ const Home = (props) => {
 
   return (
     <div>
+      {(account && !account.session) && (
       <Login loading={account.loading} 
         onLogin={handleLogin}
         onRegister={handleRegister}
       />
-
-      <InstitutionCreate onCreate={handleInstitutionCreate}
-        onCancel={handleInstitutionCancel}
-      />
+      )}
     </div>
 
   )

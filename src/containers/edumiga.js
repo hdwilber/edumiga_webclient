@@ -10,6 +10,7 @@ class Edumiga extends Component {
     super(props)
     
     this.handleLogout = this.handleLogout.bind(this)
+    this.checkAuthorization = this.checkAuthorization.bind(this)
   }
 
   componentDidMount() {
@@ -22,14 +23,26 @@ class Edumiga extends Component {
     logout()
   }
 
+  checkAuthorization() {
+    const { account, location } =  this.props
+    if (location.pathname.indexOf('institution/create') > -1) {
+      if (!account.session) {
+        return false 
+      }
+    } 
+    return true
+  }
+
   render() {
     const { account } = this.props
+    console.log(this.props)
+    return (
+      <div>
+        <Navbar account={account}
+          onLogout={this.handleLogout}
+        />
 
-    return (<div>
-      <Navbar account={account}
-        onLogout={this.handleLogout}
-      />
-      {this.props.children}
+        { this.checkAuthorization() && (this.props.children) }
       </div>)
   }
 }
@@ -39,4 +52,4 @@ export default connect((state) => ({
 }), (dispatch => ({
   sessionRestore: () => dispatch(accountActions.sessionRestore()),
   logout: () => dispatch(accountActions.logout()),
-  }))) (Edumiga)
+  }))) (withRouter(Edumiga))

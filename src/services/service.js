@@ -31,10 +31,8 @@ class Service {
   } 
 
   createRequest(method, path, rbody, useAuth = true) {
-    const url = (path !== '') ? `${this.getBaseUrl()}/${path}` : `${this.getBaseUrl()}`
-    console.log(rbody)
-
-    if (method === 'POST') {
+    const url = (path !== '') ? `/${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
+    if (method === 'POST' || method === 'PATCH') {
       return fetch(url,
         {
           method: method,

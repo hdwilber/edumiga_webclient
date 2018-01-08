@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Icon, Button, Dropdown, Image, Menu } from 'semantic-ui-react'
 
 const logo = require('../images/edumiga-logo.png')
@@ -36,9 +37,15 @@ class Navbar extends React.Component {
         <Menu.Item>
           <Image src={logo} width="100" />
         </Menu.Item>
-        <Menu.Item index={Items.INSTITUTION} active={activeItem === Items.INSTITUTION} onClick={this.handleItemClick}>
-          Institutions
+        <Menu.Item as={Dropdown} item index={Items.INSTITUTION} active={activeItem === Items.INSTITUTION} onClick={this.handleItemClick}
+          text="Institutions"
+        >
+          <Dropdown.Menu>
+            <Dropdown.Item><Link to="/institution/create"><Icon name="edit"/>Create</Link> </Dropdown.Item>
+            <Dropdown.Item icon='list' text='List' />
+          </Dropdown.Menu>
         </Menu.Item>
+
         <Menu.Item index={Items.OPPORTUNITY} active={activeItem === Items.OPPORTUNITY} onClick={this.handleItemClick}>
           Opportunities
         </Menu.Item>
