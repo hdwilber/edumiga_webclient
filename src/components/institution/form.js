@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
+import { Checkbox, Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
 
 class InstForm extends React.Component {
 
@@ -16,6 +16,7 @@ class InstForm extends React.Component {
     this.state = {
       name: institution.name,
       description: institution.description,
+      draft: institution.draft,
     }
   }
 
@@ -51,7 +52,12 @@ class InstForm extends React.Component {
           <label>Description</label>
           <TextArea value={this.state.description} name="description" onChange={this.handleInputChange} label="Password" type="password"/>
         </Form.Field>
-        
+
+        <Form.Field>
+          <Checkbox label="Keep it as draft?" checked={this.state.draft} name="draft"
+            onChange={this.handleInputChange}
+          />
+        </Form.Field>
         <Button loading={loading} disabled={loading} 
           default
           onClick={this.handleClick}
