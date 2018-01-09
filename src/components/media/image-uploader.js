@@ -1,12 +1,7 @@
 import React from 'react'
-import { Header, Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
+import { Image, Form } from 'semantic-ui-react'
 
 class ImageUploader extends React.Component {
-  constructor(props){
-    super(props)
-
-  }
-
   render() {
     const { onFileChange, url } = this.props
     return (

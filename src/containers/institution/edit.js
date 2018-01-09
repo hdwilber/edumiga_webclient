@@ -82,7 +82,7 @@ class Create extends React.Component {
   }
 
   handleSave() {
-    const { institution, institutionUpdate } = this.props
+    const { institutionUpdate } = this.props
     institutionUpdate({
       ...this.getSerializedData()
     })
@@ -114,8 +114,8 @@ class Create extends React.Component {
     const files = e.target.files
     this.setState({
       [props.name]: {
-        files: e.target.files[0],
-        fakeUrl: URL.createObjectURL(e.target.files[0])
+        files: files[0],
+        fakeUrl: URL.createObjectURL(files[0]),
       }
     })
   }

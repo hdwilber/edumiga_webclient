@@ -4,10 +4,6 @@ import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 
 class LocationMap extends React.Component {
 
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     const { onInputChange, position, address} = this.props
     return( 

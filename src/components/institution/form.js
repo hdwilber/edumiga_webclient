@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select, Checkbox, Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
+import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
 
 const TypesOptions = [
   {
@@ -64,7 +64,7 @@ class InstForm extends React.Component {
   }
 
   render() {
-    const { onInputChange, onCheckboxChange, levels, type, loading, name, description, draft  } = this.props
+    const { onInputChange, onCheckboxChange, levels, type, name, description, draft  } = this.props
     return (
       <Form>
         <Form.Input value={name} name="name" onChange={onInputChange} 

@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Header } from 'semantic-ui-react'
 import Login from '../components/account/login'
 
 import * as accountActions from '../redux/account/actions'
@@ -18,10 +17,6 @@ const Home = (props) => {
     console.log(data)
     const { accountCreate } = props
     accountCreate(data)
-  }
-
-  function handleInstitutionCancel(data) {
-    console.log('asdf')
   }
 
   const { account } = props

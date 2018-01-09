@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
+import { Header } from 'semantic-ui-react'
 
 const InstCard = (props) => {
   const { onSelect, institution } = props

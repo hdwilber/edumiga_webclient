@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Header } from 'semantic-ui-react'
 import Navbar from '../components/navbar'
 import * as accountActions from '../redux/account/actions'
 

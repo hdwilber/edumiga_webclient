@@ -2,14 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Header } from 'semantic-ui-react'
-import { Card as InstitutionCard, Form as InstitutionForm} from '../../components/institution'
+import { Card as InstitutionCard } from '../../components/institution'
 
 import * as institutionActions from '../../redux/institution/actions'
 
 class InstList extends React.Component {
-  constructor(props) {
-    super(props)
-  }
 
   componentDidMount() {
     const { institutionFindAll } = this.props
