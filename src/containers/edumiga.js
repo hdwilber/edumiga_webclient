@@ -35,7 +35,6 @@ class Edumiga extends Component {
 
   render() {
     const { account } = this.props
-    console.log(this.props)
     return (
       <div>
         <Navbar account={account}
