@@ -1,5 +1,51 @@
 import React from 'react'
-import { Checkbox, Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
+import { Select, Checkbox, Image, Label,TextArea, Form, Input, Button } from 'semantic-ui-react'
+
+const TypesOptions = [
+  {
+    key: 1,
+    text: 'Public',
+    value: 'public',
+  },
+  {
+    key: 2,
+    text: 'Private',
+    value: 'private',
+  },
+  {
+    key: 3,
+    text: 'Mixed',
+    value: 'mixed',
+  },
+  {
+    key: 4,
+    text: 'Other',
+    value: 'other',
+  },
+]
+
+const LevelsOptions = [
+  {
+    key: 1,
+    text: 'Elementary',
+    value: 'elementary',
+  },
+  {
+    key: 2,
+    text: 'High School',
+    value: 'highschool',
+  },
+  {
+    key: 3,
+    text: 'Bachelor',
+    value: 'bachelor',
+  },
+  {
+    key: 4,
+    text: 'Master of Science',
+    value: 'master',
+  },
+]
 
 class InstForm extends React.Component {
 
@@ -18,7 +64,7 @@ class InstForm extends React.Component {
   }
 
   render() {
-    const { onInputChange, loading, name, description, draft  } = this.props
+    const { onInputChange, onCheckboxChange, levels, type, loading, name, description, draft  } = this.props
     return (
       <Form>
         <Form.Input value={name} name="name" onChange={onInputChange} 
@@ -31,10 +77,29 @@ class InstForm extends React.Component {
             label="Password" type="password"
           />
         </Form.Field>
+        
+        <Form.Field>
+          <label>Type</label>
+          <Select value={type} name="type" 
+            onChange={onInputChange} 
+            options={TypesOptions}
+          />
+        </Form.Field>
+        
+        <Form.Group grouped>
+          <label>Levels</label>
+          {LevelsOptions.map (l => {
+            return (
+              <Form.Field>
+                <Checkbox label={l.text} value={l.value} name="levels" onChange={onCheckboxChange} checked={!!levels.find(v => v === l.value)}/>
+              </Form.Field>
+            )
+          })}
+        </Form.Group>
 
         <Form.Field>
           <Checkbox label="Keep it as draft?" checked={draft} name="draft"
-            onChange={onInputChange}
+            onChange={onCheckboxChange}
           />
         </Form.Field>
       </Form>

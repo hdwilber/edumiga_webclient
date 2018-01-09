@@ -17,15 +17,18 @@ class Create extends React.Component {
 
     this.handleSave = this.handleSave.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.getSerializedData = this.getSerializedData.bind(this)
 
     this.state = {
       name: '',
       description: '',
       draft: '',
+      type: '',
       address: '',
       lat: -21,
       lng: -66,
+      levels: [],
     }
   }
 
@@ -51,6 +54,8 @@ class Create extends React.Component {
         description: i.description,
         draft: i.draft,
         address: i.address || '',
+        type: i.type,
+        levels: i.levels || [],
       })
     }
   }
@@ -58,18 +63,19 @@ class Create extends React.Component {
   getSerializedData() {
     const { institution } = this.props
     return {
-      ...institution,
+      id: institution.current.id,
       name: this.state.name,
       description: this.state.description,
       draft: this.state.draft,
       address: this.state.address,
+      type: this.state.type,
+      levels: this.state.levels,
     }
   }
 
   handleSave() {
     const { institution, institutionUpdate } = this.props
     institutionUpdate({
-      ...institution.current,
       ...this.getSerializedData()
     })
   }
@@ -80,9 +86,25 @@ class Create extends React.Component {
     })
   }
 
+  handleCheckboxChange(e, props) {
+    console.log(e)
+    console.log(props)
+    if (props.name === 'levels'){
+      if (props.checked) {
+        this.setState({
+          levels: this.state.levels.concat([props.value])
+        })
+      } else {
+        this.setState({
+          levels: this.state.levels.filter(v => v !== props.value)
+        })
+      }
+    }
+  }
+
   render() {
     const { institution } = this.props
-    const { name, description, address, draft, lat, lng } = this.state
+    const { name, description, levels, type, address, draft, lat, lng } = this.state
     if (institution) {
       return (
         <div>
@@ -92,8 +114,11 @@ class Create extends React.Component {
               <Segment>
                 <Header size="normal">Overview</Header>
                 <InstitutionForm onInputChange={this.handleInputChange}
+                  onCheckboxChange={this.handleCheckboxChange}
                   name={name} description={description}
+                  levels={levels}
                   draft={draft}
+                  type={type}
                 />
               </Segment>
               <Segment>
