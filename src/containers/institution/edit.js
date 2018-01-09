@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { Button, Segment, Header } from 'semantic-ui-react'
 import { Form as InstitutionForm} from '../../components/institution'
 import { default as InstitutionMap } from '../../components/location/map'
+import { default as InstitutionProfile } from '../../components/media/image-uploader'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -18,7 +19,9 @@ class Create extends React.Component {
     this.handleSave = this.handleSave.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
+    this.handleFileChange = this.handleFileChange.bind(this)
     this.getSerializedData = this.getSerializedData.bind(this)
+
 
     this.state = {
       name: '',
@@ -29,6 +32,7 @@ class Create extends React.Component {
       lat: -21,
       lng: -66,
       levels: [],
+      profileLogo: '',
     }
   }
 
@@ -56,6 +60,10 @@ class Create extends React.Component {
         address: i.address || '',
         type: i.type,
         levels: i.levels || [],
+        profileLogo: {
+          file: null,
+          fakeUrl: ''
+        }
       })
     }
   }
@@ -102,15 +110,33 @@ class Create extends React.Component {
     }
   }
 
+  handleFileChange (e, props) {
+    const files = e.target.files
+    this.setState({
+      [props.name]: {
+        files: e.target.files[0],
+        fakeUrl: URL.createObjectURL(e.target.files[0])
+      }
+    })
+  }
+
   render() {
     const { institution } = this.props
-    const { name, description, levels, type, address, draft, lat, lng } = this.state
+    const { profileLogo, name, description, levels, type, address, draft, lat, lng } = this.state
     if (institution) {
       return (
         <div>
           <Header size="huge">Institution</Header>
           {(institution.current) &&(
             <div>
+              <Segment>
+                <Header size="normal">Logo Profile</Header>
+                <InstitutionProfile 
+                  onFileChange={this.handleFileChange}
+                  src={profileLogo.fakeUrl}
+                />
+              </Segment>
+
               <Segment>
                 <Header size="normal">Overview</Header>
                 <InstitutionForm onInputChange={this.handleInputChange}
