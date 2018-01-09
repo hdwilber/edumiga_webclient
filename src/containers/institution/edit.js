@@ -114,7 +114,7 @@ class Create extends React.Component {
     const files = e.target.files
     this.setState({
       [props.name]: {
-        files: files[0],
+        file: files[0],
         fakeUrl: URL.createObjectURL(files[0]),
       }
     })
@@ -133,7 +133,7 @@ class Create extends React.Component {
                 <Header size="normal">Logo Profile</Header>
                 <InstitutionProfile 
                   onFileChange={this.handleFileChange}
-                  src={profileLogo.fakeUrl}
+                  url={profileLogo.fakeUrl}
                 />
               </Segment>
 
