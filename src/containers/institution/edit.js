@@ -6,6 +6,8 @@ import { Form as InstitutionForm} from '../../components/institution'
 import { default as InstitutionMap } from '../../components/location/map'
 import { default as InstitutionProfile } from '../../components/media/image-uploader'
 
+import { buildImageUrl } from '../../redux/utils'
+
 import 'leaflet/dist/leaflet.css'
 
 
@@ -32,7 +34,11 @@ class Create extends React.Component {
       lat: -21,
       lng: -66,
       levels: [],
-      profileLogo: '',
+      profileLogo: {
+        file: null,
+        url: '',
+        fakeUrl: '',
+      }
     }
   }
 
@@ -62,7 +68,8 @@ class Create extends React.Component {
         levels: i.levels || [],
         profileLogo: {
           file: null,
-          fakeUrl: ''
+          url: buildImageUrl(i.logo.url),
+          fakeUrl: '',
         }
       })
     }
@@ -118,6 +125,7 @@ class Create extends React.Component {
     const files = e.target.files
     this.setState({
       [props.name]: {
+        ...this.state[props.name],
         file: files[0],
         fakeUrl: URL.createObjectURL(files[0]),
       }
@@ -126,6 +134,7 @@ class Create extends React.Component {
 
   handleClickUploadLogo() {
     const { institution, institutionUploadLogo } = this.props
+    console.log(this.state.profileLogo)
     if (institution && institution.current)
       institutionUploadLogo(institution.current.id, this.state.profileLogo.file)
   }
@@ -143,7 +152,7 @@ class Create extends React.Component {
                 <Header size="normal">Logo Profile</Header>
                 <InstitutionProfile 
                   onFileChange={this.handleFileChange}
-                  url={profileLogo.fakeUrl}
+                  url={profileLogo.fakeUrl === '' ? profileLogo.url : profileLogo.fakeUrl }
                 />
                 <Button disabled={!profileLogo.fakeUrl} onClick={this.handleClickUploadLogo}>Upload</Button>
               </Segment>

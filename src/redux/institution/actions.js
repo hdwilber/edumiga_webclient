@@ -68,11 +68,11 @@ export function update(data) {
   }
 }
 
-export function uploadLogo(file) {
+export function uploadLogo(id, file) {
   return (dispatch, getState) => {
     const { account } = getState()
     iService.setSession(account.session)
-    const request = iService.uploadLogo(file)
+    const request = iService.uploadLogo(id, file)
     return handleRequest(dispatch, getState, UPLOAD_LOGO.START, request)
   }
 }

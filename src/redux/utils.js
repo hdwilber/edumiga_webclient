@@ -1,3 +1,5 @@
+const { REACT_APP_API_BASEURL } = process.env
+
 export function handleRequest(dispatch, getState, action, request, formatter  = null, postThen = null, postCatch = null) {
   request.then (response => {
     if (response.ok) return response.json()
@@ -28,3 +30,7 @@ export function handleRequest(dispatch, getState, action, request, formatter  = 
   })
 }
 
+// Needs to be refactorized
+export function buildImageUrl(url) {
+  return `/${REACT_APP_API_BASEURL}${url}`
+}

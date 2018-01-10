@@ -17,7 +17,9 @@ class Institution extends Service {
   }
 
   uploadLogo(id, file)  {
-    return this.createUploadRequest(`${id}/uploadMedia`, file)
+    console.log('Service institution')
+    console.log(file)
+    return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
 
   getAll(filter = {}) {

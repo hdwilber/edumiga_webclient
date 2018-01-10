@@ -37,7 +37,10 @@ class Service {
     const url = (path !== '') ? `/${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
 
     const formData = new FormData()
+    console.log('createupadrequest lgoo')
+    console.log(files)
     formData.append('mediaFiles', files)
+    console.log(formData)
 
     return fetch(url, {
       method: 'POST',
