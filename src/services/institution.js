@@ -24,10 +24,14 @@ class Institution extends Service {
 
   getAll(filter = {}) {
     const defaultFilter = {
-      include: ['account', 'mainLogo', 'media'],
+      include: ['account', 'mainLogo', 'media', 'opportunities'],
       ...filter,
     }
     return this.createRequest('GET', `?${JSON.stringify(defaultFilter)}`, null, false)
+  }
+
+  addOpportunity(id, data) {
+    return this.createRequest('POST', '${id}/opportunities', data)
   }
 }
 

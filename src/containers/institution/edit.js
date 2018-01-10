@@ -43,7 +43,8 @@ class Create extends React.Component {
       location: {
         lat: null,
         lng: null,
-      }
+      },
+      opportunities: [],
     }
   }
 
