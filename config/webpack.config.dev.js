@@ -133,8 +133,9 @@ module.exports = {
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
             loader: require.resolve('url-loader'),
+            include: '/node_modules/leaflet/dist/images/',
             options: {
-              limit: 10000,
+              limit: 30000,
               name: 'static/media/[name].[hash:8].[ext]',
             },
           },

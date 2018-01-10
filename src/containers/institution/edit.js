@@ -8,8 +8,6 @@ import { default as InstitutionProfile } from '../../components/media/image-uplo
 
 import { buildImageUrl } from '../../redux/utils'
 
-import 'leaflet/dist/leaflet.css'
-
 
 import * as institutionActions from '../../redux/institution/actions'
 
@@ -26,6 +24,7 @@ class Create extends React.Component {
     this.getSerializedData = this.getSerializedData.bind(this)
 
     this.handleCenterChange = this.handleCenterChange.bind(this)
+    this.handleLocationFound = this.handleLocationFound.bind(this)
 
     this.state = {
       name: '',
@@ -146,6 +145,16 @@ class Create extends React.Component {
     })
   }
 
+  handleLocationFound(e) {
+    console.log('My location')
+    console.log(e)
+    if (!this.state.location.lat) {
+      this.setState({
+        location: e.latlng,
+      })
+    }
+  }
+
   handleClickUploadLogo() {
     const { institution, institutionUploadLogo } = this.props
     console.log(this.state.profileLogo)
@@ -185,6 +194,7 @@ class Create extends React.Component {
                 <Header size="normal">Location</Header>
                 <InstitutionMap onInputChange={this.handleInputChange} 
                   onCenterChange={this.handleCenterChange}
+                  onLocationFound={this.handleLocationFound}
                   position={location}
                   address={address}/>
               </Segment>
