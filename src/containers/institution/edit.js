@@ -25,6 +25,8 @@ class Create extends React.Component {
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
     this.getSerializedData = this.getSerializedData.bind(this)
 
+    this.handleCenterChange = this.handleCenterChange.bind(this)
+
     this.state = {
       name: '',
       description: '',
@@ -38,6 +40,10 @@ class Create extends React.Component {
         file: null,
         url: '',
         fakeUrl: '',
+      },
+      location: {
+        lat: null,
+        lng: null,
       }
     }
   }
@@ -70,7 +76,8 @@ class Create extends React.Component {
           file: null,
           url: buildImageUrl(i.logo.url),
           fakeUrl: '',
-        }
+        },
+        location: i.location,
       })
     }
   }
@@ -85,6 +92,7 @@ class Create extends React.Component {
       address: this.state.address,
       type: this.state.type,
       levels: this.state.levels,
+      location: this.state.location,
     }
   }
 
@@ -132,6 +140,12 @@ class Create extends React.Component {
     })
   }
 
+  handleCenterChange(e) {
+    this.setState({
+      location: e.target.getCenter(),
+    })
+  }
+
   handleClickUploadLogo() {
     const { institution, institutionUploadLogo } = this.props
     console.log(this.state.profileLogo)
@@ -141,7 +155,7 @@ class Create extends React.Component {
 
   render() {
     const { institution } = this.props
-    const { profileLogo, name, description, levels, type, address, draft, lat, lng } = this.state
+    const { profileLogo, name, description, levels, type, address, draft, location } = this.state
     if (institution) {
       return (
         <div>
@@ -170,7 +184,8 @@ class Create extends React.Component {
               <Segment>
                 <Header size="normal">Location</Header>
                 <InstitutionMap onInputChange={this.handleInputChange} 
-                  position={[lat, lng]} 
+                  onCenterChange={this.handleCenterChange}
+                  position={location}
                   address={address}/>
               </Segment>
               <Button loading={institution.loading} disabled={institution.loading} 

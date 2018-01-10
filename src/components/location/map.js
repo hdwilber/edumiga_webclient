@@ -5,13 +5,13 @@ import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 class LocationMap extends React.Component {
 
   render() {
-    const { onInputChange, position, address} = this.props
+    const { onInputChange, onCenterChange, position, address} = this.props
     return( 
       <div>
         <Form>
           <Form.Input value={address} name="name" onChange={onInputChange} label="Name" type="text"/>
         </Form>
-        <Map style={{height: 300}} center={position} zoom={12}>
+        <Map onMoveend={onCenterChange} style={{height: 300}} center={position} zoom={12}>
 
           <TileLayer
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
