@@ -13,6 +13,12 @@ export const LIST = {
   FULFILLED: 'INSTITUTION_LIST_FULFILLED',
 }
 
+export const UPLOAD_LOGO = {
+  START: 'INSTITUTION_UPLOAD_LOGO',
+  REJECTED: 'INSTITUTION_UPLOAD_LOGO_REJECTED',
+  FULFILLED: 'INSTITUTION_UPLOAD_LOGO_FULFILLED',
+}
+
 export const FIND = {
   START: 'INSTITUTION_FIND',
   REJECTED: 'INSTITUTION_FIND_REJECTED',
@@ -59,6 +65,15 @@ export function update(data) {
         single: true,
       }
     })
+  }
+}
+
+export function uploadLogo(file) {
+  return (dispatch, getState) => {
+    const { account } = getState()
+    iService.setSession(account.session)
+    const request = iService.uploadLogo(file)
+    return handleRequest(dispatch, getState, UPLOAD_LOGO.START, request)
   }
 }
 

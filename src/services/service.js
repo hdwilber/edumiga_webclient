@@ -16,6 +16,9 @@ class Service {
 
   createUploadHeaders(useAuth = true) {
     const headers = new Headers()
+
+    headers.append('enctype', 'multipart/form-data')
+
     if (useAuth && this.session) {
       headers.append('Authorization', this.session.id)
     }
@@ -29,6 +32,19 @@ class Service {
   getBaseUrl () {
     return `${REACT_APP_API_BASEURL}/${this.baseName}`
   } 
+
+  createUploadRequest(path, files, useAuth = true) {
+    const url = (path !== '') ? `/${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
+
+    const formData = new FormData()
+    formData.append('mediaFiles', files)
+
+    return fetch(url, {
+      method: 'POST',
+      headers: this.createUploadHeaders(),
+      body: formData,
+    })
+  }
 
   createRequest(method, path, rbody, useAuth = true) {
     const url = (path !== '') ? `/${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`

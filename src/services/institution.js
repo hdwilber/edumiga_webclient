@@ -16,6 +16,10 @@ class Institution extends Service {
     return this.createRequest('PATCH',`${data.id}`, data)
   }
 
+  uploadLogo(id, file)  {
+    return this.createUploadRequest(`${id}/uploadMedia`, file)
+  }
+
   getAll(filter = {}) {
     const defaultFilter = {
       include: ['account', 'mainLogo', 'media'],

@@ -20,8 +20,8 @@ class Create extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.handleFileChange = this.handleFileChange.bind(this)
+    this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
     this.getSerializedData = this.getSerializedData.bind(this)
-
 
     this.state = {
       name: '',
@@ -107,6 +107,10 @@ class Create extends React.Component {
           levels: this.state.levels.filter(v => v !== props.value)
         })
       }
+    } else {
+      this.setState({
+        [props.name]: props.checked,
+      })
     }
   }
 
@@ -118,6 +122,12 @@ class Create extends React.Component {
         fakeUrl: URL.createObjectURL(files[0]),
       }
     })
+  }
+
+  handleClickUploadLogo() {
+    const { institution, institutionUploadLogo } = this.props
+    if (institution && institution.current)
+      institutionUploadLogo(institution.current.id, this.state.profileLogo.file)
   }
 
   render() {
@@ -135,6 +145,7 @@ class Create extends React.Component {
                   onFileChange={this.handleFileChange}
                   url={profileLogo.fakeUrl}
                 />
+                <Button disabled={!profileLogo.fakeUrl} onClick={this.handleClickUploadLogo}>Upload</Button>
               </Segment>
 
               <Segment>
@@ -172,6 +183,7 @@ export default connect((state) => ({
   institution: state.institution,
 }), (dispatch) => ({
   institutionCreate: (data) => dispatch(institutionActions.create(data)),
+  institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
   institutionFind: (id) => dispatch(institutionActions.findById(id)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
 })) (withRouter(Create))
