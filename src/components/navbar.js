@@ -42,7 +42,7 @@ class Navbar extends React.Component {
         >
           <Dropdown.Menu>
             <Dropdown.Item><Link to="/institution/create"><Icon name="edit"/>Create</Link> </Dropdown.Item>
-            <Dropdown.Item icon='list' text='List' />
+            <Dropdown.Item><Link to="/institutions"><Icon name="list"/>List</Link> </Dropdown.Item>
           </Dropdown.Menu>
         </Menu.Item>
 
