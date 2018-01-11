@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Button, Segment, Header } from 'semantic-ui-react'
 import { Form as InstitutionForm} from '../../components/institution'
+import OpportunityForm from '../../components/opportunity/form'
+import OpportunitiesList from '../../components/opportunity/list'
 import { default as InstitutionMap } from '../../components/location/map'
 import { default as InstitutionProfile } from '../../components/media/image-uploader'
 
@@ -21,12 +23,19 @@ class Create extends React.Component {
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.handleFileChange = this.handleFileChange.bind(this)
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
+    this.handleAddOpportunity = this.handleAddOpportunity.bind(this)
+    this.handleOpportunitySave = this.handleOpportunitySave.bind(this)
+    this.handleOpportunityCancel = this.handleOpportunityCancel.bind(this)
+
     this.getSerializedData = this.getSerializedData.bind(this)
 
     this.handleCenterChange = this.handleCenterChange.bind(this)
     this.handleLocationFound = this.handleLocationFound.bind(this)
 
+    this.handleOppSelectRow = this.handleOppSelectRow.bind(this)
+
     this.state = {
+      zoom: 10,
       name: '',
       description: '',
       draft: '',
@@ -45,6 +54,9 @@ class Create extends React.Component {
         lng: null,
       },
       opportunities: [],
+      opportunity: null,
+
+      showOpportunityForm: false,
     }
   }
 
@@ -74,10 +86,10 @@ class Create extends React.Component {
         levels: i.levels || [],
         profileLogo: {
           file: null,
-          url: buildImageUrl(i.logo.url),
+          url: i.logo && (buildImageUrl(i.logo.url)),
           fakeUrl: '',
         },
-        location: i.location,
+        location: i.location ? i.location: { ...this.state.location },
       })
     }
   }
@@ -141,8 +153,10 @@ class Create extends React.Component {
   }
 
   handleCenterChange(e) {
+    console.log(e)
     this.setState({
       location: e.target.getCenter(),
+      zoom: e.target.getZoom(),
     })
   }
 
@@ -156,6 +170,26 @@ class Create extends React.Component {
     }
   }
 
+  handleOpportunitySave(data) {
+    const { institutionAddOpp } = this.props
+    institutionAddOpp(data)
+    this.setState({
+      showOpportunityForm: false,
+    })
+  }
+
+  handleOpportunityCancel() {
+    this.setState({
+      showOpportunityForm: false,
+    })
+  }
+
+  handleAddOpportunity() {
+    this.setState({
+      showOpportunityForm: true
+    })
+  }
+
   handleClickUploadLogo() {
     const { institution, institutionUploadLogo } = this.props
     console.log(this.state.profileLogo)
@@ -163,9 +197,16 @@ class Create extends React.Component {
       institutionUploadLogo(institution.current.id, this.state.profileLogo.file)
   }
 
+  handleOppSelectRow(opp) {
+    this.setState({
+      opportunity: opp,
+      showOpportunityForm: true,
+    })
+  }
+
   render() {
     const { institution } = this.props
-    const { profileLogo, name, description, levels, type, address, draft, location } = this.state
+    const { zoom, profileLogo, name, description, levels, type, address, draft, location } = this.state
     if (institution) {
       return (
         <div>
@@ -197,12 +238,22 @@ class Create extends React.Component {
                   onCenterChange={this.handleCenterChange}
                   onLocationFound={this.handleLocationFound}
                   position={location}
+                  zoom={zoom}
                   address={address}/>
+              </Segment>
+
+              <Segment>
+                <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+                <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}/>
               </Segment>
               <Button loading={institution.loading} disabled={institution.loading} 
                 default
                 onClick={this.handleSave}
               >Save</Button>
+
+
+
+            <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} onSave={this.handleOpportunitySave} onCancel={this.handleOpportunityCancel}/>
             </div>
           )}
         </div>
@@ -221,4 +272,5 @@ export default connect((state) => ({
   institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
   institutionFind: (id) => dispatch(institutionActions.findById(id)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
+  institutionAddOpp: (data) => dispatch(institutionActions.addOpportunity(data)),
 })) (withRouter(Create))

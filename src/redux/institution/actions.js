@@ -36,6 +36,12 @@ export const UPDATE = {
   FULFILLED: 'INSTITUTION_UPDATE_FULFILLED',
 }
 
+export const ADD_OPPORTUNITY = {
+  START: 'INSTITUTION_ADD_OPPORTUNITY',
+  REJECTED: 'INSTITUTION_ADD_OPPORTUNITY_REJECTED',
+  FULFILLED: 'INSTITUTION_ADD_OPPORTUNITY_FULFILLED',
+}
+
 const iService = new InstitutionService()
 
 export function create(data) {
@@ -104,5 +110,15 @@ export function findAll() {
         single: true,
       }
     })
+  }
+}
+
+export function addOpportunity(data) {
+  return (dispatch, getState) => {
+    const { account, institution } = getState()
+    iService.setSession(account.session)
+    const request = iService.addOpportunity(institution.current.id, data)
+
+    return handleRequest(dispatch, getState, ADD_OPPORTUNITY.START, request)
   }
 }

@@ -82,6 +82,31 @@ export default function institutionReducer(state = initialState, action) {
         error: action.payload
       }
     }
+
+    case actions.ADD_OPPORTUNITY: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.ADD_OPPORTUNITY.FULFILLED: {
+      return {
+        ...state,
+        loading: false,
+        current: {
+          ...state.current,
+          opportunities: state.current.opportunities.concat(action.payload)
+        }
+      }
+    }
+
+    case actions.ADD_OPPORTUNITY.REJECTED: {
+      return {
+        ...state,
+        error: action.payload,
+      }
+    }
   }
   return state
 }

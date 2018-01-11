@@ -31,7 +31,7 @@ class Institution extends Service {
   }
 
   addOpportunity(id, data) {
-    return this.createRequest('POST', '${id}/opportunities', data)
+    return this.createRequest('POST', `${id}/opportunities`, data)
   }
 }
 

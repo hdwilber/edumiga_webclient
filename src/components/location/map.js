@@ -16,14 +16,14 @@ class LocationMap extends React.Component {
   }
 
   render() {
-    const { onInputChange, onLocationFound, onCenterChange, position, address} = this.props
+    const { onInputChange, onLocationFound, zoom, onCenterChange, position, address} = this.props
     return( 
       <div>
         <Form>
           <Form.Input value={address} name="name" onChange={onInputChange} label="Name" type="text"/>
         </Form>
         <Map onLocationfound={onLocationFound} onMoveend={onCenterChange} style={{height: 300}} center={position} 
-          zoom={10}
+          zoom={zoom}
           ref={(e) => this.map = e}
         >
 
