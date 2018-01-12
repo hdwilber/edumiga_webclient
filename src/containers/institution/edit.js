@@ -189,7 +189,8 @@ class Create extends React.Component {
 
   handleAddOpportunity() {
     this.setState({
-      showOpportunityForm: true
+      showOpportunityForm: true,
+      opportunity: null,
     })
   }
 
