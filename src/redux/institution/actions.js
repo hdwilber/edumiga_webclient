@@ -1,5 +1,5 @@
-import { InstitutionService } from '../../services'
-import { handleRequest } from '../utils'
+import { InstitutionService, OpportunityService } from '../../services'
+import { handleRequest, handleRequestEmpty } from '../utils'
 
 export const CREATE = {
   START: 'INSTITUTION_CREATE',
@@ -42,7 +42,14 @@ export const ADD_OPPORTUNITY = {
   FULFILLED: 'INSTITUTION_ADD_OPPORTUNITY_FULFILLED',
 }
 
+export const REM_OPPORTUNITY = {
+  START: 'INSTITUTION_REM_OPPORTUNITY',
+  REJECTED: 'INSTITUTION_REM_OPPORTUNITY_REJECTED',
+  FULFILLED: 'INSTITUTION_REM_OPPORTUNITY_FULFILLED',
+}
+
 const iService = new InstitutionService()
+const oService = new OpportunityService()
 
 export function create(data) {
   return (dispatch, getState) => {
@@ -113,12 +120,37 @@ export function findAll() {
   }
 }
 
-export function addOpportunity(data) {
+export function addOpportunity(opp = null, data) {
   return (dispatch, getState) => {
     const { account, institution } = getState()
-    iService.setSession(account.session)
-    const request = iService.addOpportunity(institution.current.id, data)
+    var request = null
+    if (opp) {
+      oService.setSession(account.session)
+      request = oService.update({
+        ...data, id: opp.id
+      })
+    } else {
+      iService.setSession(account.session)
+      request = iService.addOpportunity(institution.current.id,data)
+    }
+    return handleRequest(dispatch, getState, ADD_OPPORTUNITY.START, request,
+      data => {
+        return {
+          opp: data,
+          isNewInstance: !opp,
+        }
+      })
+  }
+}
 
-    return handleRequest(dispatch, getState, ADD_OPPORTUNITY.START, request)
+export function removeOpportunity(opp) {
+  return (dispatch, getState) => {
+    const { account, institution } = getState()
+    
+    iService.setSession(account.session)
+    const request = iService.remOpportunity(institution.current.id, opp.id)
+
+    return handleRequestEmpty(dispatch, getState, REM_OPPORTUNITY.START, request,
+      { id: opp.id })
   }
 }

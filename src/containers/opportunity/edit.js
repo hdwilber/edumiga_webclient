@@ -2,13 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Button, Segment, Header } from 'semantic-ui-react'
-import { Form as InstitutionForm} from '../../components/institution'
-import { default as InstitutionMap } from '../../components/location/map'
-import { default as InstitutionProfile } from '../../components/media/image-uploader'
+import { default as ImageUploader } from '../../components/media/image-uploader'
+
+import OppForm from '../../components/opportunity/simple-form'
 
 import { buildImageUrl } from '../../redux/utils'
 
-import * as institutionActions from '../../redux/institution/actions'
+import * as opportunityActions from '../../redux/opportunity/actions'
 
 class Edit extends React.Component {
   constructor(props) {
@@ -33,6 +33,7 @@ class Edit extends React.Component {
       description: '',
       draft: '',
       type: '',
+      degree: '',
 
       profileLogo: {
         file: null,
@@ -43,53 +44,50 @@ class Edit extends React.Component {
   }
 
   componentDidMount() {
-    const { match, opportunityFind } = this.props
+    const { match, oppFind } = this.props
     const { opportunityId } = match.params
 
     if (opportunityId) {
-      opportunityFind(opportunityId)
+      oppFind(opportunityId)
     } 
   }
 
   componentWillReceiveProps(nextProps) {
-    const { opportunity } = nextProps
-    console.log(opportunity)
-    if (opportunity && opportunity.current) {
-      const i = institution.current
+    const { opp } = nextProps
+    console.log(opp)
+    if (opp && opp.current) {
+      const i = opp.current
       this.setState({
         name: i.name,
         description: i.description,
         draft: i.draft,
-        address: i.address || '',
+        degree: i.degree,
         type: i.type,
-        levels: i.levels || [],
         profileLogo: {
           file: null,
           url: i.logo && (buildImageUrl(i.logo.url)),
           fakeUrl: '',
         },
-        location: i.location ? i.location: { ...this.state.location },
       })
     }
   }
 
   getSerializedData() {
-    const { institution } = this.props
+    const { opp } = this.props
     return {
-      id: institution.current.id,
+      id: opp.current.id,
       name: this.state.name,
       description: this.state.description,
       draft: this.state.draft,
-      address: this.state.address,
+      degree: this.state.degree,
       type: this.state.type,
-      levels: this.state.levels,
       location: this.state.location,
     }
   }
 
   handleSave() {
-    const { institutionUpdate } = this.props
-    institutionUpdate({
+    const { oppUpdate } = this.props
+    oppUpdate({
       ...this.getSerializedData()
     })
   }
@@ -149,31 +147,11 @@ class Edit extends React.Component {
     }
   }
 
-  handleOpportunitySave(data) {
-    const { institutionAddOpp } = this.props
-    institutionAddOpp(data)
-    this.setState({
-      showOpportunityForm: false,
-    })
-  }
-
-  handleOpportunityCancel() {
-    this.setState({
-      showOpportunityForm: false,
-    })
-  }
-
-  handleAddOpportunity() {
-    this.setState({
-      showOpportunityForm: true
-    })
-  }
-
   handleClickUploadLogo() {
-    const { institution, institutionUploadLogo } = this.props
+    const { opp, oppUploadLogo } = this.props
     console.log(this.state.profileLogo)
-    if (institution && institution.current)
-      institutionUploadLogo(institution.current.id, this.state.profileLogo.file)
+    if (opp && opp.current)
+      oppUploadLogo(opp.current.id, this.state.profileLogo.file)
   }
 
   handleOppSelectRow(opp) {
@@ -184,17 +162,17 @@ class Edit extends React.Component {
   }
 
   render() {
-    const { institution } = this.props
-    const { zoom, profileLogo, name, description, levels, type, address, draft, location } = this.state
-    if (institution) {
+    const { opp } = this.props
+    const { zoom, profileLogo, name, degree, description, levels, type, address, draft, location } = this.state
+    if (opp) {
       return (
         <div>
-          <Header size="huge">Institution</Header>
-          {(institution.current) &&(
+          <Header size="huge">Opportunity</Header>
+          {(opp.current) &&(
             <div>
               <Segment>
                 <Header size="normal">Logo Profile</Header>
-                <InstitutionProfile 
+                <ImageUploader
                   onFileChange={this.handleFileChange}
                   url={profileLogo.fakeUrl === '' ? profileLogo.url : profileLogo.fakeUrl }
                 />
@@ -203,36 +181,22 @@ class Edit extends React.Component {
 
               <Segment>
                 <Header size="normal">Overview</Header>
-                <InstitutionForm onInputChange={this.handleInputChange}
+                <OppForm onInputChange={this.handleInputChange}
                   onCheckboxChange={this.handleCheckboxChange}
                   name={name} description={description}
-                  levels={levels}
+                  degree={degree}
                   draft={draft}
                   type={type}
                 />
               </Segment>
               <Segment>
-                <Header size="normal">Location</Header>
-                <InstitutionMap onInputChange={this.handleInputChange} 
-                  onCenterChange={this.handleCenterChange}
-                  onLocationFound={this.handleLocationFound}
-                  position={location}
-                  zoom={zoom}
-                  address={address}/>
+                <Header size="normal">Subjects<Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
               </Segment>
 
-              <Segment>
-                <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-                <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}/>
-              </Segment>
-              <Button loading={institution.loading} disabled={institution.loading} 
+              <Button loading={opp.loading} disabled={opp.loading} 
                 default
                 onClick={this.handleSave}
               >Save</Button>
-
-
-
-            <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} onSave={this.handleOpportunitySave} onCancel={this.handleOpportunityCancel}/>
             </div>
           )}
         </div>
@@ -246,10 +210,9 @@ class Edit extends React.Component {
 export default connect((state) => ({
   account: state.account,
   institution: state.institution,
+  opp: state.opp
 }), (dispatch) => ({
-  institutionCreate: (data) => dispatch(institutionActions.create(data)),
-  institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
-  institutionFind: (id) => dispatch(institutionActions.findById(id)),
-  institutionUpdate: (data) => dispatch(institutionActions.update(data)),
-  institutionAddOpp: (data) => dispatch(institutionActions.addOpportunity(data)),
-})) (withRouter(Create))
+  oppUploadLogo: (id, file) => dispatch(opportunityActions.uploadLogo(id, file)),
+  oppFind: (id) => dispatch(opportunityActions.findById(id)),
+  oppUpdate: (data) => dispatch(opportunityActions.update(data)),
+})) (withRouter(Edit))

@@ -1,5 +1,33 @@
 const { REACT_APP_API_BASEURL } = process.env
 
+export function handleRequestEmpty(dispatch, getState, action, request, data, postThen = null, postCatch = null) {
+  request.then (response => {
+    if (response.ok) {
+      dispatch({
+        type: `${action}_FULFILLED`,
+        payload: data,
+      })
+
+      if (postThen) postThen(data)
+    }
+    else {
+      return Promise.reject(new Error('Request failed'))
+    }
+  })
+  .catch(error => {
+    dispatch({
+      type: `${action}_REJECTED`,
+      payload: error,
+    })
+
+    if (postCatch) postCatch(error)
+
+  })
+  return dispatch({
+    type: action,
+  })
+}
+
 export function handleRequest(dispatch, getState, action, request, formatter  = null, postThen = null, postCatch = null) {
   request.then (response => {
     if (response.ok) return response.json()

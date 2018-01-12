@@ -1,8 +1,8 @@
 import Service from './service'
 
-class Institution extends Service {
+class Opportunity extends Service {
   constructor() {
-    super('institutions')
+    super('opportunities')
   }
 
   create(data) {
@@ -17,26 +17,18 @@ class Institution extends Service {
   }
 
   uploadLogo(id, file)  {
-    console.log('Service institution')
+    console.log('Service Opportunity')
     console.log(file)
     return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
 
   getAll(filter = {}) {
     const defaultFilter = {
-      include: ['account', 'mainLogo', 'media', 'opportunities'],
+      include: ['account', 'institution', 'media' ],
       ...filter,
     }
     return this.createRequest('GET', `?${JSON.stringify(defaultFilter)}`, null, false)
   }
-
-  addOpportunity(id, data) {
-    return this.createRequest('POST', `${id}/opportunities`, data)
-  }
-
-  remOpportunity(id, oid) {
-    return this.createRequest('DELETE', `${id}/opportunities/${oid}`)
-  }
 }
 
-export default Institution
+export default Opportunity 

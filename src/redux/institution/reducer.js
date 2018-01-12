@@ -91,12 +91,20 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.ADD_OPPORTUNITY.FULFILLED: {
+      const { opp, isNewInstance } = action.payload
+      console.log('aDd opoprtunity')
+      console.log(opp)
+      console.log(isNewInstance)
+
+      const list = (isNewInstance) ? state.current.opportunities.concat([opp])
+        : state.current.opportunities.map(o => (o.id === opp.id) ? opp : o)
+
       return {
         ...state,
         loading: false,
         current: {
           ...state.current,
-          opportunities: state.current.opportunities.concat(action.payload)
+          opportunities: list,
         }
       }
     }
@@ -104,7 +112,35 @@ export default function institutionReducer(state = initialState, action) {
     case actions.ADD_OPPORTUNITY.REJECTED: {
       return {
         ...state,
+        loading: false,
         error: action.payload,
+      }
+    }
+
+    case actions.REM_OPPORTUNITY: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.REM_OPPORTUNITY.FULFILLED: {
+      const { id } = action.payload
+      return {
+        ...state,
+        loading: false,
+        current: {
+          ...state.current,
+          opportunities: state.current.opportunities.filter(e =>e.id !== id)
+        }
+      }
+    }
+
+    case actions.REM_OPPORTUNITY.REJECTED: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false,
       }
     }
   }

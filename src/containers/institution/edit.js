@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { push  } from 'react-router-redux'
 import { withRouter } from 'react-router-dom'
 import { Button, Segment, Header } from 'semantic-ui-react'
 import { Form as InstitutionForm} from '../../components/institution'
@@ -13,6 +14,7 @@ import { buildImageUrl } from '../../redux/utils'
 
 import * as institutionActions from '../../redux/institution/actions'
 
+import { Actions as OppListActions } from '../../components/opportunity/list'
 
 class Create extends React.Component {
   constructor(props) {
@@ -33,6 +35,7 @@ class Create extends React.Component {
     this.handleLocationFound = this.handleLocationFound.bind(this)
 
     this.handleOppSelectRow = this.handleOppSelectRow.bind(this)
+    this.handleOppListAction = this.handleOppListAction.bind(this)
 
     this.state = {
       zoom: 10,
@@ -53,7 +56,6 @@ class Create extends React.Component {
         lat: null,
         lng: null,
       },
-      opportunities: [],
       opportunity: null,
 
       showOpportunityForm: false,
@@ -172,7 +174,8 @@ class Create extends React.Component {
 
   handleOpportunitySave(data) {
     const { institutionAddOpp } = this.props
-    institutionAddOpp(data)
+    console.log(data)
+    institutionAddOpp(this.state.opportunity, data)
     this.setState({
       showOpportunityForm: false,
     })
@@ -202,6 +205,16 @@ class Create extends React.Component {
       opportunity: opp,
       showOpportunityForm: true,
     })
+  }
+
+  handleOppListAction(type, opp) {
+    const { institution, history } = this.props
+    if (type === OppListActions.EDIT) {
+      history.push(`/institution/${institution.current.id}/opportunity/${opp.id}`)
+    } else if (type === OppListActions.REMOVE){
+      const { institutionRemOpp } = this.props
+      institutionRemOpp(opp)
+    }
   }
 
   render() {
@@ -244,7 +257,9 @@ class Create extends React.Component {
 
               <Segment>
                 <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-                <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}/>
+                <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
+                  onClickAction={this.handleOppListAction}
+                />
               </Segment>
               <Button loading={institution.loading} disabled={institution.loading} 
                 default
@@ -272,5 +287,6 @@ export default connect((state) => ({
   institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
   institutionFind: (id) => dispatch(institutionActions.findById(id)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
-  institutionAddOpp: (data) => dispatch(institutionActions.addOpportunity(data)),
+  institutionAddOpp: (opp, data) => dispatch(institutionActions.addOpportunity(opp, data)),
+  institutionRemOpp: (opp) => dispatch(institutionActions.removeOpportunity(opp)),
 })) (withRouter(Create))
