@@ -11,7 +11,12 @@ class Institution extends Service {
 
   get(id, filter = {}) {
     const defaultFilter = {
-      include: ['account', 'logo', 'media', 'opportunities'],
+      include: ['account', 'logo', 'media', 
+        { relation: 'opportunities', 
+          scope: {
+            include: ['logo', 'account']
+          }
+        }],
       ...filter,
     }
     return this.createRequest('GET',`${id}/?filter=${JSON.stringify(defaultFilter)}`)
@@ -26,7 +31,23 @@ class Institution extends Service {
 
   getAll(filter = {}) {
     const defaultFilter = {
-      include: ['account', 'logo', 'media', 'opportunities'],
+      include: [
+        {
+          relation: 'account',
+        },
+        {
+          relation: 'logo',
+        },
+        {
+          relation: 'media',
+        },
+        { relation: 'opportunities', 
+          scope: {
+            include: ['logo', 'account']
+          }
+        }
+      ],
+
       ...filter,
     }
     return this.createRequest('GET', `?filter=${JSON.stringify(defaultFilter)}`, null, false)

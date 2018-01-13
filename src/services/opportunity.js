@@ -9,9 +9,14 @@ class Opportunity extends Service {
     return this.createRequest('POST', '', data, false )
   }
 
-  get(id) {
-    return this.createRequest('GET',`${id}`)
+  get(id, filter={}) {
+    const defaultFilter = {
+      include: ['account', 'logo', 'media', 'subjects'],
+      ...filter,
+    }
+    return this.createRequest('GET',`${id}/?filter=${JSON.stringify(defaultFilter)}`)
   }
+
   update(data) {
     return this.createRequest('PATCH',`${data.id}`, data)
   }

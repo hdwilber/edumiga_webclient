@@ -269,7 +269,11 @@ class Create extends React.Component {
 
 
 
-            <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} onSave={this.handleOpportunitySave} onCancel={this.handleOpportunityCancel}/>
+            <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} 
+              onSave={this.handleOpportunitySave} 
+              onCancel={this.handleOpportunityCancel}
+              onLogoUpload={this.handleOppLogoUpload}
+            />
             </div>
           )}
         </div>
