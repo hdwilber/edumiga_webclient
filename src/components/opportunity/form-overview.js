@@ -78,7 +78,6 @@ class FormOverview extends React.Component {
           <label>Description</label>
           <TextArea value={data.description} name="description" 
             onChange={onInputChange} 
-            label="Password" type="password"
           />
         </Form.Field>
         
@@ -89,7 +88,11 @@ class FormOverview extends React.Component {
             options={DegreesTypes}
           />
         </Form.Field>
-        
+
+        <Form.Input value={data.duration} name="duration" onChange={onInputChange} 
+          label="Duration" type="number"
+        />
+
         <Form.Field>
           <label>Type</label>
           <Select value={data.type} name="type" 
@@ -97,6 +100,7 @@ class FormOverview extends React.Component {
             options={Types}
           />
         </Form.Field>
+        
 
         <Form.Field>
           <Checkbox label="Keep it as draft?" checked={data.draft} name="draft"
