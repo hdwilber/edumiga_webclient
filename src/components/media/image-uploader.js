@@ -1,24 +1,30 @@
 import React from 'react'
-import { Image, Form } from 'semantic-ui-react'
+import { Button, Image, Form } from 'semantic-ui-react'
 
-class ImageUploader extends React.Component {
-  render() {
-    const { onFileChange, url } = this.props
-    return (
-      <Form>
-        <Form.Input name="profileLogo" onChange={onFileChange} 
-          label="Name" type="file"
-        />
-        {(url instanceof Array) ? (
-          url.map((u,idx) => (
-            <Image key={idx} src={u} />
-          ))
-        ) : (
-          <Image src={url} />
-        )}
-      </Form>
-    )
+const SimpleMediaUploader = (props) => {
+  const { name, onChange, onUpload, url, disabled } = props
+
+  function handleFileChange(e) {
+    const files = e.target.files
+    onChange(e, { 
+      name,
+      value: {
+        file: files[0],
+        fakeUrl: URL.createObjectURL(files[0]),
+      } 
+    })
   }
+
+  return (
+    <Form>
+      <Form.Input name={name} onChange={handleFileChange} 
+        label="Name" type="file"
+      />
+        <Image src={url} />
+        <Button disabled={disabled} onClick={onUpload}>Upload</Button>
+    </Form>
+  )
 }
 
-export default ImageUploader
+export default SimpleMediaUploader
+

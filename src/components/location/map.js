@@ -9,29 +9,54 @@ class LocationMap extends React.Component {
   constructor(props) {
     super(props)
     this.map = null
+    this.handleCenterChange = this.handleCenterChange.bind(this)
+    this.handleLocationFound = this.handleLocationFound.bind(this)
   }
 
   componentDidMount() {
     this.map.leafletElement.locate()
   }
 
+  handleCenterChange(e, props) {
+    const { name, onCenterChange } = this.props
+    onCenterChange(e, {
+      name: name,
+      value: {
+        point: e.target.getCenter(),
+        zoom: e.target.getZoom(),
+      }
+    })
+  }
+
+  handleLocationFound(e) {
+    const { data } = this.props
+    if (!data.point) {
+      const { name, onCenterChange } = this.props
+      onCenterChange(e,
+        {
+          name, value: {
+            point: e.target.getCenter(),
+            zoom: e.target.getZoom(),
+          }
+        }
+      )
+    } 
+  }
+
+
   render() {
-    const { onInputChange, onLocationFound, zoom, onCenterChange, position, address} = this.props
+    const { name, onCenterChange, data, } = this.props
     return( 
       <div>
-        <Form>
-          <Form.Input value={address} name="name" onChange={onInputChange} label="Name" type="text"/>
-        </Form>
-        <Map onLocationfound={onLocationFound} onMoveend={onCenterChange} style={{height: 300}} center={position} 
-          zoom={zoom}
+        <Map onLocationfound={this.handleLocationFound} onMoveend={this.handleCenterChange} style={{height: 300}} center={data.point} 
+          zoom={data.zoom}
           ref={(e) => this.map = e}
         >
-
           <TileLayer
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={position} >
+          <Marker position={data.point} >
             <Popup>
               <span>
                 A pretty CSS3 popup. <br /> Easily customizable.

@@ -2,15 +2,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push  } from 'react-router-redux'
 import { withRouter } from 'react-router-dom'
-import { Button, Segment, Header } from 'semantic-ui-react'
-import { Form as InstitutionForm} from '../../components/institution'
+import { Grid, Button, Segment, Header } from 'semantic-ui-react'
+import { FormOverview } from '../../components/institution'
 import OpportunityForm from '../../components/opportunity/form'
 import OpportunitiesList from '../../components/opportunity/list'
 import { default as InstitutionMap } from '../../components/location/map'
-import { default as InstitutionProfile } from '../../components/media/image-uploader'
+import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import { buildImageUrl } from '../../redux/utils'
-
 
 import * as institutionActions from '../../redux/institution/actions'
 
@@ -23,16 +22,12 @@ class Create extends React.Component {
     this.handleSave = this.handleSave.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
-    this.handleFileChange = this.handleFileChange.bind(this)
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
     this.handleAddOpportunity = this.handleAddOpportunity.bind(this)
     this.handleOpportunitySave = this.handleOpportunitySave.bind(this)
     this.handleOpportunityCancel = this.handleOpportunityCancel.bind(this)
 
-    this.getSerializedData = this.getSerializedData.bind(this)
-
-    this.handleCenterChange = this.handleCenterChange.bind(this)
-    this.handleLocationFound = this.handleLocationFound.bind(this)
+    this.serializeData = this.serializeData.bind(this)
 
     this.handleOppSelectRow = this.handleOppSelectRow.bind(this)
     this.handleOppListAction = this.handleOppListAction.bind(this)
@@ -47,14 +42,17 @@ class Create extends React.Component {
       lat: -21,
       lng: -66,
       levels: [],
-      profileLogo: {
+      logo: {
         file: null,
         url: '',
         fakeUrl: '',
       },
       location: {
-        lat: null,
-        lng: null,
+        point: {
+          lat: null,
+          lng: null,
+        },
+        zoom: 10,
       },
       opportunity: null,
 
@@ -86,7 +84,7 @@ class Create extends React.Component {
         address: i.address || '',
         type: i.type,
         levels: i.levels || [],
-        profileLogo: {
+        logo: {
           file: null,
           url: i.logo && (buildImageUrl(i.logo.url)),
           fakeUrl: '',
@@ -96,7 +94,7 @@ class Create extends React.Component {
     }
   }
 
-  getSerializedData() {
+  serializeData() {
     const { institution } = this.props
     return {
       id: institution.current.id,
@@ -107,17 +105,20 @@ class Create extends React.Component {
       type: this.state.type,
       levels: this.state.levels,
       location: this.state.location,
+      zoom: this.state.zoom,
     }
   }
 
   handleSave() {
     const { institutionUpdate } = this.props
     institutionUpdate({
-      ...this.getSerializedData()
+      ...this.serializeData()
     })
   }
 
   handleInputChange(e, props) {
+    console.log(props)
+    console.log(e)
     this.setState({
       [props.name]: props.value,
     })
@@ -139,35 +140,6 @@ class Create extends React.Component {
     } else {
       this.setState({
         [props.name]: props.checked,
-      })
-    }
-  }
-
-  handleFileChange (e, props) {
-    const files = e.target.files
-    this.setState({
-      [props.name]: {
-        ...this.state[props.name],
-        file: files[0],
-        fakeUrl: URL.createObjectURL(files[0]),
-      }
-    })
-  }
-
-  handleCenterChange(e) {
-    console.log(e)
-    this.setState({
-      location: e.target.getCenter(),
-      zoom: e.target.getZoom(),
-    })
-  }
-
-  handleLocationFound(e) {
-    console.log('My location')
-    console.log(e)
-    if (!this.state.location.lat) {
-      this.setState({
-        location: e.latlng,
       })
     }
   }
@@ -196,9 +168,9 @@ class Create extends React.Component {
 
   handleClickUploadLogo() {
     const { institution, institutionUploadLogo } = this.props
-    console.log(this.state.profileLogo)
+    console.log(this.state.logo)
     if (institution && institution.current)
-      institutionUploadLogo(institution.current.id, this.state.profileLogo.file)
+      institutionUploadLogo(institution.current.id, this.state.logo.file)
   }
 
   handleOppSelectRow(opp) {
@@ -220,48 +192,50 @@ class Create extends React.Component {
 
   render() {
     const { institution } = this.props
-    const { zoom, profileLogo, name, description, levels, type, address, draft, location } = this.state
-    if (institution) {
+    const { zoom, logo, name, description, levels, type, address, draft, location } = this.state
+    if (institution && institution.current) {
+      const data = this.serializeData()
       return (
         <div>
           <Header size="huge">Institution</Header>
           {(institution.current) &&(
-            <div>
-              <Segment>
-                <Header size="normal">Logo Profile</Header>
-                <InstitutionProfile 
-                  onFileChange={this.handleFileChange}
-                  url={profileLogo.fakeUrl === '' ? profileLogo.url : profileLogo.fakeUrl }
-                />
-                <Button disabled={!profileLogo.fakeUrl} onClick={this.handleClickUploadLogo}>Upload</Button>
-              </Segment>
+            <Grid container>
+              <Grid.Column width={6}>
+                <Segment>
+                  <Header size="normal">Logo Profile</Header>
+                  <SimpleMediaUploader
+                    name="logo" onChange={this.handleInputChange}
+                    onUpload={this.handleClickUploadLogo}
+                    url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
+                    disabled={!logo.fakeUrl}
+                  />
+                </Segment>
+                <Segment>
+                  <Header size="normal">Location</Header>
+                  <InstitutionMap 
+                    name="location"
+                    onCenterChange={this.handleInputChange}
+                    data={data.location}
+                  />
+                </Segment>
 
-              <Segment>
-                <Header size="normal">Overview</Header>
-                <InstitutionForm onInputChange={this.handleInputChange}
-                  onCheckboxChange={this.handleCheckboxChange}
-                  name={name} description={description}
-                  levels={levels}
-                  draft={draft}
-                  type={type}
-                />
-              </Segment>
-              <Segment>
-                <Header size="normal">Location</Header>
-                <InstitutionMap onInputChange={this.handleInputChange} 
-                  onCenterChange={this.handleCenterChange}
-                  onLocationFound={this.handleLocationFound}
-                  position={location}
-                  zoom={zoom}
-                  address={address}/>
-              </Segment>
+              </Grid.Column>
 
-              <Segment>
-                <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-                <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
-                  onClickAction={this.handleOppListAction}
-                />
-              </Segment>
+              <Grid.Column width={10}>
+                <Segment>
+                  <Header size="normal">Overview</Header>
+                  <FormOverview onInputChange={this.handleInputChange}
+                    onCheckboxChange={this.handleCheckboxChange}
+                    data={data}
+                  />
+                </Segment>
+                <Segment>
+                  <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+                  <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
+                    onClickAction={this.handleOppListAction}
+                  />
+                </Segment>
+              </Grid.Column>
               <Button loading={institution.loading} disabled={institution.loading} 
                 default
                 onClick={this.handleSave}
@@ -274,7 +248,7 @@ class Create extends React.Component {
               onCancel={this.handleOpportunityCancel}
               onLogoUpload={this.handleOppLogoUpload}
             />
-            </div>
+            </Grid>
           )}
         </div>
       )

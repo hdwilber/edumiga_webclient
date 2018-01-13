@@ -17,7 +17,6 @@ class Edit extends React.Component {
     this.handleSave = this.handleSave.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
-    this.handleFileChange = this.handleFileChange.bind(this)
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
 
     this.getSerializedData = this.getSerializedData.bind(this)
@@ -35,7 +34,7 @@ class Edit extends React.Component {
       type: '',
       degree: '',
 
-      profileLogo: {
+      logo: {
         file: null,
         url: '',
         fakeUrl: '',
@@ -63,7 +62,7 @@ class Edit extends React.Component {
         draft: i.draft,
         degree: i.degree,
         type: i.type,
-        profileLogo: {
+        logo: {
           file: null,
           url: i.logo && (buildImageUrl(i.logo.url)),
           fakeUrl: '',
@@ -118,17 +117,6 @@ class Edit extends React.Component {
     }
   }
 
-  handleFileChange (e, props) {
-    const files = e.target.files
-    this.setState({
-      [props.name]: {
-        ...this.state[props.name],
-        file: files[0],
-        fakeUrl: URL.createObjectURL(files[0]),
-      }
-    })
-  }
-
   handleCenterChange(e) {
     console.log(e)
     this.setState({
@@ -149,9 +137,9 @@ class Edit extends React.Component {
 
   handleClickUploadLogo() {
     const { opp, oppUploadLogo } = this.props
-    console.log(this.state.profileLogo)
+    console.log(this.state.logo)
     if (opp && opp.current)
-      oppUploadLogo(opp.current.id, this.state.profileLogo.file)
+      oppUploadLogo(opp.current.id, this.state.logo.file)
   }
 
   handleOppSelectRow(opp) {
@@ -163,7 +151,7 @@ class Edit extends React.Component {
 
   render() {
     const { opp } = this.props
-    const { zoom, profileLogo, name, degree, description, levels, type, address, draft, location } = this.state
+    const { zoom, logo, name, degree, description, levels, type, address, draft, location } = this.state
     if (opp) {
       return (
         <div>
@@ -173,10 +161,12 @@ class Edit extends React.Component {
               <Segment>
                 <Header size="normal">Logo Profile</Header>
                 <ImageUploader
-                  onFileChange={this.handleFileChange}
-                  url={profileLogo.fakeUrl === '' ? profileLogo.url : profileLogo.fakeUrl }
+                  name="logo"
+                  onChange={this.handleInputChange}
+                  url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
+                  disabled={!logo.fakeUrl}
+                  onUpload={this.handleClickUploadLogo}
                 />
-                <Button disabled={!profileLogo.fakeUrl} onClick={this.handleClickUploadLogo}>Upload</Button>
               </Segment>
 
               <Segment>

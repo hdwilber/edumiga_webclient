@@ -47,40 +47,27 @@ const LevelsOptions = [
   },
 ]
 
-class InstForm extends React.Component {
-
-  constructor(props) {
-    super(props)
-    this.handleInputFileChange = this.handleInputFileChange.bind(this)
-  }
-
-  handleInputFileChange(e, props) {
-    this.setState({
-      logo: {
-        src: URL.createObjectURL(e.target.files[0]),
-        files: e.target.files,
-      }
-    })
-  }
-
-  render() {
-    const { onInputChange, onCheckboxChange, levels, type, name, description, draft  } = this.props
+const FormOverview = (props) => {
+  const { onInputChange, onCheckboxChange, data} = props
+  if (data) {
     return (
       <Form>
-        <Form.Input value={name} name="name" onChange={onInputChange} 
+        <Form.Input value={data.name} name="name" onChange={onInputChange} 
           label="Name" type="text"
         />
+
+        <Form.Input value={data.address} name="address" onChange={onInputChange} label="Address" type="text"/>
+
         <Form.Field>
           <label>Description</label>
-          <TextArea value={description} name="description" 
+          <TextArea value={data.description} name="description" 
             onChange={onInputChange} 
-            label="Password" type="password"
           />
         </Form.Field>
         
         <Form.Field>
           <label>Type</label>
-          <Select value={type} name="type" 
+          <Select value={data.type} name="type" 
             onChange={onInputChange} 
             options={TypesOptions}
           />
@@ -91,21 +78,23 @@ class InstForm extends React.Component {
           {LevelsOptions.map (l => {
             return (
               <Form.Field>
-                <Checkbox label={l.text} value={l.value} name="levels" onChange={onCheckboxChange} checked={!!levels.find(v => v === l.value)}/>
+                <Checkbox label={l.text} value={l.value} name="levels" onChange={onCheckboxChange} checked={!!data.levels.find(v => v === l.value)}/>
               </Form.Field>
             )
           })}
         </Form.Group>
 
         <Form.Field>
-          <Checkbox label="Keep it as draft?" checked={draft} name="draft"
+          <Checkbox label="Keep it as draft?" checked={data.draft} name="draft"
             onChange={onCheckboxChange}
           />
         </Form.Field>
       </Form>
     )
+  } else {
+    return <h1>Loading...</h1>
   }
 }
 
-export default InstForm
+export default FormOverview
 

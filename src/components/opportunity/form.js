@@ -82,14 +82,11 @@ class OppForm extends React.Component {
     })
   }
 
-  handleLogoChange(e, props) {
-    const files = e.target.files
-    const name = 'logo'
+  handleLogoChange(data) {
     this.setState({
-      [name]: {
-        ...this.state[name],
-        file: files[0],
-        fakeUrl: URL.createObjectURL(files[0]),
+      logo: {
+        ...this.state.logo,
+        ...data,
       }
     })
   }
@@ -106,10 +103,11 @@ class OppForm extends React.Component {
           <Segment>
             <Header size="normal">Logo Profile</Header>
             <ImageUploader
-              onFileChange={this.handleLogoChange}
+              onChange={this.handleLogoChange}
+              onUpload={onLogoUpload}
+              disabled={false}
               url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
             />
-            <Button disabled={!logo.fakeUrl} onClick={onLogoUpload}>Upload</Button>
           </Segment>
 
           <Segment>
