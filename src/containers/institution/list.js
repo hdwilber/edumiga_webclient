@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Header } from 'semantic-ui-react'
+import { Card, Header } from 'semantic-ui-react'
 import { Card as InstitutionCard } from '../../components/institution'
 
 import * as institutionActions from '../../redux/institution/actions'
@@ -19,13 +19,16 @@ class InstList extends React.Component {
       return (
         <div>
           <Header size="huge">Institutions</Header>
-          {(institution.list) &&(
-            institution.list.map(i => {
-              return (
-                <InstitutionCard onSelect={(i) => console.log(i)} institution={i} />
-              )
-            })
-          )}
+
+          <Card.Group>
+            {(institution.list) &&(
+              institution.list.map(i => {
+                return (
+                  <InstitutionCard institution={i} />
+                )
+              })
+            )}
+          </Card.Group>
         </div>
       )
     } else {
