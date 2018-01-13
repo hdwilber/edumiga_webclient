@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Button, Segment, Header } from 'semantic-ui-react'
-import { default as ImageUploader } from '../../components/media/image-uploader'
+import { Grid, Button, Segment, Header } from 'semantic-ui-react'
 
-import OppForm from '../../components/opportunity/simple-form'
+import SimpleMediaUploader from '../../components/media/image-uploader'
+
+import OppForm from '../../components/opportunity/form-overview'
 
 import { buildImageUrl } from '../../redux/utils'
 
@@ -19,7 +20,7 @@ class Edit extends React.Component {
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
 
-    this.getSerializedData = this.getSerializedData.bind(this)
+    this.serializeData = this.serializeData.bind(this)
 
     this.handleCenterChange = this.handleCenterChange.bind(this)
     this.handleLocationFound = this.handleLocationFound.bind(this)
@@ -71,7 +72,7 @@ class Edit extends React.Component {
     }
   }
 
-  getSerializedData() {
+  serializeData() {
     const { opp } = this.props
     return {
       id: opp.current.id,
@@ -81,13 +82,14 @@ class Edit extends React.Component {
       degree: this.state.degree,
       type: this.state.type,
       location: this.state.location,
+      logo: this.state.logo,
     }
   }
 
   handleSave() {
     const { oppUpdate } = this.props
     oppUpdate({
-      ...this.getSerializedData()
+      ...this.serializeData()
     })
   }
 
@@ -151,43 +153,46 @@ class Edit extends React.Component {
 
   render() {
     const { opp } = this.props
-    const { zoom, logo, name, degree, description, levels, type, address, draft, location } = this.state
-    if (opp) {
+    const { logo, location } = this.state
+    if (opp && opp.current) {
+      const data = this.serializeData()
       return (
         <div>
           <Header size="huge">Opportunity</Header>
           {(opp.current) &&(
-            <div>
-              <Segment>
-                <Header size="normal">Logo Profile</Header>
-                <ImageUploader
-                  name="logo"
-                  onChange={this.handleInputChange}
-                  url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
-                  disabled={!logo.fakeUrl}
-                  onUpload={this.handleClickUploadLogo}
-                />
-              </Segment>
+            <Grid container>
+              <Grid.Column width={6}>
+                <Segment>
+                  <Header size="normal">Logo Profile</Header>
+                  <SimpleMediaUploader
+                    name="logo"
+                    onChange={this.handleInputChange}
+                    url={data.logo.fakeUrl === '' ? data.logo.url : data.logo.fakeUrl }
+                    disabled={!data.logo.fakeUrl}
+                    onUpload={this.handleClickUploadLogo}
+                  />
+                </Segment>
+              </Grid.Column>
 
-              <Segment>
-                <Header size="normal">Overview</Header>
-                <OppForm onInputChange={this.handleInputChange}
-                  onCheckboxChange={this.handleCheckboxChange}
-                  name={name} description={description}
-                  degree={degree}
-                  draft={draft}
-                  type={type}
-                />
-              </Segment>
-              <Segment>
-                <Header size="normal">Subjects<Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-              </Segment>
+              <Grid.Column width={10}>
+                <Segment>
+                  <Header size="normal">Overview</Header>
+                  <OppForm onInputChange={this.handleInputChange}
+                    onCheckboxChange={this.handleCheckboxChange}
 
-              <Button loading={opp.loading} disabled={opp.loading} 
-                default
-                onClick={this.handleSave}
-              >Save</Button>
-            </div>
+                    data={data}
+                  />
+                </Segment>
+                <Segment>
+                  <Header size="normal">Subjects<Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+                </Segment>
+
+                <Button loading={opp.loading} disabled={opp.loading} 
+                  default
+                  onClick={this.handleSave}
+                >Save</Button>
+              </Grid.Column>
+            </Grid>
           )}
         </div>
       )

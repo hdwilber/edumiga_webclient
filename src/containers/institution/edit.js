@@ -4,9 +4,11 @@ import { push  } from 'react-router-redux'
 import { withRouter } from 'react-router-dom'
 import { Grid, Button, Segment, Header } from 'semantic-ui-react'
 import { FormOverview } from '../../components/institution'
-import OpportunityForm from '../../components/opportunity/form'
+
+import LocationMap from '../../components/location/map'
+
+import OpportunityForm from '../../components/opportunity/create'
 import OpportunitiesList from '../../components/opportunity/list'
-import { default as InstitutionMap } from '../../components/location/map'
 import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import { buildImageUrl } from '../../redux/utils'
@@ -33,7 +35,6 @@ class Create extends React.Component {
     this.handleOppListAction = this.handleOppListAction.bind(this)
 
     this.state = {
-      zoom: 10,
       name: '',
       description: '',
       draft: '',
@@ -105,7 +106,6 @@ class Create extends React.Component {
       type: this.state.type,
       levels: this.state.levels,
       location: this.state.location,
-      zoom: this.state.zoom,
     }
   }
 
@@ -117,16 +117,12 @@ class Create extends React.Component {
   }
 
   handleInputChange(e, props) {
-    console.log(props)
-    console.log(e)
     this.setState({
       [props.name]: props.value,
     })
   }
 
   handleCheckboxChange(e, props) {
-    console.log(e)
-    console.log(props)
     if (props.name === 'levels'){
       if (props.checked) {
         this.setState({
@@ -192,7 +188,7 @@ class Create extends React.Component {
 
   render() {
     const { institution } = this.props
-    const { zoom, logo, name, description, levels, type, address, draft, location } = this.state
+    const { logo, name, description, levels, type, address, draft, location } = this.state
     if (institution && institution.current) {
       const data = this.serializeData()
       return (
@@ -204,7 +200,8 @@ class Create extends React.Component {
                 <Segment>
                   <Header size="normal">Logo Profile</Header>
                   <SimpleMediaUploader
-                    name="logo" onChange={this.handleInputChange}
+                    name="logo" 
+                    onChange={this.handleInputChange}
                     onUpload={this.handleClickUploadLogo}
                     url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
                     disabled={!logo.fakeUrl}
@@ -212,7 +209,7 @@ class Create extends React.Component {
                 </Segment>
                 <Segment>
                   <Header size="normal">Location</Header>
-                  <InstitutionMap 
+                  <LocationMap
                     name="location"
                     onCenterChange={this.handleInputChange}
                     data={data.location}
@@ -229,19 +226,20 @@ class Create extends React.Component {
                     data={data}
                   />
                 </Segment>
+
                 <Segment>
                   <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
                   <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
                     onClickAction={this.handleOppListAction}
                   />
                 </Segment>
+
+                <Button loading={institution.loading} disabled={institution.loading} 
+                  default
+                  onClick={this.handleSave}
+                >Save</Button>
+
               </Grid.Column>
-              <Button loading={institution.loading} disabled={institution.loading} 
-                default
-                onClick={this.handleSave}
-              >Save</Button>
-
-
 
             <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} 
               onSave={this.handleOpportunitySave} 

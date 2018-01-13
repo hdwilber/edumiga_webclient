@@ -51,8 +51,8 @@ const Types = [
     value: 'presential'
   }
 ]
-class SimpleForm extends React.Component {
 
+class FormOverview extends React.Component {
   constructor(props) {
     super(props)
     this.handleInputFileChange = this.handleInputFileChange.bind(this)
@@ -68,15 +68,15 @@ class SimpleForm extends React.Component {
   }
 
   render() {
-    const { onInputChange, onCheckboxChange, levels, degree, type, name, description, draft  } = this.props
+    const { onInputChange, onCheckboxChange, data } = this.props
     return (
       <Form>
-        <Form.Input value={name} name="name" onChange={onInputChange} 
+        <Form.Input value={data.name} name="name" onChange={onInputChange} 
           label="Name" type="text"
         />
         <Form.Field>
           <label>Description</label>
-          <TextArea value={description} name="description" 
+          <TextArea value={data.description} name="description" 
             onChange={onInputChange} 
             label="Password" type="password"
           />
@@ -84,7 +84,7 @@ class SimpleForm extends React.Component {
         
         <Form.Field>
           <label>Degree</label>
-          <Select value={degree} name="degree" 
+          <Select value={data.degree} name="degree" 
             onChange={onInputChange} 
             options={DegreesTypes}
           />
@@ -92,14 +92,14 @@ class SimpleForm extends React.Component {
         
         <Form.Field>
           <label>Type</label>
-          <Select value={type} name="type" 
+          <Select value={data.type} name="type" 
             onChange={onInputChange} 
             options={Types}
           />
         </Form.Field>
 
         <Form.Field>
-          <Checkbox label="Keep it as draft?" checked={draft} name="draft"
+          <Checkbox label="Keep it as draft?" checked={data.draft} name="draft"
             onChange={onCheckboxChange}
           />
         </Form.Field>
@@ -108,5 +108,5 @@ class SimpleForm extends React.Component {
   }
 }
 
-export default SimpleForm
+export default FormOverview
 
