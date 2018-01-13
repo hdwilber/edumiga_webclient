@@ -14,6 +14,7 @@ import SimpleMediaUploader from '../../components/media/image-uploader'
 import { buildImageUrl } from '../../redux/utils'
 
 import * as institutionActions from '../../redux/institution/actions'
+import { uploadLogo } from '../../redux/opportunity/actions'
 
 import { Actions as OppListActions } from '../../components/opportunity/list'
 
@@ -40,8 +41,6 @@ class Create extends React.Component {
       draft: '',
       type: '',
       address: '',
-      lat: -21,
-      lng: -66,
       levels: [],
       logo: {
         file: null,
@@ -55,8 +54,8 @@ class Create extends React.Component {
         },
         zoom: 10,
       },
-      opportunity: null,
 
+      opportunity: null,
       showOpportunityForm: false,
     }
   }
@@ -140,6 +139,13 @@ class Create extends React.Component {
     }
   }
 
+  handleClickUploadLogo() {
+    const { institution, institutionUploadLogo } = this.props
+    console.log(this.state.logo)
+    if (institution && institution.current)
+      institutionUploadLogo(institution.current.id, this.state.logo.file)
+  }
+
   handleOpportunitySave(data) {
     const { institutionAddOpp } = this.props
     console.log(data)
@@ -160,13 +166,6 @@ class Create extends React.Component {
       showOpportunityForm: true,
       opportunity: null,
     })
-  }
-
-  handleClickUploadLogo() {
-    const { institution, institutionUploadLogo } = this.props
-    console.log(this.state.logo)
-    if (institution && institution.current)
-      institutionUploadLogo(institution.current.id, this.state.logo.file)
   }
 
   handleOppSelectRow(opp) {
@@ -265,5 +264,6 @@ export default connect((state) => ({
   institutionFind: (id) => dispatch(institutionActions.findById(id)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
   institutionAddOpp: (opp, data) => dispatch(institutionActions.addOpportunity(opp, data)),
+  institutionOppUploadLogo: (id, data) => dispatch(uploadLogo(id, data)),
   institutionRemOpp: (opp) => dispatch(institutionActions.removeOpportunity(opp)),
 })) (withRouter(Create))
