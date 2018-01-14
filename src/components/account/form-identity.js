@@ -116,20 +116,15 @@ const FormIdentity = (props) => {
           />
         </Form.Group>
 
-        <Form.Group width="equals">
-        </Form.Group>
-
-
         <Form.Group grouped>
           <label>Interests</label>
           {InterestsOptions.map (l => {
             return (
-              <Form.Field>
-                <Checkbox label={l.text} value={l.value} name="interests" 
-                  onChange={handleCheckboxChange} 
-                  checked={data.interests ? data.interests.indexOf(l.value) > -1: false}
-                />
-              </Form.Field>
+              <Form.Checkbox
+                label={l.text} value={l.value} name="interests" 
+                onChange={handleCheckboxChange} 
+                checked={data.interests ? data.interests.indexOf(l.value) > -1: false}
+              />
             )
           })}
         </Form.Group>

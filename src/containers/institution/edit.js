@@ -41,6 +41,10 @@ class Create extends React.Component {
       draft: '',
       type: '',
       address: '',
+      country: '',
+      county: '',
+      state: '',
+      phone: '',
       levels: [],
       logo: {
         file: null,
@@ -85,6 +89,10 @@ class Create extends React.Component {
         name: i.name,
         description: i.description,
         draft: i.draft,
+        country: i.country,
+        county: i.county,
+        state: i.state,
+        phone: i.phone, 
         address: i.address || '',
         type: i.type,
         levels: i.levels || [],
@@ -109,6 +117,10 @@ class Create extends React.Component {
       type: this.state.type,
       levels: this.state.levels,
       location: this.state.location,
+      country: this.state.country,
+      county: this.state.county,
+      state: this.state.state,
+      phone: this.state.phone, 
     }
   }
 

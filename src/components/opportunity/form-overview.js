@@ -109,9 +109,19 @@ class FormOverview extends React.Component {
     const { onInputChange, onCheckboxChange, data } = this.props
     return (
       <Form>
-        <Form.Input value={data.name} name="name" onChange={onInputChange} 
-          label="Name" type="text"
-        />
+        <Form.Group widths="equal">
+          <Form.Input value={data.name} name="name" onChange={onInputChange} 
+            label="Name" type="text"
+          />
+          <Form.Field>
+            <label>Degree</label>
+            <Select value={data.degree} name="degree" 
+              onChange={onInputChange} 
+              options={DegreesTypes}
+            />
+          </Form.Field>
+        </Form.Group>
+
         <Form.Field>
           <label>Description</label>
           <TextArea value={data.description} name="description" 
@@ -119,34 +129,29 @@ class FormOverview extends React.Component {
           />
         </Form.Field>
         
-        <Form.Field>
-          <label>Degree</label>
-          <Select value={data.degree} name="degree" 
-            onChange={onInputChange} 
-            options={DegreesTypes}
-          />
-        </Form.Field>
 
-        <Form.Input value={data.duration} name="duration" onChange={onInputChange} 
-          label="Duration" type="number"
-        />
+        <Form.Group widths="equal">
+          <Form.Input value={data.duration} name="duration" onChange={onInputChange} 
+            label="Duration" type="number"
+          />
 
-        <Form.Field>
-          <label>Type</label>
-          <Select value={data.type} name="type" 
-            onChange={onInputChange} 
-            options={Types}
-          />
-        </Form.Field>
-        
-        <Form.Field>
-          <label>Regime</label>
-          <Select value={data.regime} name="regime" 
-            onChange={onInputChange} 
-            options={RegimesTypes}
-          />
-        </Form.Field>
-        
+          <Form.Field>
+            <label>Type</label>
+            <Select value={data.type} name="type" 
+              onChange={onInputChange} 
+              options={Types}
+            />
+          </Form.Field>
+          
+          <Form.Field>
+            <label>Regime</label>
+            <Select value={data.regime} name="regime" 
+              onChange={onInputChange} 
+              options={RegimesTypes}
+            />
+          </Form.Field>
+        </Form.Group>
+          
 
         <Form.Field>
           <Checkbox label="Keep it as draft?" checked={data.draft} name="draft"

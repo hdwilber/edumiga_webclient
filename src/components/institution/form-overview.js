@@ -56,6 +56,18 @@ const FormOverview = (props) => {
           label="Name" type="text"
         />
 
+        <Form.Group width="equals">
+          <Form.Input value={data.country} name="country" onChange={onInputChange} 
+            label="Country" type="text"
+          />
+          <Form.Input value={data.state} name="state" onChange={onInputChange} 
+            label="State" type="text"
+          />
+          <Form.Input value={data.county} name="county" onChange={onInputChange} 
+            label="County" type="text"
+          />
+        </Form.Group>
+
         <Form.Input value={data.address} name="address" onChange={onInputChange} label="Address" type="text"/>
 
         <Form.Field>
@@ -73,12 +85,12 @@ const FormOverview = (props) => {
           />
         </Form.Field>
         
-        <Form.Group grouped>
+        <Form.Group>
           <label>Levels</label>
           {LevelsOptions.map (l => {
             return (
               <Form.Field>
-                <Checkbox label={l.text} value={l.value} name="levels" onChange={onCheckboxChange} checked={!!data.levels.find(v => v === l.value)}/>
+                <Checkbox inline label={l.text} value={l.value} name="levels" onChange={onCheckboxChange} checked={!!data.levels.find(v => v === l.value)}/>
               </Form.Field>
             )
           })}
