@@ -142,7 +142,10 @@ export default function accountReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        identity: identity,
+        identity: {
+          ...state.identity,
+          ...identity,
+        }
       }
     }
 

@@ -9,7 +9,7 @@ const InstCard = (props) => {
   if (institution) {
     return (
       <Card>
-        <Image src={institution.logo ? buildImageUrl(institution.logo.url): 'none' }/>
+        <Image size="small" wrapped={true} inline={true} src={institution.logo ? buildImageUrl(institution.logo.url): 'none' }/>
         <Card.Content>
           <Card.Header as={Link} to={`/institution/${institution.id}/edit`}>
             {institution.name}

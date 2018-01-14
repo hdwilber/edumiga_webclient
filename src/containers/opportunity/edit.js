@@ -31,6 +31,7 @@ class Edit extends React.Component {
       name: '',
       duration: '',
       description: '',
+      regime: '',
       draft: '',
       type: '',
       degree: '',
@@ -62,6 +63,8 @@ class Edit extends React.Component {
         description: i.description,
         draft: i.draft,
         degree: i.degree,
+        duration: i.duration,
+        regime: i.regime,
         type: i.type,
         logo: {
           file: null,
@@ -80,7 +83,9 @@ class Edit extends React.Component {
       description: this.state.description,
       draft: this.state.draft,
       degree: this.state.degree,
+      regime: this.state.regime,
       type: this.state.type,
+      duration: this.state.duration,
       location: this.state.location,
       logo: this.state.logo,
     }

@@ -1,6 +1,44 @@
 import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
 
+const RegimesTypes = [
+  {
+    key: 1,
+    text: 'Yearly',
+    value: 'yearly',
+  },
+  {
+    key: 2,
+    text: 'Monthly',
+    value: 'monthly',
+  },
+  {
+    key: 3,
+    text: 'Bimonthly',
+    value: 'bimonthly',
+  },
+  {
+    key: 4,
+    text: 'Quarterly',
+    value: 'quarterly',
+  },
+  {
+    key: 5,
+    text: 'Triannual',
+    value: 'triannual',
+  },
+  {
+    key: 6,
+    text: 'Semiannual',
+    value: 'semiannual',
+  },
+  {
+    key: 7,
+    text: 'Mixed',
+    value: 'mixed',
+  },
+]
+
 const DegreesTypes = [
   {
     key: 1,
@@ -98,6 +136,14 @@ class FormOverview extends React.Component {
           <Select value={data.type} name="type" 
             onChange={onInputChange} 
             options={Types}
+          />
+        </Form.Field>
+        
+        <Form.Field>
+          <label>Regime</label>
+          <Select value={data.regime} name="regime" 
+            onChange={onInputChange} 
+            options={RegimesTypes}
           />
         </Form.Field>
         
