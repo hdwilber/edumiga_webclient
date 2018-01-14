@@ -48,15 +48,19 @@ class Create extends React.Component {
         fakeUrl: '',
       },
       location: {
-        point: {
-          lat: null,
-          lng: null,
-        },
+        point: null,
         zoom: 10,
       },
 
       opportunity: null,
       showOpportunityForm: false,
+      currentLocation: {
+        point: {
+          lat: 0,
+          lng: 0,
+        },
+        zoom: 3,
+      }
     }
   }
 
@@ -116,6 +120,9 @@ class Create extends React.Component {
   }
 
   handleInputChange(e, props) {
+    if (props.name === 'currentLocation') {
+      console.log(props)
+    }
     this.setState({
       [props.name]: props.value,
     })
@@ -211,7 +218,7 @@ class Create extends React.Component {
                   <LocationMap
                     name="location"
                     onCenterChange={this.handleInputChange}
-                    data={data.location}
+                    data={data.location.point ? data.location : this.state.currentLocation}
                   />
                 </Segment>
 

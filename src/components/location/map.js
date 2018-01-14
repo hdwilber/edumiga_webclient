@@ -29,18 +29,16 @@ class LocationMap extends React.Component {
   }
 
   handleLocationFound(e) {
+    console.log(e)
     const { data } = this.props
-    if (!data.point) {
-      const { name, onCenterChange } = this.props
-      onCenterChange(e,
-        {
-          name, value: {
-            point: e.target.getCenter(),
-            zoom: e.target.getZoom(),
-          }
-        }
-      )
-    } 
+    const { onCenterChange } = this.props
+    console.log('Updatin curentLocation')
+    onCenterChange(e, {
+      name: 'currentLocation', value: {
+        point: e.latlng,
+        zoom: 8,
+      }
+    })
   }
 
 
@@ -48,7 +46,7 @@ class LocationMap extends React.Component {
     const { name, onCenterChange, data, } = this.props
     return( 
       <div>
-        <Map onLocationfound={this.handleLocationFound} onMoveend={this.handleCenterChange} style={{height: 300}} center={data.point} 
+        <Map onLocationfound={this.handleLocationFound} onMoveend={this.handleCenterChange} style={{height: 300}} center={data.point}
           zoom={data.zoom}
           ref={(e) => this.map = e}
         >
