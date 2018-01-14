@@ -41,8 +41,8 @@ class Navbar extends React.Component {
           text="Institutions"
         >
           <Dropdown.Menu>
-            <Dropdown.Item><Link to="/institution/create"><Icon name="edit"/>Create</Link> </Dropdown.Item>
-            <Dropdown.Item><Link to="/institutions"><Icon name="list"/>List</Link> </Dropdown.Item>
+            <Dropdown.Item as={Link} to="/institution/create"><Icon name="edit"/>Create</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/institutions"><Icon name="list"/>List</Dropdown.Item>
           </Dropdown.Menu>
         </Menu.Item>
 
@@ -61,19 +61,23 @@ class Navbar extends React.Component {
 }
 
 const MenuItemUser = (props) => {
-  const { account, onLogout } = props
-  return (
-    <Menu.Item as={Dropdown} item 
-      text={account.session.email}
-      position="right"
-    >
-      <Dropdown.Menu>
-        <Dropdown.Item icon='edit' text='Edit Profile' />
-        <Dropdown.Item icon='settings' text='Account Settings' />
-        <Dropdown.Item icon='sign out' text='Logout' onClick={(e) => onLogout()}/>
-      </Dropdown.Menu>
-    </Menu.Item>
-  )
+  const { account: { current, identity }, onLogout } = props
+  if (identity) {
+    return (
+      <Menu.Item as={Dropdown} item 
+        text={(identity && identity.displayName === '') ? (current || current.email): (identity.displayName)}
+        position="right"
+      >
+        <Dropdown.Menu>
+          <Dropdown.Item as={Link} to="/account/identity" icon='edit' text='Edit Profile' />
+          <Dropdown.Item icon='settings' text='Account Settings' />
+          <Dropdown.Item icon='sign out' text='Logout' onClick={(e) => onLogout()}/>
+        </Dropdown.Menu>
+      </Menu.Item>
+    )
+  } else {
+    return <Menu.Item>Loading...</Menu.Item>
+  }
 }
 
 export default Navbar

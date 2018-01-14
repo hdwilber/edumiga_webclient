@@ -1,6 +1,7 @@
 import Service from './service'
 
 const LOCAL_STORAGE_NAME = 'EDUMIGA_SESSION'
+
 class Account extends Service {
   constructor() {
     super('accounts')
@@ -12,6 +13,24 @@ class Account extends Service {
 
   login(data) {
     return this.createRequest('POST', 'login', data, false)
+  }
+
+  get(id, filter={}) {
+    const defaultFilter = {
+      include: [{
+        relation: 'identities',
+        scope: {
+          include: ['photo']
+        },
+      }], 
+      ...filter,
+    }
+
+    return this.createRequest('GET', `${id}?filter=${JSON.stringify(defaultFilter)}`)
+  }
+
+  uploadPhoto(id, file)  {
+    return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
 
   storeSessionLocal(data) {

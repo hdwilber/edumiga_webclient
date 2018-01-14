@@ -18,7 +18,7 @@ const SimpleMediaUploader = (props) => {
   return (
     <Form>
       <Form.Input name={name} onChange={handleFileChange} 
-        label="Name" type="file"
+        type="file"
       />
         <Image src={url} />
         <Button disabled={disabled} onClick={onUpload}>Upload</Button>
