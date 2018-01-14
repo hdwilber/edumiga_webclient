@@ -209,65 +209,64 @@ class Create extends React.Component {
     if (institution && institution.current) {
       const data = this.serializeData()
       return (
-        <div>
-          <Header size="huge">Institution</Header>
-          {(institution.current) &&(
-            <Grid container>
-              <Grid.Column width={6}>
-                <Segment>
-                  <Header size="normal">Logo Profile</Header>
-                  <SimpleMediaUploader
-                    name="logo" 
-                    onChange={this.handleInputChange}
-                    onUpload={this.handleClickUploadLogo}
-                    url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
-                    disabled={!logo.fakeUrl}
-                  />
-                </Segment>
-                <Segment>
-                  <Header size="normal">Location</Header>
-                  <LocationMap
-                    name="location"
-                    onCenterChange={this.handleInputChange}
-                    data={data.location.point ? data.location : this.state.currentLocation}
-                  />
-                </Segment>
+        <Grid container>
+          <Grid.Column width={16}>
+            <Header size="huge">Institution</Header>
+          </Grid.Column>
+          <Grid.Column width={6}>
+            <Segment>
+              <Header size="normal">Logo Profile</Header>
+              <SimpleMediaUploader
+                name="logo" 
+                onChange={this.handleInputChange}
+                onUpload={this.handleClickUploadLogo}
+                url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
+                disabled={!logo.fakeUrl}
+              />
+            </Segment>
+            <Segment>
+              <Header size="normal">Location</Header>
+              <LocationMap
+                name="location"
+                onCenterChange={this.handleInputChange}
+                data={data.location.point ? data.location : this.state.currentLocation}
+              />
+            </Segment>
 
-              </Grid.Column>
+          </Grid.Column>
 
-              <Grid.Column width={10}>
-                <Segment>
-                  <Header size="normal">Overview</Header>
-                  <FormOverview onInputChange={this.handleInputChange}
-                    onCheckboxChange={this.handleCheckboxChange}
-                    data={data}
-                  />
-                </Segment>
+          <Grid.Column width={10}>
+            <Segment>
+              <Header size="normal">Overview</Header>
+              <FormOverview onInputChange={this.handleInputChange}
+                onCheckboxChange={this.handleCheckboxChange}
+                data={data}
+              />
+            </Segment>
 
-                <Segment>
-                  <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-                  <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
-                    onClickAction={this.handleOppListAction}
-                  />
-                </Segment>
+            <Segment>
+              <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+              <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
+                onClickAction={this.handleOppListAction}
+              />
+            </Segment>
 
-                <Button loading={institution.loading} disabled={institution.loading} 
-                  default
-                  onClick={this.handleSave}
-                >Save</Button>
+            <Button loading={institution.loading} disabled={institution.loading} 
+              default
+              onClick={this.handleSave}
+            >Save</Button>
 
-              </Grid.Column>
+          </Grid.Column>
 
-            <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} 
-              onSave={this.handleOpportunitySave} 
-              onCancel={this.handleOpportunityCancel}
-              onLogoUpload={this.handleOppLogoUpload}
-            />
-            </Grid>
-          )}
-        </div>
+          <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} 
+            onSave={this.handleOpportunitySave} 
+            onCancel={this.handleOpportunityCancel}
+            onLogoUpload={this.handleOppLogoUpload}
+          />
+        </Grid>
       )
-    } else {
+    }
+    else {
       return <Header size="huge">Loading...</Header>
     }
   }

@@ -1,4 +1,5 @@
 import { AccountService } from '../../services'
+import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
 import { handleRequest } from '../utils'
 
@@ -69,6 +70,7 @@ export function login(data) {
       (payload) => {
         aService.storeSessionLocal(payload)
         dispatch(findById(payload.accountId))
+        dispatch(push('/institutions'))
       })
   }
 }
@@ -92,9 +94,12 @@ export function findById(id) {
 }
 
 export function logout() {
-  aService.clearSessionLocal()
-  return {
-    type: LOGOUT.START,
+  return (dispatch, getState) => {
+    aService.clearSessionLocal()
+    dispatch(push('/'))
+    return dispatch({
+      type: LOGOUT.START,
+    })
   }
 }
 

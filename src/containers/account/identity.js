@@ -112,7 +112,7 @@ class Identity extends React.Component {
       return (
         <Grid container>
           <Grid.Column width={16}>
-            <Header>Profile Settings</Header>
+            <Header size="huge">Profile Settings</Header>
           </Grid.Column>
           <Grid.Column width={6}>
             <Segment>

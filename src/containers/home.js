@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Login from '../components/account/login'
+import { Grid, Header } from 'semantic-ui-react'
 
 import * as accountActions from '../redux/account/actions'
 import * as institutionActions from '../redux/institution/actions'
@@ -22,14 +23,19 @@ const Home = (props) => {
   const { account } = props
 
   return (
-    <div>
-      {(account && !account.session) && (
-      <Login loading={account.loading} 
-        onLogin={handleLogin}
-        onRegister={handleRegister}
-      />
-      )}
-    </div>
+    <Grid container centered>
+      <Grid.Column width={10}>
+        <Header size="huge" content="Login"/>
+      </Grid.Column>
+      <Grid.Column width={10}>
+        {(account && !account.session) && (
+        <Login loading={account.loading} 
+          onLogin={handleLogin}
+          onRegister={handleRegister}
+        />
+        )}
+      </Grid.Column>
+    </Grid>
 
   )
 }

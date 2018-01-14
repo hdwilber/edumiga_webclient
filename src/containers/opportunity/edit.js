@@ -161,44 +161,42 @@ class Edit extends React.Component {
     if (opp && opp.current) {
       const data = this.serializeData()
       return (
-        <div>
-          <Header size="huge">Opportunity</Header>
-          {(opp.current) &&(
-            <Grid container>
-              <Grid.Column width={6}>
-                <Segment>
-                  <Header size="normal">Logo Profile</Header>
-                  <SimpleMediaUploader
-                    name="logo"
-                    onChange={this.handleInputChange}
-                    url={data.logo.fakeUrl === '' ? data.logo.url : data.logo.fakeUrl }
-                    disabled={!data.logo.fakeUrl}
-                    onUpload={this.handleClickUploadLogo}
-                  />
-                </Segment>
-              </Grid.Column>
+        <Grid container>
+          <Grid.Column width={16}>
+            <Header size="huge">Opportunity</Header>
+          </Grid.Column>
+          <Grid.Column width={6}>
+            <Segment>
+              <Header size="normal">Logo Profile</Header>
+              <SimpleMediaUploader
+                name="logo"
+                onChange={this.handleInputChange}
+                url={data.logo.fakeUrl === '' ? data.logo.url : data.logo.fakeUrl }
+                disabled={!data.logo.fakeUrl}
+                onUpload={this.handleClickUploadLogo}
+              />
+            </Segment>
+          </Grid.Column>
 
-              <Grid.Column width={10}>
-                <Segment>
-                  <Header size="normal">Overview</Header>
-                  <OppForm onInputChange={this.handleInputChange}
-                    onCheckboxChange={this.handleCheckboxChange}
+          <Grid.Column width={10}>
+            <Segment>
+              <Header size="normal">Overview</Header>
+              <OppForm onInputChange={this.handleInputChange}
+                onCheckboxChange={this.handleCheckboxChange}
 
-                    data={data}
-                  />
-                </Segment>
-                <Segment>
-                  <Header size="normal">Subjects<Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-                </Segment>
+                data={data}
+              />
+            </Segment>
+            <Segment>
+              <Header size="normal">Subjects<Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+            </Segment>
 
-                <Button loading={opp.loading} disabled={opp.loading} 
-                  default
-                  onClick={this.handleSave}
-                >Save</Button>
-              </Grid.Column>
-            </Grid>
-          )}
-        </div>
+            <Button loading={opp.loading} disabled={opp.loading} 
+              default
+              onClick={this.handleSave}
+            >Save</Button>
+          </Grid.Column>
+        </Grid>
       )
     } else {
       return <Header size="huge">Loading...</Header>

@@ -118,7 +118,7 @@ class OppForm extends React.Component {
 
     const data = this.serializeData()
     return (
-      <Modal open={visible} >
+      <Modal size="large" open={visible} >
         <Modal.Header>Enter a new Opportunity</Modal.Header>
         <Modal.Content image>
           <Grid container>
