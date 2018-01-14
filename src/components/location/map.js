@@ -2,7 +2,18 @@ import React from 'react'
 import { Form } from 'semantic-ui-react'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 
+import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
+import iconUrl from 'leaflet/dist/images/marker-icon.png'
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
+
+let DefaultIcon = L.icon({
+    iconUrl,
+    shadowUrl,
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 class LocationMap extends React.Component {
 
