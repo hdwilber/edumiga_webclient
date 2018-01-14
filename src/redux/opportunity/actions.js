@@ -1,5 +1,5 @@
 import { OpportunityService } from '../../services'
-import { handleRequest, handleRequestEmpty } from '../utils'
+import { handleRequest } from '../utils'
 
 const oService = new OpportunityService()
 

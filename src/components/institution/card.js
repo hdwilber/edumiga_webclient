@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Image, Icon, Header } from 'semantic-ui-react'
+import { Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
 
 const InstCard = (props) => {
-  const { onSelect, institution } = props
+  const { institution } = props
   if (institution) {
     return (
       <Card>

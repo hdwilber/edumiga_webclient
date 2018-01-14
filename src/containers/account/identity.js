@@ -7,7 +7,6 @@ import FormIdentity from '../../components/account/form-identity'
 import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import * as accountActions from '../../redux/account/actions'
-import * as institutionActions from '../../redux/institution/actions'
 
 import { buildImageUrl } from '../../redux/utils'
 

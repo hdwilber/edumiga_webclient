@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { push  } from 'react-router-redux'
 import { withRouter } from 'react-router-dom'
 import { Grid, Button, Segment, Header } from 'semantic-ui-react'
 import { FormOverview } from '../../components/institution'
@@ -206,7 +205,7 @@ class Create extends React.Component {
 
   render() {
     const { institution } = this.props
-    const { logo, name, description, levels, type, address, draft, location } = this.state
+    const { logo } = this.state
     if (institution && institution.current) {
       const data = this.serializeData()
       return (

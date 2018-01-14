@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
+import { Checkbox, Form } from 'semantic-ui-react'
 
 const InterestsOptions = [
   {
@@ -47,7 +47,7 @@ const InterestsOptions = [
 
 const FormIdentity = (props) => {
 
-  const { onInputChange, onCheckboxChange, data} = props
+  const { onInputChange, data} = props
 
   function handleCheckboxChange(e, aprops) {
     if (aprops.name === 'interests'){

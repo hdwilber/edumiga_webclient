@@ -158,7 +158,6 @@ class Edit extends React.Component {
 
   render() {
     const { opp } = this.props
-    const { logo, location } = this.state
     if (opp && opp.current) {
       const data = this.serializeData()
       return (

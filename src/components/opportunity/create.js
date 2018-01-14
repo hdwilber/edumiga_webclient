@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Segment, Header, Checkbox, Button, Modal, TextArea, Input, Form } from 'semantic-ui-react'
+import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
 import SimpleMediaUploader from '../../components/media/image-uploader'
 import FormOverview from './form-overview'
 
@@ -113,8 +113,8 @@ class OppForm extends React.Component {
   }
 
   render() {
-    const { onSave, onLogoUpload, onCancel, visible } = this.props
-    const { name, description, draft, duration, logo } = this.state
+    const { onLogoUpload, onCancel, visible } = this.props
+    const { logo } = this.state
 
     const data = this.serializeData()
     return (
