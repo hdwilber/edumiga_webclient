@@ -5,6 +5,7 @@ const initialState = {
   list: null,
   loading: false,
   error: null,
+  courses: [],
 }
 
 export default function opportunityReducer(state = initialState, action) {
@@ -82,6 +83,53 @@ export default function opportunityReducer(state = initialState, action) {
         error: action.payload
       }
     }
+
+    case actions.COURSE_ADD.START: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.COURSE_ADD.REJECTED: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
+    case actions.COURSE_ADD.FULFILLED: {
+      return {
+        ...state,
+        loading: false,
+        courses: state.courses.concat([action.payload])
+      }
+    }
+    case actions.COURSE_DEL.START: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.COURSE_DEL.REJECTED: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
+    case actions.COURSE_DEL.FULFILLED: {
+      const id = action.payload
+      return {
+        ...state,
+        loading: false,
+        courses: state.courses.filter(c => c.id !== id),
+      }
+    }
+
   }
   return state
 }
