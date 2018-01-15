@@ -1,7 +1,8 @@
-import { OpportunityService } from '../../services'
-import { handleRequest } from '../utils'
+import { OpportunityService, CourseService } from '../../services'
+import { handleRequest, handleRequestEmpty } from '../utils'
 
 const oService = new OpportunityService()
+const cService = new CourseService()
 
 export const CREATE = {
   START: 'OPPORTUNITY_CREATE',
@@ -48,6 +49,12 @@ export const COURSE_DEL = {
   START: 'OPP_COURSE_DEL',
   REJECTED: 'OPP_COURSE_DEL_REJECTED',
   FULFILLED: 'OPP_COURSE_DEL_FULFILLED',
+}
+
+export const COURSE_UPDATE = {
+  START: 'OPP_COURSE_UPDATE',
+  REJECTED: 'OPP_COURSE_UPDATE_REJECTED',
+  FULFILLED: 'OPP_COURSE_UPDATE_FULFILLED',
 }
 
 export function create(data) {
@@ -106,32 +113,45 @@ export function findById(id) {
 
 export function courseAdd(data) {
   return (dispatch, getState) => {
-    const { account, opportunity } = getState()
-    if (opportunity && opportunity.current) {
+    const { account, opp} = getState()
+    if (opp && opp.current) {
       oService.setSession(account.session)
-      const request = oService.addCourse(opportunity.current.id, data)
+      const request = oService.addCourse(opp.current.id, data)
       return handleRequest(dispatch, getState, COURSE_ADD.START, request)
+    } else {
+      return dispatch({
+        type: COURSE_ADD.REJECTED,
+        payload: 'eRROR'
+      })
     }
   }
 }
 
-export function courseDel(data) {
+export function courseDel(id) {
   return (dispatch, getState) => {
-    const { account, opportunity } = getState()
-    if (opportunity && opportunity.current) {
+    const { account, opp} = getState()
+    if (opp && opp.current) {
       oService.setSession(account.session)
-      const request = oService.delCourse(opportunity.current.id, data.id)
-      return handleRequest(dispatch, getState, COURSE_DEL.START, request)
+      const request = oService.delCourse(opp.current.id, id)
+      return handleRequestEmpty(dispatch, getState, COURSE_DEL.START, request,
+        id,
+      )
     }
   }
 }
+
 export function courseUpdate(data) {
   return (dispatch, getState) => {
-    const { account, opportunity } = getState()
-    if (opportunity && opportunity.current) {
-      oService.setSession(account.session)
-      const request = oService.addCourse(data)
-      return handleRequest(dispatch, getState, COURSE_ADD.START, request)
+    const { account, opp } = getState()
+    if (opp && opp.current) {
+      cService.setSession(account.session)
+      const request = cService.update(data)
+      return handleRequest(dispatch, getState, COURSE_UPDATE.START, request,
+        (data) => {
+          return {
+            course: data,
+          }
+        })
     }
   }
 }

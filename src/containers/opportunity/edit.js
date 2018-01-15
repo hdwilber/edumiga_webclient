@@ -10,6 +10,9 @@ import OppForm from '../../components/opportunity/form-overview'
 import { buildImageUrl } from '../../redux/utils'
 
 import * as opportunityActions from '../../redux/opportunity/actions'
+import CourseCreate from '../../components/course/create'
+import CourseList from '../../components/course/list'
+import { Actions as CourseListActions } from '../../components/course/list'
 
 class Edit extends React.Component {
   constructor(props) {
@@ -27,7 +30,16 @@ class Edit extends React.Component {
 
     this.handleOppSelectRow = this.handleOppSelectRow.bind(this)
 
+
+    this.handleCourseCreateStart = this.handleCourseCreateStart.bind(this)
+    this.handleCourseCreateAction = this.handleCourseCreateAction.bind(this)
+
+    this.handleCourseListAction = this.handleCourseListAction.bind(this)
+    this.handleCourseListClick = this.handleCourseListClick.bind(this)
+
     this.state = {
+      showCourseCreateForm: false,
+      currentCourse: null,
       name: '',
       duration: '',
       description: '',
@@ -55,7 +67,6 @@ class Edit extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { opp } = nextProps
-    console.log(opp)
     if (opp && opp.current) {
       const i = opp.current
       this.setState({
@@ -156,6 +167,52 @@ class Edit extends React.Component {
     })
   }
 
+  handleCourseCreateStart() {
+    this.setState({
+      showCourseCreateForm: true,
+      currentCourse: null,
+    })
+  }
+
+  handleCourseCreateAction(type, data) {
+    if (type === 1) {
+      const { courseAdd, courseUpdate } = this.props
+      console.log(data)
+      if (data.id) {
+        courseUpdate(data)
+      } else {
+        courseAdd(data)
+      }
+    } 
+    this.setState({
+      showCourseCreateForm: false,
+      currentCourse: null,
+    })
+  }
+
+  handleCourseListClick(course) {
+    console.log(course)
+    if (course) {
+      this.setState({currentCourse: course,
+        showCourseCreateForm: true,
+      })
+    }
+  }
+
+  handleCourseListAction(type, course) {
+    if (type === CourseListActions.EDIT) {
+      this.setState({
+        currentCourse: course,
+      })
+      this.setState({
+        showCourseCreateForm: true, 
+      })
+    } else if (type === CourseListActions.DELETE) {
+      const { courseDel } = this.props
+      courseDel(course.id)
+    }
+  }
+
   render() {
     const { opp } = this.props
     if (opp && opp.current) {
@@ -183,12 +240,15 @@ class Edit extends React.Component {
               <Header size="normal">Overview</Header>
               <OppForm onInputChange={this.handleInputChange}
                 onCheckboxChange={this.handleCheckboxChange}
-
                 data={data}
               />
             </Segment>
+
             <Segment>
-              <Header size="normal">Subjects<Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+              <Header size="normal">Courses<Button default onClick={this.handleCourseCreateStart}>Add</Button></Header>
+              <CourseList items={opp.courses} onClickItem={this.handleCourseListClick}
+                onClickAction={this.handleCourseListAction}
+              />
             </Segment>
 
             <Button loading={opp.loading} disabled={opp.loading} 
@@ -196,6 +256,11 @@ class Edit extends React.Component {
               onClick={this.handleSave}
             >Save</Button>
           </Grid.Column>
+          <CourseCreate course={this.state.currentCourse}
+            onAction={this.handleCourseCreateAction}
+            visible={this.state.showCourseCreateForm}
+            courses={opp.courses}
+          />
         </Grid>
       )
     } else {
@@ -212,4 +277,7 @@ export default connect((state) => ({
   oppUploadLogo: (id, file) => dispatch(opportunityActions.uploadLogo(id, file)),
   oppFind: (id) => dispatch(opportunityActions.findById(id)),
   oppUpdate: (data) => dispatch(opportunityActions.update(data)),
+  courseAdd: (data) => dispatch(opportunityActions.courseAdd(data)),
+  courseDel: (id) => dispatch(opportunityActions.courseDel(id)),
+  courseUpdate: (data) => dispatch(opportunityActions.courseUpdate(data)),
 })) (withRouter(Edit))
