@@ -38,6 +38,18 @@ export const UPDATE = {
   FULFILLED: 'OPPORTUNITY_UPDATE_FULFILLED',
 }
 
+export const COURSE_ADD = {
+  START: 'OPP_COURSE_ADD',
+  REJECTED: 'OPP_COURSE_ADD_REJECTED',
+  FULFILLED: 'OPP_COURSE_ADD_FULFILLED',
+}
+
+export const COURSE_DEL = {
+  START: 'OPP_COURSE_DEL',
+  REJECTED: 'OPP_COURSE_DEL_REJECTED',
+  FULFILLED: 'OPP_COURSE_DEL_FULFILLED',
+}
+
 export function create(data) {
   return (dispatch, getState) => {
     const { account } = getState()
@@ -92,3 +104,34 @@ export function findById(id) {
   }
 }
 
+export function courseAdd(data) {
+  return (dispatch, getState) => {
+    const { account, opportunity } = getState()
+    if (opportunity && opportunity.current) {
+      oService.setSession(account.session)
+      const request = oService.addCourse(opportunity.current.id, data)
+      return handleRequest(dispatch, getState, COURSE_ADD.START, request)
+    }
+  }
+}
+
+export function courseDel(data) {
+  return (dispatch, getState) => {
+    const { account, opportunity } = getState()
+    if (opportunity && opportunity.current) {
+      oService.setSession(account.session)
+      const request = oService.delCourse(opportunity.current.id, data.id)
+      return handleRequest(dispatch, getState, COURSE_DEL.START, request)
+    }
+  }
+}
+export function courseUpdate(data) {
+  return (dispatch, getState) => {
+    const { account, opportunity } = getState()
+    if (opportunity && opportunity.current) {
+      oService.setSession(account.session)
+      const request = oService.addCourse(data)
+      return handleRequest(dispatch, getState, COURSE_ADD.START, request)
+    }
+  }
+}

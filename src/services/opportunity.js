@@ -34,6 +34,14 @@ class Opportunity extends Service {
     }
     return this.createRequest('GET', `?${JSON.stringify(defaultFilter)}`, null, false)
   }
+
+  addCourse(id, data) {
+    return this.createRequest('POST', `${id}/courses`, data)
+  }
+
+  delCourse(id, cid) {
+    return this.createRequest('DELETE', `${id}/courses/${cid}`)
+  }
 }
 
 export default Opportunity 
