@@ -39,7 +39,6 @@ class Edit extends React.Component {
 
     this.state = {
       showCourseCreateForm: false,
-      currentCourse: null,
       name: '',
       duration: '',
       description: '',
@@ -83,12 +82,7 @@ class Edit extends React.Component {
           fakeUrl: '',
         },
       })
-    } else if (opp && opp.currentCourse) {
-      this.setState({
-        currentCourse: opp.currentCourse,
-      })
-    }
-
+    } 
   }
 
   serializeData() {
@@ -173,29 +167,30 @@ class Edit extends React.Component {
   }
 
   handleCourseCreateStart() {
-    const { courseAdd } = this.props
-    courseAdd({})
-
+    const { courseSet, courseAdd } = this.props
+    courseSet(null)
     this.setState({
       showCourseCreateForm: true,
-      currentCourse: null,
+    }, () => {
+      courseAdd({})
     })
   }
 
   handleCourseCreateAction(type, data) {
+    const { courseSet } = this.props
     if (type === 1) {
       const { courseUpdate } = this.props
       courseUpdate(data)
-    }
+    } 
     this.setState({
       showCourseCreateForm: false,
-      currentCourse: null,
-    })
+    }, () => courseSet(null))
   }
 
   handleCourseListClick(course) {
     if (course) {
-      this.setState({currentCourse: course,
+      this.props.courseSet(course)
+      this.setState({
         showCourseCreateForm: true,
       })
     }
@@ -203,9 +198,9 @@ class Edit extends React.Component {
 
   handleCourseListAction(type, course) {
     if (type === CourseListActions.EDIT) {
-      this.setState({
-        currentCourse: course,
-      })
+      const { courseSet } = this.props
+      courseSet(course)
+
       this.setState({
         showCourseCreateForm: true, 
       })
@@ -258,7 +253,7 @@ class Edit extends React.Component {
               onClick={this.handleSave}
             >Save</Button>
           </Grid.Column>
-          <CourseCreate course={this.state.currentCourse}
+          <CourseCreate course={opp.currentCourse}
             onAction={this.handleCourseCreateAction}
             visible={this.state.showCourseCreateForm}
             courses={opp.courses}
@@ -282,6 +277,7 @@ export default connect((state) => ({
   courseAdd: (data) => dispatch(opportunityActions.courseAdd(data)),
   courseDel: (id) => dispatch(opportunityActions.courseDel(id)),
   courseUpdate: (data) => dispatch(opportunityActions.courseUpdate(data)),
-  courseAddPre: (course, id) => dispatch(opportunityActions.courseAddPre(course, id)),
-  courseDelPre: (course, id) => dispatch(opportunityActions.courseDelPre(course, id)),
+  //courseAddPre: (course, id) => dispatch(opportunityActions.courseAddPre(course, id)),
+  //courseDelPre: (course, id) => dispatch(opportunityActions.courseDelPre(course, id)),
+  courseSet: (course) => dispatch(opportunityActions.courseSet(course)),
 })) (withRouter(Edit))

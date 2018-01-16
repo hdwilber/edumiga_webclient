@@ -20,7 +20,7 @@ const DurationUnitsTypes = [
 ]
 
 const FormOverview = (props) => {
-  const { onInputChange, prerequisites, data } = props
+  const { onInputChange, data } = props
 
   function handleCheckboxChange(e, props) {
     onInputChange(e, {
@@ -63,11 +63,14 @@ const FormOverview = (props) => {
           options={props.courses}
         />
       </Form.Field>
-      <Form.Field>
-        <Checkbox label="Is mandatory?" checked={data.mandatory} name="mandatory"
+      <Form.Group>
+        <Form.Checkbox label="Is mandatory?" checked={data.mandatory} name="mandatory"
           onChange={handleCheckboxChange}
         />
-      </Form.Field>
+        <Form.Checkbox label="Keep it as draft?" checked={data.draft} name="draft"
+          onChange={handleCheckboxChange}
+        />
+      </Form.Group>
     </Form>
   )
 }

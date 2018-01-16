@@ -57,6 +57,10 @@ export const COURSE_UPDATE = {
   FULFILLED: 'OPP_COURSE_UPDATE_FULFILLED',
 }
 
+export const COURSE_SET = {
+  START: 'OPP_COURSE_SET'
+}
+
 export const COURSE_ADD_PRE = {
   START: 'OPP_COURSE_ADD_PRE',
   REJECTED: 'OPP_COURSE_ADD_PRE_REJECTED',
@@ -168,24 +172,32 @@ export function courseUpdate(data) {
   }
 }
 
-export function courseAddPre(course, idpre) {
-  return (dispatch, getState) => {
-    const { account, opp} = getState()
-    if (opp && opp.current) {
-      oService.setSession(account.session)
-      const request = cService.addPrerequisite(course.id, idpre)
-      return handleRequest(dispatch, getState, COURSE_ADD_PRE.START, request)
-    }
+//export function courseAddPre(course, idpre) {
+  //return (dispatch, getState) => {
+    //const { account, opp} = getState()
+    //if (opp && opp.current) {
+      //oService.setSession(account.session)
+      //const request = cService.addPrerequisite(course.id, idpre)
+      //return handleRequest(dispatch, getState, COURSE_ADD_PRE.START, request)
+    //}
+  //}
+//}
+
+//export function courseDelPre(course, idpre) {
+  //return (dispatch, getState) => {
+    //const { account, opp} = getState()
+    //if (opp && opp.current) {
+      //oService.setSession(account.session)
+      //const request = cService.delPrerequisite(course.id, idpre)
+      //return handleRequest(dispatch, getState, COURSE_DEL_PRE.START, request)
+    //}
+  //}
+//}
+
+export function courseSet(course) {
+  return {
+    type: COURSE_SET.START,
+    payload: course,
   }
 }
 
-export function courseDelPre(course, idpre) {
-  return (dispatch, getState) => {
-    const { account, opp} = getState()
-    if (opp && opp.current) {
-      oService.setSession(account.session)
-      const request = cService.delPrerequisite(course.id, idpre)
-      return handleRequest(dispatch, getState, COURSE_DEL_PRE.START, request)
-    }
-  }
-}

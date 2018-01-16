@@ -13,14 +13,14 @@ class CourseCreate extends React.Component {
   constructor(props) {
     super(props)
     if (props.course) {
-      const { id, code, name, description, duration, durationUnit, mandatory, prerequisites } = props.course
+      const { id, code, name, draft, description, duration, durationUnit, mandatory, prerequisites } = props.course
 
       this.state = {
-        id, code, name, description, duration, durationUnit, mandatory, prerequisites: prerequisites || [],
+        id, code, name, description, draft, duration, durationUnit, mandatory, prerequisites: prerequisites || [],
       }
     } else {
       this.state = {
-        id: null, code: '', name:'', description:'', duration:0, durationUnit:'', 
+        id: null, code: '', draft: '', name:'', description:'', duration:0, durationUnit:'', 
         mandatory: false, prerequisites: [],
       } 
     } 
@@ -33,9 +33,9 @@ class CourseCreate extends React.Component {
 
   handleClickSave() {
     const { onAction } = this.props
-    const { id, code, name, description, duration, durationUnit, mandatory, prerequisites } = this.state
+    const { id, code, draft, name, description, duration, durationUnit, mandatory, prerequisites } = this.state
     onAction(ActionTypes.SAVE, {
-      id, name, code, description, duration, durationUnit, mandatory,
+      id, name, code, draft, prerequisites, description, duration, durationUnit, mandatory,
     })
   }
 
@@ -46,23 +46,24 @@ class CourseCreate extends React.Component {
 
   serializeData() {
     const { course } = this.props
-    const { id, code, name, description, duration, durationUnit, mandatory, prerequisites } = this.state
+    const { id, code, draft, name, description, duration, durationUnit, mandatory, prerequisites } = this.state
 
     return {
       id,
-      name, code, description, duration, durationUnit, mandatory, prerequisites,
+      name, code, draft, description, duration, durationUnit, mandatory, prerequisites,
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.course) {
-      const { id, code, name, description, duration, durationUnit, mandatory } = nextProps.course
+      const { id, code, draft, name, description, 
+        duration, durationUnit, mandatory, prerequisites } = nextProps.course
       this.setState({
-        id, code, name, description, duration, durationUnit, mandatory, prerequisites: [],
+        id, code, name, draft, description, duration, durationUnit, mandatory, prerequisites: prerequisites ? prerequisites.map(p => p.id) : [],
       })
     } else if (nextProps.course === null)  {
       this.setState({
-        id: null, code: '', name:'', description:'', duration:0, durationUnit:'', 
+        id: null, code: '', draft: '', name:'', description:'', duration:0, durationUnit:'', 
         mandatory: false, prerequisites: [],
       })
     } 
@@ -74,41 +75,47 @@ class CourseCreate extends React.Component {
     })
   }
 
-  convertCourseList(courses) {
+  convertCourseList(pre, course, courses) {
     return courses.map((c,idx) => {
       return {
         value: c.id,
         text: c.name,
         key: idx,
+        disabled: course.id === c.id,
+        active: (pre.indexOf(c.id) > -1),
       }
     })
   }
 
   render() {
-    const { onLogoUpload, onCancel, visible, courses } = this.props
-    const data = this.serializeData()
-    const courseList =this.convertCourseList(courses)
-    return (
-      <Modal size="small" open={visible} >
-        <Modal.Header>Enter a new Course</Modal.Header>
-        <Modal.Content image>
-          <Grid container>
-            <Grid.Column width={16}>
-              <Segment>
-                <FormOverview onInputChange={this.handleInputChange}
-                  data={data}
-                  courses={courseList}
-                />
-                <Button.Group>
-                  <Button default onClick={this.handleClickSave} >Save</Button>
-                  <Button secondary onClick={this.handleClickCancel} >Cancel</Button>
-                </Button.Group>
-              </Segment>
-            </Grid.Column>
-          </Grid>
-        </Modal.Content>
-      </Modal>
-    )
+    const { onLogoUpload, onCancel, visible, courses, course } = this.props
+    if (course) {
+      const data = this.serializeData()
+      const courseList =this.convertCourseList(this.state.prerequisites, course, courses)
+      return (
+        <Modal size="small" open={visible} >
+          <Modal.Header>Enter a new Course</Modal.Header>
+          <Modal.Content image>
+            <Grid container>
+              <Grid.Column width={16}>
+                <Segment>
+                  <FormOverview onInputChange={this.handleInputChange}
+                    data={data}
+                    courses={courseList}
+                  />
+                  <Button.Group>
+                    <Button default onClick={this.handleClickSave} >Save</Button>
+                    <Button secondary onClick={this.handleClickCancel} >Cancel</Button>
+                  </Button.Group>
+                </Segment>
+              </Grid.Column>
+            </Grid>
+          </Modal.Content>
+        </Modal>
+      )
+    } else {
+      return null
+    } 
   }
 }
 

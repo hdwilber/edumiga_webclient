@@ -46,7 +46,7 @@ export default function opportunityReducer(state = initialState, action) {
       return {
         ...state,
         current: opportunity,
-        courses: opportunity.courses,
+        courses: opportunity.courses.filter(c => !c.draft),
         list: null,
         loading: false,
       }
@@ -106,7 +106,6 @@ export default function opportunityReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        courses: state.courses.concat([action.payload]),
         currentCourse: action.payload,
       }
     }
@@ -152,10 +151,27 @@ export default function opportunityReducer(state = initialState, action) {
 
     case actions.COURSE_UPDATE.FULFILLED: {
       const {course} = action.payload
+      if (course.draft) {
+        return {
+          ...state,
+          loading: false,
+          currentCourse: null,
+          courses: state.courses.filter(c => c.id !== course.id ),
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+          //courses: state.courses.map(c => c.id !== course.id ? c : {...c, ...course}),
+          courses: state.courses.concat([course]),
+          currentCourse: null,
+        }
+      }
+    }
+
+    case actions.COURSE_SET.START: {
       return {
         ...state,
-        loading: false,
-        courses: state.courses.map(c => c.id !== course.id ? c : {...c, ...course}),
         currentCourse: action.payload,
       }
     }

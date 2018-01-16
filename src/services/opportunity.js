@@ -11,7 +11,23 @@ class Opportunity extends Service {
 
   get(id, filter={}) {
     const defaultFilter = {
-      include: ['account', 'logo', 'media', 'courses'],
+      include: [
+        {
+          relation: 'account'
+        },
+        {
+          relation: 'logo',
+        },
+        {
+          relation: 'media',
+        },
+        {
+          relation: 'courses',
+          scope: {
+            include: ['prerequisites']
+          }
+        }
+      ],
       ...filter,
     }
     return this.createRequest('GET',`${id}/?filter=${JSON.stringify(defaultFilter)}`)
