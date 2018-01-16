@@ -19,34 +19,6 @@ const DurationUnitsTypes = [
   },
 ]
 
-
-const Prerequisites = [
-  {
-    key: 1,
-    id: 'my1',
-    text: 'Material requisito1',
-    value: 'my1',
-  },
-  {
-    key: 2,
-    id: 'my2',
-    text: 'Material requisito2',
-    value: 'my2',
-  },
-  {
-    key: 3,
-    id: 'my3',
-    text: 'Material requisito3',
-    value: 'my3',
-  },
-  {
-    key: 4,
-    id: 'my4',
-    text: 'Material requisito4',
-    value: 'my4',
-  }
-]
-
 const FormOverview = (props) => {
   const { onInputChange, prerequisites, data } = props
 

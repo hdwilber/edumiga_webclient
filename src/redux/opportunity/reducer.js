@@ -6,6 +6,7 @@ const initialState = {
   loading: false,
   error: null,
   courses: [],
+  currentCourse: null,
 }
 
 export default function opportunityReducer(state = initialState, action) {
@@ -105,7 +106,8 @@ export default function opportunityReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        courses: state.courses.concat([action.payload])
+        courses: state.courses.concat([action.payload]),
+        currentCourse: action.payload,
       }
     }
 
@@ -154,6 +156,7 @@ export default function opportunityReducer(state = initialState, action) {
         ...state,
         loading: false,
         courses: state.courses.map(c => c.id !== course.id ? c : {...c, ...course}),
+        currentCourse: action.payload,
       }
     }
   }

@@ -83,7 +83,12 @@ class Edit extends React.Component {
           fakeUrl: '',
         },
       })
+    } else if (opp && opp.currentCourse) {
+      this.setState({
+        currentCourse: opp.currentCourse,
+      })
     }
+
   }
 
   serializeData() {
@@ -168,6 +173,9 @@ class Edit extends React.Component {
   }
 
   handleCourseCreateStart() {
+    const { courseAdd } = this.props
+    courseAdd({})
+
     this.setState({
       showCourseCreateForm: true,
       currentCourse: null,
@@ -176,14 +184,9 @@ class Edit extends React.Component {
 
   handleCourseCreateAction(type, data) {
     if (type === 1) {
-      const { courseAdd, courseUpdate } = this.props
-      console.log(data)
-      if (data.id) {
-        courseUpdate(data)
-      } else {
-        courseAdd(data)
-      }
-    } 
+      const { courseUpdate } = this.props
+      courseUpdate(data)
+    }
     this.setState({
       showCourseCreateForm: false,
       currentCourse: null,
@@ -191,7 +194,6 @@ class Edit extends React.Component {
   }
 
   handleCourseListClick(course) {
-    console.log(course)
     if (course) {
       this.setState({currentCourse: course,
         showCourseCreateForm: true,
@@ -280,4 +282,6 @@ export default connect((state) => ({
   courseAdd: (data) => dispatch(opportunityActions.courseAdd(data)),
   courseDel: (id) => dispatch(opportunityActions.courseDel(id)),
   courseUpdate: (data) => dispatch(opportunityActions.courseUpdate(data)),
+  courseAddPre: (course, id) => dispatch(opportunityActions.courseAddPre(course, id)),
+  courseDelPre: (course, id) => dispatch(opportunityActions.courseDelPre(course, id)),
 })) (withRouter(Edit))

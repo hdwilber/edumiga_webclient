@@ -57,6 +57,18 @@ export const COURSE_UPDATE = {
   FULFILLED: 'OPP_COURSE_UPDATE_FULFILLED',
 }
 
+export const COURSE_ADD_PRE = {
+  START: 'OPP_COURSE_ADD_PRE',
+  REJECTED: 'OPP_COURSE_ADD_PRE_REJECTED',
+  FULFILLED: 'OPP_COURSE_ADD_PRE_FULFILLED',
+}
+
+export const COURSE_DEL_PRE = {
+  START: 'OPP_COURSE_DEL_PRE',
+  REJECTED: 'OPP_COURSE_DEL_PRE_REJECTED',
+  FULFILLED: 'OPP_COURSE_DEL_PRE_FULFILLED',
+}
+
 export function create(data) {
   return (dispatch, getState) => {
     const { account } = getState()
@@ -152,6 +164,28 @@ export function courseUpdate(data) {
             course: data,
           }
         })
+    }
+  }
+}
+
+export function courseAddPre(course, idpre) {
+  return (dispatch, getState) => {
+    const { account, opp} = getState()
+    if (opp && opp.current) {
+      oService.setSession(account.session)
+      const request = cService.addPrerequisite(course.id, idpre)
+      return handleRequest(dispatch, getState, COURSE_ADD_PRE.START, request)
+    }
+  }
+}
+
+export function courseDelPre(course, idpre) {
+  return (dispatch, getState) => {
+    const { account, opp} = getState()
+    if (opp && opp.current) {
+      oService.setSession(account.session)
+      const request = cService.delPrerequisite(course.id, idpre)
+      return handleRequest(dispatch, getState, COURSE_DEL_PRE.START, request)
     }
   }
 }
