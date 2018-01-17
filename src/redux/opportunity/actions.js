@@ -162,37 +162,10 @@ export function courseUpdate(data) {
     if (opp && opp.current) {
       cService.setSession(account.session)
       const request = cService.update(data)
-      return handleRequest(dispatch, getState, COURSE_UPDATE.START, request,
-        (data) => {
-          return {
-            course: data,
-          }
-        })
+      return handleRequest(dispatch, getState, COURSE_UPDATE.START, request)
     }
   }
 }
-
-//export function courseAddPre(course, idpre) {
-  //return (dispatch, getState) => {
-    //const { account, opp} = getState()
-    //if (opp && opp.current) {
-      //oService.setSession(account.session)
-      //const request = cService.addPrerequisite(course.id, idpre)
-      //return handleRequest(dispatch, getState, COURSE_ADD_PRE.START, request)
-    //}
-  //}
-//}
-
-//export function courseDelPre(course, idpre) {
-  //return (dispatch, getState) => {
-    //const { account, opp} = getState()
-    //if (opp && opp.current) {
-      //oService.setSession(account.session)
-      //const request = cService.delPrerequisite(course.id, idpre)
-      //return handleRequest(dispatch, getState, COURSE_DEL_PRE.START, request)
-    //}
-  //}
-//}
 
 export function courseSet(course) {
   return {

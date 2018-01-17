@@ -60,7 +60,7 @@ class CourseCreate extends React.Component {
         duration, durationUnit, mandatory, prerequisites } = nextProps.course
       this.setState({
         id, code, name, draft, description, duration, durationUnit, mandatory, prerequisites: prerequisites ? prerequisites.map(p => p.id) : [],
-      })
+      }, () => console.log(this.state))
     } else if (nextProps.course === null)  {
       this.setState({
         id: null, code: '', draft: '', name:'', description:'', duration:0, durationUnit:'', 

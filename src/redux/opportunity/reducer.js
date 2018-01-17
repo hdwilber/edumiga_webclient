@@ -150,7 +150,8 @@ export default function opportunityReducer(state = initialState, action) {
     }
 
     case actions.COURSE_UPDATE.FULFILLED: {
-      const {course} = action.payload
+      const course = action.payload
+
       if (course.draft) {
         return {
           ...state,
@@ -162,8 +163,7 @@ export default function opportunityReducer(state = initialState, action) {
         return {
           ...state,
           loading: false,
-          //courses: state.courses.map(c => c.id !== course.id ? c : {...c, ...course}),
-          courses: state.courses.concat([course]),
+          courses: state.courses.map(c => c.id !== course.id ? c: course ),
           currentCourse: null,
         }
       }
