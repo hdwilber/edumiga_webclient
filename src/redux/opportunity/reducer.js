@@ -160,10 +160,12 @@ export default function opportunityReducer(state = initialState, action) {
           courses: state.courses.filter(c => c.id !== course.id ),
         }
       } else {
+        const target = state.courses.find(c => c.id === course.id)
         return {
           ...state,
           loading: false,
-          courses: state.courses.map(c => c.id !== course.id ? c: course ),
+          courses: target ? state.courses.map(c => c.id !== course.id ? c: course )
+            : state.courses.concat([course]),
           currentCourse: null,
         }
       }
