@@ -78,8 +78,6 @@ class OppForm extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
-
     if (nextProps.opportunity) {
       const { id, name, type, regime, degree, description, draft, duration, logo } = nextProps.opportunity
       this.setState({
@@ -113,43 +111,48 @@ class OppForm extends React.Component {
   }
 
   render() {
-    const { onLogoUpload, onCancel, visible } = this.props
+    const { constants, onLogoUpload, onCancel, visible } = this.props
     const { logo } = this.state
 
     const data = this.serializeData()
-    return (
-      <Modal size="large" open={visible} >
-        <Modal.Header>Enter a new Opportunity</Modal.Header>
-        <Modal.Content image>
-          <Grid container>
-            <Grid.Column width={5}>
-              <Segment>
-                <Header size="normal">Logo Profile</Header>
-                <SimpleMediaUploader
-                  name="logo"
-                  onChange={this.handleInputChange}
-                  onUpload={onLogoUpload}
-                  disabled={false}
-                  url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
-                />
-              </Segment>
-            </Grid.Column>
-            <Grid.Column width={11}>
-              <Segment>
-                <FormOverview onInputChange={this.handleInputChange}
-                  data={data}
-                />
-                <Button.Group>
-                  <Button default onClick={this.handleClickSave} >Save</Button>
-                  <Button secondary onClick={onCancel} >Cancel</Button>
-                </Button.Group>
-              </Segment>
-            </Grid.Column>
-          </Grid>
+    if (data && constants) {
+      return (
+        <Modal size="large" open={visible} >
+          <Modal.Header>Enter a new Opportunity</Modal.Header>
+          <Modal.Content image>
+            <Grid container>
+              <Grid.Column width={5}>
+                <Segment>
+                  <Header size="medium">Logo Profile</Header>
+                  <SimpleMediaUploader
+                    name="logo"
+                    onChange={this.handleInputChange}
+                    onUpload={onLogoUpload}
+                    disabled={false}
+                    url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
+                  />
+                </Segment>
+              </Grid.Column>
+              <Grid.Column width={11}>
+                <Segment>
+                  <FormOverview onInputChange={this.handleInputChange}
+                    data={data}
+                    constants={constants}
+                  />
+                  <Button.Group>
+                    <Button default onClick={this.handleClickSave} >Save</Button>
+                    <Button secondary onClick={onCancel} >Cancel</Button>
+                  </Button.Group>
+                </Segment>
+              </Grid.Column>
+            </Grid>
 
-        </Modal.Content>
-      </Modal>
-    )
+          </Modal.Content>
+        </Modal>
+      )
+    } else {
+      return <Header>Loading...</Header>
+    }
   }
 }
 

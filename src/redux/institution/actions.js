@@ -1,6 +1,12 @@
 import { InstitutionService, OpportunityService } from '../../services'
 import { handleRequest, handleRequestEmpty } from '../utils'
 
+export const GET_TYPES = {
+  START: 'INSTITUTION_GET_TYPES',
+  REJECTED: 'INSTITUTION_GET_TYPES_REJECTED',
+  FULFILLED: 'INSTITUTION_GET_TYPES_FULFILLED',
+}
+
 export const CREATE = {
   START: 'INSTITUTION_CREATE',
   REJECTED: 'INSTITUTION_CREATE_REJECTED',
@@ -50,6 +56,14 @@ export const REM_OPPORTUNITY = {
 
 const iService = new InstitutionService()
 const oService = new OpportunityService()
+
+export function getTypes() {
+  return (dispatch, getState) => {
+    const request = iService.getTypes()
+    return handleRequest(dispatch, getState, GET_TYPES.START, request)
+  }
+}
+
 
 export function create(data) {
   return (dispatch, getState) => {

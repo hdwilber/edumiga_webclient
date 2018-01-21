@@ -58,6 +58,10 @@ class Opportunity extends Service {
   delCourse(id, cid) {
     return this.createRequest('DELETE', `${id}/courses/${cid}`)
   }
+
+  getTypes(type) {
+    return this.createRequest('GET', `types`, null, false)
+  }
 }
 
 export default Opportunity 

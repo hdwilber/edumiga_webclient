@@ -4,6 +4,12 @@ import { handleRequest, handleRequestEmpty } from '../utils'
 const oService = new OpportunityService()
 const cService = new CourseService()
 
+export const GET_TYPES = {
+  START: 'OPPORTUNITY_GET_TYPES',
+  REJECTED: 'OPPORTUNITY_GET_TYPES_REJECTED',
+  FULFILLED: 'OPPORTUNITY_GET_TYPES_FULFILLED',
+}
+
 export const CREATE = {
   START: 'OPPORTUNITY_CREATE',
   REJECTED: 'OPPORTUNITY_CREATE_REJECTED',
@@ -71,6 +77,13 @@ export const COURSE_DEL_PRE = {
   START: 'OPP_COURSE_DEL_PRE',
   REJECTED: 'OPP_COURSE_DEL_PRE_REJECTED',
   FULFILLED: 'OPP_COURSE_DEL_PRE_FULFILLED',
+}
+
+export function getTypes(type) {
+  return (dispatch, getState) => {
+    const request = oService.getTypes()
+    return handleRequest(dispatch, getState, GET_TYPES.START, request)
+  }
 }
 
 export function create(data) {
