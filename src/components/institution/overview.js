@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
+import { Header, } from 'semantic-ui-react'
 
 const TypesOptions = [
   {

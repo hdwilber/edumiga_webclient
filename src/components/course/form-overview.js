@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
+import { Select, TextArea, Form } from 'semantic-ui-react'
 
 const DurationUnitsTypes = [
   {

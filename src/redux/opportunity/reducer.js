@@ -7,10 +7,34 @@ const initialState = {
   error: null,
   courses: [],
   currentCourse: null,
+  constants: null,
 }
 
 export default function opportunityReducer(state = initialState, action) {
   switch (action.type) {
+    case actions.GET_TYPES.START: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case actions.GET_TYPES.FULFILLED: {
+      const data = action.payload
+      return {
+        ...state,
+        loading: false,
+        constants: data,
+      }
+    }
+
+    case actions.GET_TYPES.REJECTED: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
     case actions.CREATE.START: {
       return {
         ...state,

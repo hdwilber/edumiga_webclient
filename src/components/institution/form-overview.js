@@ -1,55 +1,39 @@
 import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
 
-const TypesOptions = [
-  {
-    key: 1,
-    text: 'Public',
-    value: 'public',
-  },
-  {
-    key: 2,
-    text: 'Private',
-    value: 'private',
-  },
-  {
-    key: 3,
-    text: 'Mixed',
-    value: 'mixed',
-  },
-  {
-    key: 4,
-    text: 'Other',
-    value: 'other',
-  },
-]
+function formatConstants(constants) {
+  const consts = {}
+  for(const k in constants) {
+    consts[k] = constants[k].map((v, idx) => {
+      return {
+        ...v,
+        key: idx,
+        text: v.name,
+        value: v.id,
+      }
+    })
+  }
+  return consts
+}
 
-const LevelsOptions = [
-  {
-    key: 1,
-    text: 'Elementary',
-    value: 'elementary',
-  },
-  {
-    key: 2,
-    text: 'High School',
-    value: 'highschool',
-  },
-  {
-    key: 3,
-    text: 'Bachelor',
-    value: 'bachelor',
-  },
-  {
-    key: 4,
-    text: 'Master of Science',
-    value: 'master',
-  },
-]
+function formatArray(array) {
+  return array.map((a,idx) => {
+    return {
+      ...a,
+      key: idx,
+      text: a.name,
+      value: a.id,
+    }
+  })
+}
 
 const FormOverview = (props) => {
-  const { onInputChange, onCheckboxChange, data} = props
-  if (data) {
+  const { constants, onInputChange, onCheckboxChange, data} = props
+
+  if (data && constants) {
+    const { types, levels, countries } = formatConstants(constants)
+    const selCountry = countries.find(a => a.value === data.country)
+    const states = selCountry ? formatArray(selCountry.states) : []
     return (
       <Form>
         <Form.Input value={data.name} name="name" onChange={onInputChange} 
@@ -57,12 +41,22 @@ const FormOverview = (props) => {
         />
 
         <Form.Group width="equals">
-          <Form.Input value={data.country} name="country" onChange={onInputChange} 
-            label="Country" type="text"
-          />
-          <Form.Input value={data.state} name="state" onChange={onInputChange} 
-            label="State" type="text"
-          />
+          <Form.Field>
+            <label>Country</label>
+            <Select value={data.country} name="country" 
+              onChange={onInputChange} 
+              options={countries}
+            />
+          </Form.Field>
+
+          <Form.Field>
+            <label>State</label>
+            <Select value={data.state} name="state" 
+              onChange={onInputChange} 
+              options={states}
+            />
+          </Form.Field>
+
           <Form.Input value={data.county} name="county" onChange={onInputChange} 
             label="County" type="text"
           />
@@ -81,16 +75,16 @@ const FormOverview = (props) => {
           <label>Type</label>
           <Select value={data.type} name="type" 
             onChange={onInputChange} 
-            options={TypesOptions}
+            options={types}
           />
         </Form.Field>
         
         <Form.Group>
           <label>Levels</label>
-          {LevelsOptions.map (l => {
+          {levels.map ((l, idx) => {
             return (
               <Form.Field>
-                <Checkbox inline label={l.text} value={l.value} name="levels" onChange={onCheckboxChange} checked={!!data.levels.find(v => v === l.value)}/>
+                <Checkbox key={idx} label={l.text} value={l.value} name="levels" onChange={onCheckboxChange} checked={!!data.levels.find(v => v === l.value)}/>
               </Form.Field>
             )
           })}

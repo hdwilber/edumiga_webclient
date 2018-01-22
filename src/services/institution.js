@@ -60,6 +60,10 @@ class Institution extends Service {
   remOpportunity(id, oid) {
     return this.createRequest('DELETE', `${id}/opportunities/${oid}`)
   }
+
+  getTypes() {
+    return this.createRequest('GET', `/types`, null, false)
+  }
 }
 
 export default Institution
