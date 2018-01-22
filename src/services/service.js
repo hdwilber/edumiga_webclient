@@ -1,4 +1,4 @@
-const { REACT_APP_API_BASEURL } = process.env
+const { REACT_APP_API_SERVER_NAME, REACT_APP_API_BASEURL } = process.env
 
 class Service {
   constructor(base) {
@@ -34,7 +34,7 @@ class Service {
   } 
 
   createUploadRequest(path, files, useAuth = true) {
-    const url = (path !== '') ? `/${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
+    const url = (path !== '') ? `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
 
     const formData = new FormData()
     console.log('createupadrequest lgoo')
@@ -50,7 +50,7 @@ class Service {
   }
 
   createRequest(method, path, rbody, useAuth = true) {
-    const url = (path !== '') ? `/${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
+    const url = (path !== '') ? `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
     if (method === 'POST' || method === 'PATCH') {
       return fetch(url,
         {
