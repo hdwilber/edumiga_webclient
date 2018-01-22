@@ -45,7 +45,7 @@ class Edit extends React.Component {
       regime: '',
       draft: '',
       type: '',
-      degree: '',
+      degrees: [], 
 
       logo: {
         file: null,
@@ -61,6 +61,7 @@ class Edit extends React.Component {
 
     if (opportunityId) {
       oppFind(opportunityId)
+      this.props.oppGetTypes()
     } 
   }
 
@@ -72,7 +73,7 @@ class Edit extends React.Component {
         name: i.name,
         description: i.description,
         draft: i.draft,
-        degree: i.degree,
+        degrees: i.degrees,
         duration: i.duration,
         regime: i.regime,
         type: i.type,
@@ -92,7 +93,7 @@ class Edit extends React.Component {
       name: this.state.name,
       description: this.state.description,
       draft: this.state.draft,
-      degree: this.state.degree,
+      degrees: this.state.degrees,
       regime: this.state.regime,
       type: this.state.type,
       duration: this.state.duration,
@@ -115,8 +116,6 @@ class Edit extends React.Component {
   }
 
   handleCheckboxChange(e, props) {
-    console.log(e)
-    console.log(props)
     if (props.name === 'levels'){
       if (props.checked) {
         this.setState({
@@ -135,7 +134,6 @@ class Edit extends React.Component {
   }
 
   handleCenterChange(e) {
-    console.log(e)
     this.setState({
       location: e.target.getCenter(),
       zoom: e.target.getZoom(),
@@ -143,8 +141,6 @@ class Edit extends React.Component {
   }
 
   handleLocationFound(e) {
-    console.log('My location')
-    console.log(e)
     if (!this.state.location.lat) {
       this.setState({
         location: e.latlng,
@@ -154,7 +150,6 @@ class Edit extends React.Component {
 
   handleClickUploadLogo() {
     const { opp, oppUploadLogo } = this.props
-    console.log(this.state.logo)
     if (opp && opp.current)
       oppUploadLogo(opp.current.id, this.state.logo.file)
   }
@@ -212,7 +207,7 @@ class Edit extends React.Component {
 
   render() {
     const { opp } = this.props
-    if (opp && opp.current) {
+    if (opp && opp.current && opp.constants) {
       const data = this.serializeData()
       return (
         <Grid container>
@@ -221,7 +216,7 @@ class Edit extends React.Component {
           </Grid.Column>
           <Grid.Column width={6}>
             <Segment>
-              <Header size="normal">Logo Profile</Header>
+              <Header size="medium">Logo Profile</Header>
               <SimpleMediaUploader
                 name="logo"
                 onChange={this.handleInputChange}
@@ -234,15 +229,16 @@ class Edit extends React.Component {
 
           <Grid.Column width={10}>
             <Segment>
-              <Header size="normal">Overview</Header>
+              <Header size="medium">Overview</Header>
               <OppForm onInputChange={this.handleInputChange}
                 onCheckboxChange={this.handleCheckboxChange}
                 data={data}
+                constants={opp.constants}
               />
             </Segment>
 
             <Segment>
-              <Header size="normal">Courses<Button default onClick={this.handleCourseCreateStart}>Add</Button></Header>
+              <Header size="medium">Courses<Button default onClick={this.handleCourseCreateStart}>Add</Button></Header>
               <CourseList items={opp.courses} onClickItem={this.handleCourseListClick}
                 onClickAction={this.handleCourseListAction}
               />
@@ -274,10 +270,9 @@ export default connect((state) => ({
   oppUploadLogo: (id, file) => dispatch(opportunityActions.uploadLogo(id, file)),
   oppFind: (id) => dispatch(opportunityActions.findById(id)),
   oppUpdate: (data) => dispatch(opportunityActions.update(data)),
+  oppGetTypes: () => dispatch(opportunityActions.getTypes()),
   courseAdd: (data) => dispatch(opportunityActions.courseAdd(data)),
   courseDel: (id) => dispatch(opportunityActions.courseDel(id)),
   courseUpdate: (data) => dispatch(opportunityActions.courseUpdate(data)),
-  //courseAddPre: (course, id) => dispatch(opportunityActions.courseAddPre(course, id)),
-  //courseDelPre: (course, id) => dispatch(opportunityActions.courseDelPre(course, id)),
   courseSet: (course) => dispatch(opportunityActions.courseSet(course)),
 })) (withRouter(Edit))

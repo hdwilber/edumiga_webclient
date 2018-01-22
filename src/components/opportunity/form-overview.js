@@ -1,94 +1,19 @@
 import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
 
-const RegimesTypes = [
-  {
-    key: 1,
-    text: 'Yearly',
-    value: 'yearly',
-  },
-  {
-    key: 2,
-    text: 'Monthly',
-    value: 'monthly',
-  },
-  {
-    key: 3,
-    text: 'Bimonthly',
-    value: 'bimonthly',
-  },
-  {
-    key: 4,
-    text: 'Quarterly',
-    value: 'quarterly',
-  },
-  {
-    key: 5,
-    text: 'Triannual',
-    value: 'triannual',
-  },
-  {
-    key: 6,
-    text: 'Semiannual',
-    value: 'semiannual',
-  },
-  {
-    key: 7,
-    text: 'Mixed',
-    value: 'mixed',
-  },
-]
-
-const DegreesTypes = [
-  {
-    key: 1,
-    text: 'Technician',
-    value: 'tech',
-  },
-  {
-    key: 2,
-    text: 'Bachelor',
-    value: 'bachelor',
-  },
-  {
-    key: 3,
-    text: 'Master',
-    value: 'master',
-  },
-  {
-    key: 4,
-    text: 'Doctor',
-    value: 'doctor',
-  },
-  {
-    key: 5,
-    text: 'PostDoctor',
-    value: 'postdoc',
-  },
-  {
-    key: 6,
-    text: 'Specialization',
-    value: 'special',
-  },
-]
-
-const Types = [
-  {
-    key: 1,
-    text: 'Remote',
-    value: 'remote',
-  },
-  {
-    key: 2,
-    text: 'Mixed',
-    value: 'mixed',
-  },
-  {
-    key: 3,
-    text: 'Presential',
-    value: 'presential'
+function formatConstants(constants) {
+  const consts = {}
+  for(const k in constants) {
+    consts[k] = constants[k].map((v, idx) => {
+      return {
+        key: idx,
+        text: v.name,
+        value: v.id,
+      }
+    })
   }
-]
+  return consts
+}
 
 class FormOverview extends React.Component {
   constructor(props) {
@@ -106,60 +31,64 @@ class FormOverview extends React.Component {
   }
 
   render() {
-    const { onInputChange, onCheckboxChange, data } = this.props
-    return (
-      <Form>
-        <Form.Group widths="equal">
-          <Form.Input value={data.name} name="name" onChange={onInputChange} 
-            label="Name" type="text"
-          />
-          <Form.Field>
-            <label>Degree</label>
-            <Select value={data.degree} name="degree" 
-              onChange={onInputChange} 
-              options={DegreesTypes}
+    const { constants, onInputChange, onCheckboxChange, data } = this.props
+    if (data && constants) {
+      const newConst = formatConstants(constants)
+      console.log(newConst)
+      return (
+        <Form>
+          <Form.Group widths="equal">
+            <Form.Input value={data.name} name="name" onChange={onInputChange} 
+              label="Name" type="text"
             />
-          </Form.Field>
-        </Form.Group>
-
-        <Form.Field>
-          <label>Description</label>
-          <TextArea value={data.description} name="description" 
-            onChange={onInputChange} 
-          />
-        </Form.Field>
-        
-
-        <Form.Group widths="equal">
-          <Form.Input value={data.duration} name="duration" onChange={onInputChange} 
-            label="Duration" type="number"
-          />
+            <Form.Field>
+              <label>Degrees</label>
+              <Select value={data.degrees} name="degrees" 
+                onChange={onInputChange} 
+                options={newConst.degrees}
+                multiple
+              />
+            </Form.Field>
+          </Form.Group>
 
           <Form.Field>
-            <label>Type</label>
-            <Select value={data.type} name="type" 
+            <label>Description</label>
+            <TextArea value={data.description} name="description" 
               onChange={onInputChange} 
-              options={Types}
             />
           </Form.Field>
           
+
+          <Form.Group widths="equal">
+            <Form.Input value={data.duration} name="duration" onChange={onInputChange} 
+              label="Duration" type="number"
+            />
+
+            <Form.Field>
+              <label>Type</label>
+              <Select value={data.type} name="type" 
+                onChange={onInputChange} 
+                options={newConst.attendances}
+              />
+            </Form.Field>
+            
+            <Form.Field>
+              <label>Regime</label>
+              <Select value={data.regime} name="regime" 
+                onChange={onInputChange} 
+                options={newConst.regimes}
+              />
+            </Form.Field>
+          </Form.Group>
+            
           <Form.Field>
-            <label>Regime</label>
-            <Select value={data.regime} name="regime" 
-              onChange={onInputChange} 
-              options={RegimesTypes}
+            <Checkbox key={0} label="Keep it as draft?" checked={data.draft} name="draft"
+              onChange={onCheckboxChange}
             />
           </Form.Field>
-        </Form.Group>
-          
-
-        <Form.Field>
-          <Checkbox label="Keep it as draft?" checked={data.draft} name="draft"
-            onChange={onCheckboxChange}
-          />
-        </Form.Field>
-      </Form>
-    )
+        </Form>
+      )
+    }
   }
 }
 

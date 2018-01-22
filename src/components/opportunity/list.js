@@ -27,7 +27,7 @@ const List = (props) => {
               <Table.Cell>{i.name}</Table.Cell>
               <Table.Cell>{i.description}</Table.Cell>
               <Table.Cell>{i.duration}</Table.Cell>
-              <Table.Cell>{i.draft}</Table.Cell>
+              <Table.Cell>{i.draft ? 'Draft': 'Published'}</Table.Cell>
               <Table.Cell>
                 <Button onClick={(e) => {e.stopPropagation(); onClickAction(Actions.EDIT, i)}}>Edit</Button>
                 <Button onClick={(e) => {e.stopPropagation(); onClickAction(Actions.REMOVE, i)}}>Remove</Button>

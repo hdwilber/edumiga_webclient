@@ -7,10 +7,34 @@ const initialState = {
   error: null,
   courses: [],
   currentCourse: null,
+  constants: null,
 }
 
 export default function opportunityReducer(state = initialState, action) {
   switch (action.type) {
+    case actions.GET_TYPES.START: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case actions.GET_TYPES.FULFILLED: {
+      const data = action.payload
+      return {
+        ...state,
+        loading: false,
+        constants: data,
+      }
+    }
+
+    case actions.GET_TYPES.REJECTED: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
     case actions.CREATE.START: {
       return {
         ...state,
@@ -160,10 +184,12 @@ export default function opportunityReducer(state = initialState, action) {
           courses: state.courses.filter(c => c.id !== course.id ),
         }
       } else {
+        const target = state.courses.find(c => c.id === course.id)
         return {
           ...state,
           loading: false,
-          courses: state.courses.map(c => c.id !== course.id ? c: course ),
+          courses: target ? state.courses.map(c => c.id !== course.id ? c: course )
+            : state.courses.concat([course]),
           currentCourse: null,
         }
       }

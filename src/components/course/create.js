@@ -1,9 +1,6 @@
 import React from 'react'
-import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
-import SimpleMediaUploader from '../../components/media/image-uploader'
+import { Grid, Segment, Button, Modal } from 'semantic-ui-react'
 import FormOverview from './form-overview'
-
-import { buildImageUrl } from '../../redux/utils'
 
 export const ActionTypes = {
   SAVE: 1,
@@ -45,7 +42,6 @@ class CourseCreate extends React.Component {
   }
 
   serializeData() {
-    const { course } = this.props
     const { id, code, draft, name, description, duration, durationUnit, mandatory, prerequisites } = this.state
 
     return {
@@ -60,7 +56,7 @@ class CourseCreate extends React.Component {
         duration, durationUnit, mandatory, prerequisites } = nextProps.course
       this.setState({
         id, code, name, draft, description, duration, durationUnit, mandatory, prerequisites: prerequisites ? prerequisites.map(p => p.id) : [],
-      }, () => console.log(this.state))
+      })
     } else if (nextProps.course === null)  {
       this.setState({
         id: null, code: '', draft: '', name:'', description:'', duration:0, durationUnit:'', 
@@ -88,7 +84,7 @@ class CourseCreate extends React.Component {
   }
 
   render() {
-    const { onLogoUpload, onCancel, visible, courses, course } = this.props
+    const { visible, courses, course } = this.props
     if (course) {
       const data = this.serializeData()
       const courseList =this.convertCourseList(this.state.prerequisites, course, courses)

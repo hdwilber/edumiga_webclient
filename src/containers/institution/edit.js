@@ -13,6 +13,7 @@ import SimpleMediaUploader from '../../components/media/image-uploader'
 import { buildImageUrl } from '../../redux/utils'
 
 import * as institutionActions from '../../redux/institution/actions'
+import * as opportunityActions from '../../redux/opportunity/actions'
 import { uploadLogo } from '../../redux/opportunity/actions'
 
 import { Actions as OppListActions } from '../../components/opportunity/list'
@@ -77,11 +78,12 @@ class Create extends React.Component {
       const { institutionCreate } = this.props
       institutionCreate({})
     }
+    this.props.institutionGetTypes()
+    this.props.opportunityGetTypes()
   }
 
   componentWillReceiveProps(nextProps) {
     const { institution } = nextProps
-    console.log(institution)
     if (institution && institution.current) {
       const i = institution.current
       this.setState({
@@ -159,14 +161,12 @@ class Create extends React.Component {
 
   handleClickUploadLogo() {
     const { institution, institutionUploadLogo } = this.props
-    console.log(this.state.logo)
     if (institution && institution.current)
       institutionUploadLogo(institution.current.id, this.state.logo.file)
   }
 
   handleOpportunitySave(data) {
     const { institutionAddOpp } = this.props
-    console.log(data)
     institutionAddOpp(this.state.opportunity, data)
     this.setState({
       showOpportunityForm: false,
@@ -206,7 +206,7 @@ class Create extends React.Component {
   render() {
     const { institution } = this.props
     const { logo } = this.state
-    if (institution && institution.current) {
+    if (institution && institution.current && institution.constants) {
       const data = this.serializeData()
       return (
         <Grid container>
@@ -215,7 +215,7 @@ class Create extends React.Component {
           </Grid.Column>
           <Grid.Column width={6}>
             <Segment>
-              <Header size="normal">Logo Profile</Header>
+              <Header size="medium">Logo Profile</Header>
               <SimpleMediaUploader
                 name="logo" 
                 onChange={this.handleInputChange}
@@ -225,7 +225,7 @@ class Create extends React.Component {
               />
             </Segment>
             <Segment>
-              <Header size="normal">Location</Header>
+              <Header size="medium">Location</Header>
               <LocationMap
                 name="location"
                 onCenterChange={this.handleInputChange}
@@ -237,15 +237,16 @@ class Create extends React.Component {
 
           <Grid.Column width={10}>
             <Segment>
-              <Header size="normal">Overview</Header>
+              <Header size="medium">Overview</Header>
               <FormOverview onInputChange={this.handleInputChange}
                 onCheckboxChange={this.handleCheckboxChange}
                 data={data}
+                constants={institution.constants}
               />
             </Segment>
 
             <Segment>
-              <Header size="normal">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+              <Header size="medium">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
               <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
                 onClickAction={this.handleOppListAction}
               />
@@ -259,6 +260,7 @@ class Create extends React.Component {
           </Grid.Column>
 
           <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} 
+            constants={this.props.opp.constants}
             onSave={this.handleOpportunitySave} 
             onCancel={this.handleOpportunityCancel}
             onLogoUpload={this.handleOppLogoUpload}
@@ -275,6 +277,7 @@ class Create extends React.Component {
 export default connect((state) => ({
   account: state.account,
   institution: state.institution,
+  opp: state.opp,
 }), (dispatch) => ({
   institutionCreate: (data) => dispatch(institutionActions.create(data)),
   institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
@@ -283,4 +286,7 @@ export default connect((state) => ({
   institutionAddOpp: (opp, data) => dispatch(institutionActions.addOpportunity(opp, data)),
   institutionOppUploadLogo: (id, data) => dispatch(uploadLogo(id, data)),
   institutionRemOpp: (opp) => dispatch(institutionActions.removeOpportunity(opp)),
+  institutionGetTypes: () => dispatch(institutionActions.getTypes()),
+  opportunityGetTypes: () => dispatch(opportunityActions.getTypes()),
 })) (withRouter(Create))
+

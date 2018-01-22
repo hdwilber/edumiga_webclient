@@ -1,22 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Image, Grid, Button, Segment, Header } from 'semantic-ui-react'
-import { FormOverview } from '../../components/institution'
+import { Image, Grid, Segment, Header } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 
 import LocationMap from '../../components/location/map'
-
-import OpportunityForm from '../../components/opportunity/create'
-import OpportunitiesList from '../../components/opportunity/list'
-import SimpleMediaUploader from '../../components/media/image-uploader'
-
 import { buildImageUrl } from '../../redux/utils'
-
 import * as institutionActions from '../../redux/institution/actions'
-import { uploadLogo } from '../../redux/opportunity/actions'
-
-import { Actions as OppListActions } from '../../components/opportunity/list'
 
 class View extends React.Component {
   constructor(props) {
