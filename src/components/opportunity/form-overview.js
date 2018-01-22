@@ -34,6 +34,7 @@ class FormOverview extends React.Component {
     const { constants, onInputChange, onCheckboxChange, data } = this.props
     if (data && constants) {
       const newConst = formatConstants(constants)
+      console.log(newConst)
       return (
         <Form>
           <Form.Group widths="equal">
@@ -41,10 +42,11 @@ class FormOverview extends React.Component {
               label="Name" type="text"
             />
             <Form.Field>
-              <label>Degree</label>
-              <Select value={data.degree} name="degree" 
+              <label>Degrees</label>
+              <Select value={data.degrees} name="degrees" 
                 onChange={onInputChange} 
                 options={newConst.degrees}
+                multiple
               />
             </Form.Field>
           </Form.Group>

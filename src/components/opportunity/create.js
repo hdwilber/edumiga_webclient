@@ -9,11 +9,11 @@ class OppForm extends React.Component {
   constructor(props) {
     super(props)
     if (props.opportunity) {
-      const { logo, name, type, regime, degree, description, draft, duration } = props.opportunity
+      const { logo, name, type, regime, degrees, description, draft, duration } = props.opportunity
       this.state = {
         name,
         description,
-        degree,
+        degrees,
         type,
         draft,
         regime,
@@ -31,7 +31,7 @@ class OppForm extends React.Component {
         draft: true,
         regime: '',
         type: '',
-        degree: '',
+        degrees: [],
         duration: 0,
         logo: {
           file: null,
@@ -56,7 +56,7 @@ class OppForm extends React.Component {
       draft: this.state.draft,
       duration: this.state.duration,
       type: this.state.type,
-      degree: this.state.degree,
+      degrees: this.state.degrees,
       regime: this.state.regime,
     })
   }
@@ -70,7 +70,7 @@ class OppForm extends React.Component {
       description: this.state.description,
       draft: this.state.draft,
       duration: this.state.duration,
-      degree: this.state.degree,
+      degrees: this.state.degrees,
       regime: this.state.regime,
       type: this.state.type,
       [returnData ? 'logoId': 'logo']: returnData ? this.state.logo.id: this.state.logo,
@@ -79,7 +79,7 @@ class OppForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.opportunity) {
-      const { id, name, type, regime, degree, description, draft, duration, logo } = nextProps.opportunity
+      const { id, name, type, regime, degrees, description, draft, duration, logo } = nextProps.opportunity
       this.setState({
         id,
         name,
@@ -88,7 +88,7 @@ class OppForm extends React.Component {
         regime,
         duration,
         type,
-        degree,
+        degrees,
         logo: {
           file: null,
           url: logo && (buildImageUrl(logo.url)),
