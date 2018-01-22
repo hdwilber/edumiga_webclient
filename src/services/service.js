@@ -34,7 +34,7 @@ class Service {
   } 
 
   createUploadRequest(path, files, useAuth = true) {
-    const url = (path !== '') ? `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
+    const url = (path !== '') ? `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}/${path}` : `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}`
 
     const formData = new FormData()
     console.log('createupadrequest lgoo')
@@ -50,7 +50,7 @@ class Service {
   }
 
   createRequest(method, path, rbody, useAuth = true) {
-    const url = (path !== '') ? `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}/${path}` : `/${this.getBaseUrl()}`
+    const url = (path !== '') ? `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}/${path}` : `${(REACT_APP_API_SERVER_NAME) || ''}${this.getBaseUrl()}`
     if (method === 'POST' || method === 'PATCH') {
       return fetch(url,
         {
