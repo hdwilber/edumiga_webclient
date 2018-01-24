@@ -66,6 +66,15 @@ class Service {
         })
     }
   }
+
+  getConstants(list) {
+    const url = `${REACT_APP_API_SERVER_NAME}/api/constants?filter=${JSON.stringify(list)}`
+    return fetch(url,
+      {
+        method: 'GET',
+        headers: this.createHeaders(),
+      })
+  }
 }
 
 export default Service

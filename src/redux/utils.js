@@ -60,5 +60,6 @@ export function handleRequest(dispatch, getState, action, request, formatter  = 
 
 // Needs to be refactorized
 export function buildImageUrl(url) {
-  return `/${REACT_APP_API_BASEURL}${url}`
+  const { REACT_APP_API_SERVER_NAME } = process.env
+  return `${REACT_APP_API_SERVER_NAME || ''}${REACT_APP_API_BASEURL}${url}`
 }

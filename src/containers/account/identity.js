@@ -7,6 +7,7 @@ import FormIdentity from '../../components/account/form-identity'
 import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import * as accountActions from '../../redux/account/actions'
+import * as constantsActions from '../../redux/constants/actions'
 
 import { buildImageUrl } from '../../redux/utils'
 
@@ -38,6 +39,11 @@ class Identity extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleClickSave = this.handleClickSave.bind(this)
     this.handleClickUploadPhoto = this.handleClickUploadPhoto.bind(this)
+  }
+
+  componentDidMount() {
+    const { constantsGet } = this.props
+    constantsGet(['countries'])
   }
 
   componentWillReceiveProps(nextProps) {
@@ -145,8 +151,10 @@ class Identity extends React.Component {
 }
 
 export default connect((state) => ({
-  account: state.account
+  account: state.account,
+  constant: state.constant,
 }), (dispatch) => ({
   identityUpdate: (data) => dispatch(accountActions.updateIdentity(data)),
   uploadPhoto: (file) => dispatch(accountActions.uploadPhoto(file)),
+  constantsGet: (list) => dispatch(constantsActions.get(list)),
 })) (withRouter(Identity))
