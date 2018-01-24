@@ -43,7 +43,7 @@ class Identity extends React.Component {
 
   componentDidMount() {
     const { constantsGet } = this.props
-    constantsGet(['countries'])
+    constantsGet(['countries', 'categories'])
   }
 
   componentWillReceiveProps(nextProps) {
@@ -82,6 +82,7 @@ class Identity extends React.Component {
   }
 
   handleInputChange(e, props) {
+    console.log(props)
     this.setState({
       [props.name]: props.value,
     })
@@ -110,7 +111,7 @@ class Identity extends React.Component {
   }
 
   render() {
-    const { account } = this.props
+    const { account, constant } = this.props
 
     if (account && account.identity) {
       const data = this.serializeData()
@@ -135,6 +136,7 @@ class Identity extends React.Component {
             <Segment>
               <FormIdentity onInputChange={this.handleInputChange}
                 data={data}
+                constants={constant && constant.constants}
               />
             </Segment>
 

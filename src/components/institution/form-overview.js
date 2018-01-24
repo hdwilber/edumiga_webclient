@@ -32,7 +32,7 @@ const FormOverview = (props) => {
 
   if (data && constants) {
     const { types, levels, countries } = formatConstants(constants)
-    const selCountry = countries.find(a => a.value === data.country)
+    const selCountry = countries && countries.find(a => a.value === data.country)
     const states = selCountry ? formatArray(selCountry.states) : []
     return (
       <Form>

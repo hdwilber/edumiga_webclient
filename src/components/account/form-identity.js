@@ -1,53 +1,36 @@
 
 import React from 'react'
-import { Checkbox, Form } from 'semantic-ui-react'
+import { Select, Checkbox, Form } from 'semantic-ui-react'
 
-const InterestsOptions = [
-  {
-    key: 1,
-    text: 'Everything and all',
-    value: 'all',
-  },
-  {
-    key: 2,
-    text: 'Art',
-    value: 'art',
-  },
-  {
-    key: 3,
-    text: 'Technology',
-    value: 'technology',
-  },
-  {
-    key: 4,
-    text: 'Science',
-    value: 'science',
-  },
-  {
-    key: 4,
-    text: 'Undergraduate',
-    value: 'undergraduate',
-  },
-  {
-    key: 4,
-    text: 'Specializations',
-    value: 'specialization',
-  },
-  {
-    key: 4,
-    text: 'Mastering',
-    value: 'mastering',
-  },
-  {
-    key: 4,
-    text: 'Highschool',
-    value: 'highschool',
-  },
-]
+function formatConstants(constants) {
+  const consts = {}
+  for(const k in constants) {
+    consts[k] = constants[k].map((v, idx) => {
+      return {
+        ...v,
+        key: idx,
+        text: v.name,
+        value: v.id,
+      }
+    })
+  }
+  return consts
+}
+
+function formatArray(array) {
+  return array.map((a,idx) => {
+    return {
+      ...a,
+      key: idx,
+      text: a.name,
+      value: a.id,
+    }
+  })
+}
 
 const FormIdentity = (props) => {
 
-  const { onInputChange, data} = props
+  const { constants, onInputChange, data} = props
 
   function handleCheckboxChange(e, aprops) {
     if (aprops.name === 'interests'){
@@ -73,7 +56,11 @@ const FormIdentity = (props) => {
     }
   }
 
-  if (data) {
+  if (data && constants) {
+    const { countries, categories } = formatConstants(constants)
+    const selCountry = countries.find(a => a.value === data.country)
+    const states = selCountry ? formatArray(selCountry.states) : []
+
     return (
       <Form>
         <Form.Input value={data.displayName} name="displayName" onChange={onInputChange} 
@@ -105,12 +92,22 @@ const FormIdentity = (props) => {
         </Form.Group>
 
         <Form.Group width="equals">
-          <Form.Input value={data.country} name="country" onChange={onInputChange} 
-            label="Country" type="text"
-          />
-          <Form.Input value={data.state} name="state" onChange={onInputChange} 
-            label="State" type="text"
-          />
+          <Form.Field>
+            <label>Country</label>
+            <Select value={data.country} name="country" 
+              onChange={onInputChange} 
+              options={countries}
+            />
+          </Form.Field>
+
+          <Form.Field>
+            <label>State</label>
+            <Select value={data.state} name="state" 
+              onChange={onInputChange} 
+              options={states}
+            />
+          </Form.Field>
+
           <Form.Input value={data.county} name="county" onChange={onInputChange} 
             label="County" type="text"
           />
@@ -118,9 +115,10 @@ const FormIdentity = (props) => {
 
         <Form.Group grouped>
           <label>Interests</label>
-          {InterestsOptions.map (l => {
+          {categories.map (l => {
             return (
               <Form.Checkbox
+                key={l.key}
                 label={l.text} value={l.value} name="interests" 
                 onChange={handleCheckboxChange} 
                 checked={data.interests ? data.interests.indexOf(l.value) > -1: false}
