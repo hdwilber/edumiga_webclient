@@ -58,7 +58,7 @@ const FormIdentity = (props) => {
 
   if (data && constants) {
     const { countries, categories } = formatConstants(constants)
-    const selCountry = countries.find(a => a.value === data.country)
+    const selCountry = countries && countries.find(a => a.value === data.country)
     const states = selCountry ? formatArray(selCountry.states) : []
 
     return (
