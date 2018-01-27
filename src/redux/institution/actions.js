@@ -10,6 +10,8 @@ export const FIND_ALL = createActionLabels('INST_FIND_ALL')
 export const UPDATE = createActionLabels('INST_UPDATE')
 export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
 export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
+export const ADD_DEPENDENCY = createActionLabels('INST_ADD_DEPENDENCY')
+export const DEL_DEPENDENCY = createActionLabels('INST_DEL_DEPENDENCY')
 
 const iService = new InstitutionService()
 const oService = new OpportunityService()
@@ -123,6 +125,33 @@ export function removeOpportunity(opp) {
 
     return handleRequestEmpty(dispatch, getState, REM_OPPORTUNITY, request,
       { id: opp.id })
+  }
+}
+
+export function addDependency(data) {
+  return (dispatch, getState) => {
+    const { account, institution } = getState()
+    iService.setSession(account.session)
+    const request = iService.addDependency(institution.current.id, data)
+    return handleRequest(dispatch, getState, ADD_DEPENDENCY, request,
+      data => {
+        return {
+          dep: data,
+          isNewInstance: true,
+        }
+      })
+  }
+}
+
+export function delDependency(data) {
+  return (dispatch, getState) => {
+    const { account, institution } = getState()
+    iService.setSession(account.session)
+    const request = iService.addDependency(institution.current.id, data)
+    return handleRequestEmpty(dispatch, getState, DEL_DEPENDENCY, request,
+      {
+        id: data.id,
+      })
   }
 }
 

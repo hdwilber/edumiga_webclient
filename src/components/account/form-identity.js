@@ -115,7 +115,7 @@ const FormIdentity = (props) => {
 
         <Form.Group grouped>
           <label>Interests</label>
-          {categories.map (l => {
+          {categories && categories.map (l => {
             return (
               <Form.Checkbox
                 key={l.key}

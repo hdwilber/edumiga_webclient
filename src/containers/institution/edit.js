@@ -36,6 +36,7 @@ class Create extends React.Component {
     this.handleOppListAction = this.handleOppListAction.bind(this)
 
     this.state = {
+      prename: '',
       name: '',
       description: '',
       draft: '',
@@ -46,6 +47,7 @@ class Create extends React.Component {
       state: '',
       phone: '',
       levels: [],
+      adminLevel: '',
       logo: {
         file: null,
         url: '',
@@ -87,6 +89,7 @@ class Create extends React.Component {
     if (institution && institution.current) {
       const i = institution.current
       this.setState({
+        prename: i.prename,
         name: i.name,
         description: i.description,
         draft: i.draft,
@@ -94,6 +97,7 @@ class Create extends React.Component {
         county: i.county,
         state: i.state,
         phone: i.phone, 
+        adminLevel: i.adminLevel,
         address: i.address || '',
         type: i.type,
         levels: i.levels || [],
@@ -111,12 +115,14 @@ class Create extends React.Component {
     const { institution } = this.props
     return {
       id: institution.current.id,
+      prename: this.state.prename,
       name: this.state.name,
       description: this.state.description,
       draft: this.state.draft,
       address: this.state.address,
       type: this.state.type,
       levels: this.state.levels,
+      adminLevel: this.state.adminLevel,
       location: this.state.location,
       country: this.state.country,
       county: this.state.county,

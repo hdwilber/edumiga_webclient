@@ -108,7 +108,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.ADD_OPPORTUNITY: {
+    case actions.ADD_OPPORTUNITY.start: {
       return {
         ...state,
         loading: true,
@@ -142,7 +142,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.REM_OPPORTUNITY: {
+    case actions.REM_OPPORTUNITY.start: {
       return {
         ...state,
         loading: true,
@@ -166,6 +166,34 @@ export default function institutionReducer(state = initialState, action) {
         ...state,
         error: action.payload,
         loading: false,
+      }
+    }
+    case actions.ADD_DEPENDENCY.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case actions.ADD_DEPENDENCY.success: {
+      const { dep, isNewInstance } = action.payload
+
+      const list = (isNewInstance) ? state.current.dependencies.concat([dep])
+        : state.current.dependencies.map(d => (d.id === dep.id) ? dep: d)
+
+      return {
+        ...state,
+        loading: false,
+        current: {
+          ...state.current,
+          dependencies: list,
+        }
+      }
+    }
+    case actions.ADD_DEPENDENCY.failed: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       }
     }
   }

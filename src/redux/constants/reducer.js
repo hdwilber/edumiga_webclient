@@ -8,21 +8,21 @@ const initialState = {
 
 export default function constantsReducer(state = initialState, action) {
   switch(action.type) {
-    case actions.GET.START: {
+    case actions.GET.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.GET.REJECTED: {
+    case actions.GET.failed: {
       return {
         ...state,
         loading: false,
       }
     }
 
-    case actions.GET.FULFILLED: {
+    case actions.GET.success: {
       return {
         ...state,
         loading: false,

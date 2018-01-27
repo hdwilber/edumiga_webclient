@@ -1,17 +1,14 @@
 import { Service } from '../../services'
-import { handleRequest } from '../utils'
+import { createActionLabels, handleRequest } from '../utils'
 
-export const GET = {
-  START: 'CONSTANTS_GET',
-  REJECTED: 'CONSTANTS_GET_REJECTED',
-  FULFILLED: 'CONSTANTS_GET_FULFILLED',
-}
+export const GET = createActionLabels('CONSTANTS_GET')
 
 const service = new Service()
+
 export function get(list) {
   return (dispatch, getState) => {
     const request = service.getConstants(list)
-    return handleRequest(dispatch, getState, GET.START, request,
+    return handleRequest(dispatch, getState, GET, request,
       (data) => ({
         list: list,
         data: data,

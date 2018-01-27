@@ -31,16 +31,21 @@ const FormOverview = (props) => {
   const { constants, onInputChange, onCheckboxChange, data} = props
 
   if (data && constants) {
-    const { types, levels, countries } = formatConstants(constants)
+    const { types, levels, countries, adminLevels } = formatConstants(constants)
     const selCountry = countries && countries.find(a => a.value === data.country)
     const states = selCountry ? formatArray(selCountry.states) : []
     return (
       <Form>
-        <Form.Input value={data.name} name="name" onChange={onInputChange} 
-          label="Name" type="text"
-        />
+        <Form.Group widths="equal">
+          <Form.Input value={data.prename} name="prename" onChange={onInputChange} 
+            label="Pre name" type="text"
+          />
+          <Form.Input value={data.name} name="name" onChange={onInputChange} 
+            label="Name" type="text"
+          />
+        </Form.Group>
 
-        <Form.Group width="equals">
+        <Form.Group widths="equal">
           <Form.Field>
             <label>Country</label>
             <Select value={data.country} name="country" 
@@ -70,15 +75,25 @@ const FormOverview = (props) => {
             onChange={onInputChange} 
           />
         </Form.Field>
-        
-        <Form.Field>
-          <label>Type</label>
-          <Select value={data.type} name="type" 
-            onChange={onInputChange} 
-            options={types}
-          />
-        </Form.Field>
-        
+
+        <Form.Group widths="equal">
+          <Form.Field>
+            <label>Type</label>
+            <Select value={data.type} name="type" 
+              onChange={onInputChange} 
+              options={types}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Administrative Level</label>
+            <Select value={data.adminLevel} name="adminLevel" 
+              onChange={onInputChange} 
+              options={adminLevels}
+            />
+          </Form.Field>
+        </Form.Group>
+
+
         <Form.Group>
           <label>Levels</label>
           {levels.map ((l, idx) => {

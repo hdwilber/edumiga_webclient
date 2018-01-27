@@ -64,6 +64,14 @@ class Institution extends Service {
   getTypes() {
     return this.createRequest('GET', `/types`, null, false)
   }
+
+  addDependency(id, data) {
+    return this.createRequest('POST', `${id}/dependencies`, data)
+  }
+
+  delDependency(id, did) {
+    return this.createRequest('DELETE', `${id}/dependencies/${did}`)
+  }
 }
 
 export default Institution
