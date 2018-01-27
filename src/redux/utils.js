@@ -4,7 +4,7 @@ export function handleRequestEmpty(dispatch, getState, action, request, data, po
   request.then (response => {
     if (response.ok) {
       dispatch({
-        type: `${action}_FULFILLED`,
+        type: action.success,
         payload: data,
       })
 
@@ -16,7 +16,7 @@ export function handleRequestEmpty(dispatch, getState, action, request, data, po
   })
   .catch(error => {
     dispatch({
-      type: `${action}_REJECTED`,
+      type: action.failed,
       payload: error,
     })
 
@@ -24,7 +24,7 @@ export function handleRequestEmpty(dispatch, getState, action, request, data, po
 
   })
   return dispatch({
-    type: action,
+    type: action.start,
   })
 }
 
@@ -38,15 +38,16 @@ export function handleRequest(dispatch, getState, action, request, formatter  = 
   .then(data => {
     const payload = formatter ? formatter(data): data
     dispatch({
-      type: `${action}_FULFILLED`,
+      type: action.success,
       payload: payload,
     })
 
     if (postThen) postThen(payload)
   })
   .catch(error => {
+    console.log(error)
     dispatch({
-      type: `${action}_REJECTED`,
+      type: action.failed,
       payload: error,
     })
 
@@ -54,7 +55,7 @@ export function handleRequest(dispatch, getState, action, request, formatter  = 
 
   })
   return dispatch({
-    type: action,
+    type: action.start,
   })
 }
 
@@ -62,4 +63,12 @@ export function handleRequest(dispatch, getState, action, request, formatter  = 
 export function buildImageUrl(url) {
   const { REACT_APP_API_SERVER_NAME } = process.env
   return `${REACT_APP_API_SERVER_NAME || ''}${REACT_APP_API_BASEURL}${url}`
+}
+
+export function createActionLabels(name) {
+  return {
+    start: name,
+    success: `${name}_SUCCESS`,
+    failed: `${name}_FAILED`
+  }
 }

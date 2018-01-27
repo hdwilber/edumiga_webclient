@@ -12,13 +12,13 @@ const initialState = {
 
 export default function opportunityReducer(state = initialState, action) {
   switch (action.type) {
-    case actions.GET_TYPES.START: {
+    case actions.GET_TYPES.start: {
       return {
         ...state,
         loading: true,
       }
     }
-    case actions.GET_TYPES.FULFILLED: {
+    case actions.GET_TYPES.success: {
       const data = action.payload
       return {
         ...state,
@@ -27,7 +27,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.GET_TYPES.REJECTED: {
+    case actions.GET_TYPES.failed: {
       return {
         ...state,
         loading: false,
@@ -35,14 +35,14 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.CREATE.START: {
+    case actions.CREATE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.CREATE.FULFILLED: {
+    case actions.CREATE.success: {
       return {
         ...state,
         current: action.payload.opportunity,
@@ -50,7 +50,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.CREATE.REJECTED: {
+    case actions.CREATE.failed: {
       return {
         ...state,
         current: null,
@@ -58,14 +58,14 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND.START: {
+    case actions.FIND.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.FIND.FULFILLED: {
+    case actions.FIND.success: {
       const { opportunity } = action.payload
       return {
         ...state,
@@ -76,7 +76,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND.REJECTED: {
+    case actions.FIND.failed: {
       return {
         ...state,
         loading: false,
@@ -85,14 +85,14 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_ALL.START: {
+    case actions.FIND_ALL.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.FIND_ALL.FULFILLED: {
+    case actions.FIND_ALL.success: {
       return {
         ...state,
         current: null,
@@ -101,7 +101,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_ALL.REJECTED: {
+    case actions.FIND_ALL.failed: {
       return {
         ...state,
         loading: false,
@@ -111,14 +111,14 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.COURSE_ADD.START: {
+    case actions.COURSE_ADD.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.COURSE_ADD.REJECTED: {
+    case actions.COURSE_ADD.failed: {
       return {
         ...state,
         loading: false,
@@ -126,7 +126,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.COURSE_ADD.FULFILLED: {
+    case actions.COURSE_ADD.success: {
       return {
         ...state,
         loading: false,
@@ -134,14 +134,14 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.COURSE_DEL.START: {
+    case actions.COURSE_DEL.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.COURSE_DEL.REJECTED: {
+    case actions.COURSE_DEL.failed: {
       return {
         ...state,
         loading: false,
@@ -149,7 +149,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.COURSE_DEL.FULFILLED: {
+    case actions.COURSE_DEL.success: {
       const id = action.payload
       return {
         ...state,
@@ -158,14 +158,14 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.COURSE_UPDATE.START: {
+    case actions.COURSE_UPDATE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.COURSE_UPDATE.REJECTED: {
+    case actions.COURSE_UPDATE.failed: {
       return {
         ...state,
         loading: false,
@@ -173,7 +173,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.COURSE_UPDATE.FULFILLED: {
+    case actions.COURSE_UPDATE.success: {
       const course = action.payload
 
       if (course.draft) {
@@ -195,7 +195,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.COURSE_SET.START: {
+    case actions.COURSE_SET.start: {
       return {
         ...state,
         currentCourse: action.payload,

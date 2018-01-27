@@ -13,21 +13,21 @@ const initialState = {
 
 export default function accountReducer(state = initialState, action) {
   switch (action.type) {
-    case actions.CREATE.START: {
+    case actions.CREATE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.CREATE.FULFILLED: {
+    case actions.CREATE.success: {
       return {
         ...state,
         loading: false,
       }
     }
 
-    case actions.CREATE.REJECTED: {
+    case actions.CREATE.failed: {
       return {
         ...state,
         loading: false,
@@ -35,21 +35,21 @@ export default function accountReducer(state = initialState, action) {
       }
     }
 
-    case actions.LOGIN.START: {
+    case actions.LOGIN.start: {
       return {
         ...initialState,
         loading: true,
       }
     }
 
-    case actions.LOGIN.REJECTED: {
+    case actions.LOGIN.failed: {
       return {
         ...state,
         loading: false,
         error: action.payload,
       }
     }
-    case actions.LOGIN.FULFILLED: {
+    case actions.LOGIN.success: {
       const session = action.payload
       return {
         ...state,
@@ -59,18 +59,18 @@ export default function accountReducer(state = initialState, action) {
       }
     }
 
-    case actions.LOGOUT.START: {
+    case actions.LOGOUT.start: {
       return initialState
     }
 
-    case actions.RESTORE.START: {
+    case actions.RESTORE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.RESTORE.REJECTED: {
+    case actions.RESTORE.failed: {
       return {
         ...state,
         loading: false,
@@ -80,7 +80,7 @@ export default function accountReducer(state = initialState, action) {
       }
     }
 
-    case actions.RESTORE.FULFILLED: {
+    case actions.RESTORE.success: {
       const session = action.payload
       if (session) {
         return {
@@ -93,7 +93,7 @@ export default function accountReducer(state = initialState, action) {
     }
     break
 
-    case actions.FIND.START: {
+    case actions.FIND.start: {
       return {
         ...state,
         account: null,
@@ -102,14 +102,14 @@ export default function accountReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND.REJECTED: {
+    case actions.FIND.failed: {
       return {
         ...state,
         loading: false,
         error: action.payload
       }
     }
-    case actions.FIND.FULFILLED: {
+    case actions.FIND.success: {
       const account = action.payload
       const identities = account.identities || []
       delete account.identities
@@ -123,21 +123,21 @@ export default function accountReducer(state = initialState, action) {
       }
     }
 
-    case actions.IDENTITY_UPDATE.START: {
+    case actions.IDENTITY_UPDATE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.IDENTITY_UPDATE.REJECTED: {
+    case actions.IDENTITY_UPDATE.failed: {
       return {
         ...state,
         loading: false,
         error: action.payload,
       }
     }
-    case actions.IDENTITY_UPDATE.FULFILLED: {
+    case actions.IDENTITY_UPDATE.success: {
       const identity = action.payload
       return {
         ...state,
@@ -156,14 +156,14 @@ export default function accountReducer(state = initialState, action) {
       }
     }
 
-    case actions.UPLOAD_PHOTO.REJECTED: {
+    case actions.UPLOAD_PHOTO.failed: {
       return {
         ...state,
         loading: false,
         error: action.payload,
       }
     }
-    case actions.UPLOAD_PHOTO.FULFILLED: {
+    case actions.UPLOAD_PHOTO.success: {
       const photo = action.payload
       return {
         ...state,

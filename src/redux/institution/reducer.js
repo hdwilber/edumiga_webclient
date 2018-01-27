@@ -10,7 +10,7 @@ const initialState = {
 
 export default function institutionReducer(state = initialState, action) {
   switch (action.type) {
-    case actions.GET_TYPES.FULFILLED: {
+    case actions.GET_TYPES.success: {
       const data = action.payload
       return {
         ...state,
@@ -19,7 +19,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.GET_TYPES.REJECTED: {
+    case actions.GET_TYPES.failed: {
       return {
         ...state,
         loading: false,
@@ -27,21 +27,21 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.GET_TYPES.START: {
+    case actions.GET_TYPES.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.CREATE.START: {
+    case actions.CREATE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.CREATE.FULFILLED: {
+    case actions.CREATE.success: {
       return {
         ...state,
         current: action.payload.institution,
@@ -49,7 +49,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.CREATE.REJECTED: {
+    case actions.CREATE.failed: {
       return {
         ...state,
         current: null,
@@ -57,14 +57,14 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND.START: {
+    case actions.FIND.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.FIND.FULFILLED: {
+    case actions.FIND.success: {
       return {
         ...state,
         current: action.payload.institution,
@@ -73,7 +73,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND.REJECTED: {
+    case actions.FIND.failed: {
       return {
         ...state,
         loading: false,
@@ -82,14 +82,14 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_ALL.START: {
+    case actions.FIND_ALL.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.FIND_ALL.FULFILLED: {
+    case actions.FIND_ALL.success: {
       return {
         ...state,
         current: null,
@@ -98,7 +98,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_ALL.REJECTED: {
+    case actions.FIND_ALL.failed: {
       return {
         ...state,
         loading: false,
@@ -115,7 +115,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.ADD_OPPORTUNITY.FULFILLED: {
+    case actions.ADD_OPPORTUNITY.success: {
       const { opp, isNewInstance } = action.payload
       console.log('aDd opoprtunity')
       console.log(opp)
@@ -134,7 +134,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.ADD_OPPORTUNITY.REJECTED: {
+    case actions.ADD_OPPORTUNITY.failed: {
       return {
         ...state,
         loading: false,
@@ -149,7 +149,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.REM_OPPORTUNITY.FULFILLED: {
+    case actions.REM_OPPORTUNITY.success: {
       const { id } = action.payload
       return {
         ...state,
@@ -161,7 +161,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.REM_OPPORTUNITY.REJECTED: {
+    case actions.REM_OPPORTUNITY.failed: {
       return {
         ...state,
         error: action.payload,

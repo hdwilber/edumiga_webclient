@@ -1,47 +1,15 @@
 import { AccountService } from '../../services'
 import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
-import { handleRequest } from '../utils'
+import { createActionLabels, handleRequest } from '../utils'
 
-export const CREATE = {
-  START: 'ACCOUNT_CREATE',
-  REJECTED: 'ACCOUNT_CREATE_REJECTED',
-  FULFILLED: 'ACCOUNT_CREATE_FAILED'
-}
-
-export const LOGIN = {
-  START: 'SESSION_LOGIN',
-  REJECTED: 'SESSION_LOGIN_REJECTED',
-  FULFILLED: 'SESSION_LOGIN_FULFILLED'
-}
-
-export const LOGOUT = {
-  START: 'SESSION_LOGOUT'
-}
-
-export const RESTORE = {
-  START: 'SESSION_RESTORE',
-  REJECTED: 'SESSION_RESTORE_REJECTED',
-  FULFILLED: 'SESSION_RESTORE_FULFILLED',
-}
-
-export const FIND = {
-  START: 'ACCOUNT_FIND',
-  REJECTED: 'ACCOUNT_FIND_REJECTED',
-  FULFILLED: 'ACCOUNT_FIND_FULFILLED',
-}
-
-export const IDENTITY_UPDATE = {
-  START: 'IDENTITY_UPDATE',
-  REJECTED: 'IDENTITY_UPDATE_REJECTED',
-  FULFILLED: 'IDENTITY_UPDATE_FULFILLED',
-}
-
-export const UPLOAD_PHOTO = {
-  START: 'IDENTITY_UPLOAD_PHOTO',
-  REJECTED: 'IDENTITY_UPLOAD_PHOTO_REJECTED',
-  FULFILLED: 'IDENTITY_UPLOAD_PHOTO_FULFILLED',
-}
+export const CREATE = createActionLabels('ACCOUNT_CREATE')
+export const LOGIN = createActionLabels('SESSION_LOGIN')
+export const LOGOUT = createActionLabels('SESSION_LOGOUT')
+export const RESTORE = createActionLabels('SESSION_RESTORE')
+export const FIND = createActionLabels('ACCOUNT_FIND')
+export const IDENTITY_UPDATE = createActionLabels('IDENTITY_UPDATE')
+export const UPLOAD_PHOTO = createActionLabels('IDENTITY_UPLOAD_PHOTO')
 
 const aService = new AccountService()
 const iService = new IdentityService()
@@ -49,7 +17,7 @@ const iService = new IdentityService()
 export function create(data) {
   return (dispatch, getState) => {
     const request = aService.create(data)
-    return handleRequest(dispatch, getState, CREATE.START, request)
+    return handleRequest(dispatch, getState, CREATE, request)
   }
 }
 
@@ -58,14 +26,14 @@ export function updateIdentity(data) {
     const { session } = getState().account
     iService.setSession(session)
     const request = iService.update(data)
-    return handleRequest(dispatch, getState, IDENTITY_UPDATE.START, request)
+    return handleRequest(dispatch, getState, IDENTITY_UPDATE, request)
   }
 }
 
 export function login(data) {
   return (dispatch, getState) => {
     const request = aService.login(data)
-    return handleRequest(dispatch, getState, LOGIN.START, request,
+    return handleRequest(dispatch, getState, LOGIN, request,
       null,
       (payload) => {
         aService.storeSessionLocal(payload)
@@ -80,7 +48,7 @@ export function uploadPhoto(file) {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.uploadPhoto(account.identity.id, file)
-    return handleRequest(dispatch, getState, UPLOAD_PHOTO.START, request)
+    return handleRequest(dispatch, getState, UPLOAD_PHOTO, request)
   }
 }
 
@@ -89,7 +57,7 @@ export function findById(id) {
     const { account } = getState()
     aService.setSession(account.session)
     const request = aService.get(id)
-    return handleRequest(dispatch, getState, FIND.START, request)
+    return handleRequest(dispatch, getState, FIND, request)
   }
 }
 
@@ -98,7 +66,7 @@ export function logout() {
     aService.clearSessionLocal()
     dispatch(push('/'))
     return dispatch({
-      type: LOGOUT.START,
+      type: LOGOUT.init,
     })
   }
 }
@@ -109,12 +77,12 @@ export function sessionRestore() {
     if (payload) {
       dispatch(findById(payload.accountId))
       return dispatch({
-        type: RESTORE.FULFILLED,
+        type: RESTORE.success,
         payload: payload, 
       })
     } else {
       return dispatch({
-        type: RESTORE.REJECTED,
+        type: RESTORE.failed,
         payload: new Error('Not found'), 
       })
     }

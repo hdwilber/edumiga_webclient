@@ -1,58 +1,15 @@
 import { InstitutionService, OpportunityService } from '../../services'
-import { handleRequest, handleRequestEmpty } from '../utils'
+import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
-export const GET_TYPES = {
-  START: 'INSTITUTION_GET_TYPES',
-  REJECTED: 'INSTITUTION_GET_TYPES_REJECTED',
-  FULFILLED: 'INSTITUTION_GET_TYPES_FULFILLED',
-}
-
-export const CREATE = {
-  START: 'INSTITUTION_CREATE',
-  REJECTED: 'INSTITUTION_CREATE_REJECTED',
-  FULFILLED: 'INSTITUTION_CREATE_FULFILLED',
-}
-
-export const LIST = {
-  START: 'INSTITUTION_LIST',
-  REJECTED: 'INSTITUTION_LIST_REJECTED',
-  FULFILLED: 'INSTITUTION_LIST_FULFILLED',
-}
-
-export const UPLOAD_LOGO = {
-  START: 'INSTITUTION_UPLOAD_LOGO',
-  REJECTED: 'INSTITUTION_UPLOAD_LOGO_REJECTED',
-  FULFILLED: 'INSTITUTION_UPLOAD_LOGO_FULFILLED',
-}
-
-export const FIND = {
-  START: 'INSTITUTION_FIND',
-  REJECTED: 'INSTITUTION_FIND_REJECTED',
-  FULFILLED: 'INSTITUTION_FIND_FULFILLED',
-}
-
-export const FIND_ALL = {
-  START: 'INSTITUTION_FIND_ALL',
-  REJECTED: 'INSTITUTION_FIND_ALL_REJECTED',
-  FULFILLED: 'INSTITUTION_FIND_ALL_FULFILLED',
-}
-export const UPDATE = {
-  START: 'INSTITUTION_UPDATE',
-  REJECTED: 'INSTITUTION_UPDATE_REJECTED',
-  FULFILLED: 'INSTITUTION_UPDATE_FULFILLED',
-}
-
-export const ADD_OPPORTUNITY = {
-  START: 'INSTITUTION_ADD_OPPORTUNITY',
-  REJECTED: 'INSTITUTION_ADD_OPPORTUNITY_REJECTED',
-  FULFILLED: 'INSTITUTION_ADD_OPPORTUNITY_FULFILLED',
-}
-
-export const REM_OPPORTUNITY = {
-  START: 'INSTITUTION_REM_OPPORTUNITY',
-  REJECTED: 'INSTITUTION_REM_OPPORTUNITY_REJECTED',
-  FULFILLED: 'INSTITUTION_REM_OPPORTUNITY_FULFILLED',
-}
+export const GET_TYPES = createActionLabels('INST_GET_TYPES')
+export const CREATE = createActionLabels('INST_CREATE')
+export const LIST = createActionLabels('INST_LIST')
+export const UPLOAD_LOGO = createActionLabels('INST_UPLOAD_LOGO')
+export const FIND = createActionLabels('INST_FIND')
+export const FIND_ALL = createActionLabels('INST_FIND_ALL')
+export const UPDATE = createActionLabels('INST_UPDATE')
+export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
+export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
 
 const iService = new InstitutionService()
 const oService = new OpportunityService()
@@ -60,7 +17,7 @@ const oService = new OpportunityService()
 export function getTypes() {
   return (dispatch, getState) => {
     const request = iService.getTypes()
-    return handleRequest(dispatch, getState, GET_TYPES.START, request)
+    return handleRequest(dispatch, getState, GET_TYPES, request)
   }
 }
 
@@ -70,7 +27,7 @@ export function create(data) {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.create(data)
-    return handleRequest(dispatch, getState, CREATE.START, request,
+    return handleRequest(dispatch, getState, CREATE, request,
       (data) => {
         return {
           institution: data,
@@ -85,7 +42,7 @@ export function update(data) {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.update(data)
-    return handleRequest(dispatch, getState, UPDATE.START, request, 
+    return handleRequest(dispatch, getState, UPDATE, request, 
     (data) => {
       return {
         institution: data,
@@ -100,7 +57,7 @@ export function uploadLogo(id, file) {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.uploadLogo(id, file)
-    return handleRequest(dispatch, getState, UPLOAD_LOGO.START, request)
+    return handleRequest(dispatch, getState, UPLOAD_LOGO, request)
   }
 }
 
@@ -109,7 +66,7 @@ export function findById(id) {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.get(id)
-    return handleRequest(dispatch, getState, FIND.START, request, 
+    return handleRequest(dispatch, getState, FIND, request, 
     (data) => {
       return {
         institution: data,
@@ -124,7 +81,7 @@ export function findAll() {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.getAll()
-    return handleRequest(dispatch, getState, FIND_ALL.START, request, 
+    return handleRequest(dispatch, getState, FIND_ALL, request, 
     (data) => {
       return {
         list: data,
@@ -147,7 +104,7 @@ export function addOpportunity(opp = null, data) {
       iService.setSession(account.session)
       request = iService.addOpportunity(institution.current.id,data)
     }
-    return handleRequest(dispatch, getState, ADD_OPPORTUNITY.START, request,
+    return handleRequest(dispatch, getState, ADD_OPPORTUNITY, request,
       data => {
         return {
           opp: data,
@@ -164,7 +121,8 @@ export function removeOpportunity(opp) {
     iService.setSession(account.session)
     const request = iService.remOpportunity(institution.current.id, opp.id)
 
-    return handleRequestEmpty(dispatch, getState, REM_OPPORTUNITY.START, request,
+    return handleRequestEmpty(dispatch, getState, REM_OPPORTUNITY, request,
       { id: opp.id })
   }
 }
+
