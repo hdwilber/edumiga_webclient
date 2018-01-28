@@ -2,32 +2,6 @@
 import React from 'react'
 import { Select, Checkbox, Form } from 'semantic-ui-react'
 
-function formatConstants(constants) {
-  const consts = {}
-  for(const k in constants) {
-    consts[k] = constants[k].map((v, idx) => {
-      return {
-        ...v,
-        key: idx,
-        text: v.name,
-        value: v.id,
-      }
-    })
-  }
-  return consts
-}
-
-function formatArray(array) {
-  return array.map((a,idx) => {
-    return {
-      ...a,
-      key: idx,
-      text: a.name,
-      value: a.id,
-    }
-  })
-}
-
 const FormIdentity = (props) => {
 
   const { constants, onInputChange, data} = props
@@ -57,9 +31,9 @@ const FormIdentity = (props) => {
   }
 
   if (data && constants) {
-    const { countries, categories } = formatConstants(constants)
+    const { countries, categories } = constants
     const selCountry = countries && countries.find(a => a.value === data.country)
-    const states = selCountry ? formatArray(selCountry.states) : []
+    const states = selCountry ? selCountry.states : []
 
     return (
       <Form>

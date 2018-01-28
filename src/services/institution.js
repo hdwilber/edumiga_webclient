@@ -11,7 +11,7 @@ class Institution extends Service {
 
   get(id, filter = {}) {
     const defaultFilter = {
-      include: ['account', 'logo', 'media', 
+      include: ['account', 'logo', 'media', 'dependencies', 'head',
         { relation: 'opportunities', 
           scope: {
             include: ['logo', 'account']

@@ -43,7 +43,6 @@ class OppForm extends React.Component {
 
     this.handleClickSave = this.handleClickSave.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.serializeData = this.serializeData.bind(this)
   }
 
@@ -101,12 +100,6 @@ class OppForm extends React.Component {
   handleInputChange(e, props) {
     this.setState({
       [props.name]: props.value,
-    })
-  }
-
-  handleCheckboxChange(e, props) {
-    this.setState({
-      [props.name]: props.checked,
     })
   }
 

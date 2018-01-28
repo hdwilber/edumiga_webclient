@@ -1,40 +1,22 @@
 import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
 
-function formatConstants(constants) {
-  const consts = {}
-  for(const k in constants) {
-    consts[k] = constants[k].map((v, idx) => {
-      return {
-        key: idx,
-        text: v.name,
-        value: v.id,
-      }
-    })
-  }
-  return consts
-}
-
 class FormOverview extends React.Component {
   constructor(props) {
     super(props)
-    this.handleInputFileChange = this.handleInputFileChange.bind(this)
+      this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
   }
 
-  handleInputFileChange(e, props) {
-    this.setState({
-      logo: {
-        src: URL.createObjectURL(e.target.files[0]),
-        files: e.target.files,
-      }
+  handleCheckboxChange(e, props) {
+    this.props.onInputChange(e, {
+      name: props.name,
+      value: props.checked,
     })
   }
 
   render() {
-    const { constants, onInputChange, onCheckboxChange, data } = this.props
+    const { constants, onInputChange, data } = this.props
     if (data && constants) {
-      const newConst = formatConstants(constants)
-      console.log(newConst)
       return (
         <Form>
           <Form.Group widths="equal">
@@ -45,7 +27,7 @@ class FormOverview extends React.Component {
               <label>Degrees</label>
               <Select value={data.degrees} name="degrees" 
                 onChange={onInputChange} 
-                options={newConst.degrees}
+                options={constants.degrees}
                 multiple
               />
             </Form.Field>
@@ -68,7 +50,7 @@ class FormOverview extends React.Component {
               <label>Type</label>
               <Select value={data.type} name="type" 
                 onChange={onInputChange} 
-                options={newConst.attendances}
+                options={constants.attendances}
               />
             </Form.Field>
             
@@ -76,14 +58,14 @@ class FormOverview extends React.Component {
               <label>Regime</label>
               <Select value={data.regime} name="regime" 
                 onChange={onInputChange} 
-                options={newConst.regimes}
+                options={constants.regimes}
               />
             </Form.Field>
           </Form.Group>
             
           <Form.Field>
             <Checkbox key={0} label="Keep it as draft?" checked={data.draft} name="draft"
-              onChange={onCheckboxChange}
+              onChange={this.handleCheckboxChange}
             />
           </Form.Field>
         </Form>
