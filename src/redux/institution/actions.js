@@ -1,3 +1,4 @@
+import { push } from 'react-router-redux'
 import { InstitutionService, OpportunityService } from '../../services'
 import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
@@ -63,7 +64,7 @@ export function uploadLogo(id, file) {
   }
 }
 
-export function findById(id) {
+export function findById(id, refresh = false) {
   return (dispatch, getState) => {
     const { account } = getState()
     iService.setSession(account.session)
@@ -74,6 +75,10 @@ export function findById(id) {
         institution: data,
         single: true,
       }
+    },
+    (payload) => {
+      if (refresh) 
+        dispatch(push(`/institution/${payload.id}/edit`))
     })
   }
 }
