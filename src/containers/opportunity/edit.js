@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { Grid, Button, Segment, Header } from 'semantic-ui-react'
 
 import SimpleMediaUploader from '../../components/media/image-uploader'
@@ -209,12 +209,20 @@ class Edit extends React.Component {
     const { opp } = this.props
     if (opp && opp.current && opp.constants) {
       const data = this.serializeData()
+      const instOwner = opp.current.institution
       return (
         <Grid container>
           <Grid.Column width={16}>
             <Header size="huge">Opportunity</Header>
           </Grid.Column>
           <Grid.Column width={6}>
+        {(instOwner) && (
+            <Segment>
+              <Header size="small">Institution: </Header>
+              <Button as={Link} to={`/institution/${instOwner.id}/edit`}>{instOwner.name}</Button>
+            </Segment>
+        )}
+
             <Segment>
               <Header size="medium">Logo Profile</Header>
               <SimpleMediaUploader

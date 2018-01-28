@@ -16,6 +16,9 @@ class Opportunity extends Service {
           relation: 'account'
         },
         {
+          relation: 'institution',
+        },
+        {
           relation: 'logo',
         },
         {

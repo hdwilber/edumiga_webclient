@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Grid, Card, Header } from 'semantic-ui-react'
 import { Card as InstitutionCard } from '../../components/institution'
+import SideMenu from '../../components/side-menu'
 
 import * as institutionActions from '../../redux/institution/actions'
 
@@ -17,22 +18,24 @@ class InstList extends React.Component {
     const { institution } = this.props
     if (institution) {
       return (
-        <Grid container>
-          <Grid.Column width={16}>
-            <Header size="huge">Institutions</Header>
-          </Grid.Column>
-
-          <Grid.Column width={16}>
-            <Card.Group>
-              {(institution.list) &&(
-                institution.list.map(i => {
-                  return (
-                    <InstitutionCard institution={i} />
-                  )
-                })
-              )}
-            </Card.Group>
-          </Grid.Column>
+        <Grid fluid>
+          <Header size="huge">Institutions</Header>
+          <Grid.Row>
+            <Grid.Column width={4}>
+              <SideMenu />
+            </Grid.Column>
+            <Grid.Column width={12}>
+              <Card.Group>
+                {(institution.list) &&(
+                  institution.list.map(i => {
+                    return (
+                      <InstitutionCard institution={i} />
+                    )
+                  })
+                )}
+              </Card.Group>
+            </Grid.Column>
+            </Grid.Row>
         </Grid>
       )
     } else {
