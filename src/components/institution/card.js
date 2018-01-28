@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Image, Icon } from 'semantic-ui-react'
+import { Label, Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
 
@@ -9,18 +9,20 @@ const InstCard = (props) => {
   if (institution) {
     return (
       <Card>
-        <Image size="small" wrapped={true} inline={true} src={institution.logo ? buildImageUrl(institution.logo.url): 'none' }/>
         <Card.Content>
+          <Image size="tiny" floated="right" wrapped={true} inline={true} src={institution.logo ? buildImageUrl(institution.logo.url): 'none' }/>
+          <p><b>{institution.type}</b></p>
+          <Card.Meta>
+            {institution.prename}
+          </Card.Meta>
           <Card.Header as={Link} to={`/institution/${institution.id}/edit`}>
             {institution.name}
           </Card.Header>
-          <Card.Meta>
-            <span className='date'>
-              {institution.address}
-            </span>
-          </Card.Meta>
           <Card.Description>
             {institution.description}
+            <p>
+            {institution.levels.map(l => <Label>{l}</Label>)}
+            </p>
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
