@@ -21,7 +21,7 @@ const InstCard = (props) => {
           <Card.Description>
             {institution.description}
             <p>
-            {institution.levels.map(l => <Label>{l}</Label>)}
+            {institution.levels && institution.levels.map(l => <Label>{l}</Label>)}
             </p>
           </Card.Description>
         </Card.Content>

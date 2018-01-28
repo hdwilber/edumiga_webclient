@@ -108,6 +108,63 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
+    case actions.ADD_DEPENDENCY.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.ADD_DEPENDENCY.success: {
+      const { dep, isNewInstance } = action.payload
+
+      const list = (isNewInstance) ? state.current.dependencies.concat([dep])
+        : state.current.dependencies.map(o => (o.id === dep.id) ? dep : o)
+
+      return {
+        ...state,
+        loading: false,
+        current: {
+          ...state.current,
+          dependencies: list,
+        }
+      }
+    }
+
+    case actions.ADD_DEPENDENCY.failed: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false,
+      }
+    }
+
+    case actions.DEL_DEPENDENCY.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.DEL_DEPENDENCY.success: {
+      const { id } = action.payload
+      return {
+        ...state,
+        loading: false,
+        current: {
+          ...state.current,
+          dependencies: state.current.dependencies.filter(e =>e.id !== id)
+        }
+      }
+    }
+
+    case actions.DEL_DEPENDENCY.failed: {
+      return {
+        ...state,
+        loading: false,
+      }
+    }
+
     case actions.ADD_OPPORTUNITY.start: {
       return {
         ...state,
@@ -117,9 +174,6 @@ export default function institutionReducer(state = initialState, action) {
 
     case actions.ADD_OPPORTUNITY.success: {
       const { opp, isNewInstance } = action.payload
-      console.log('aDd opoprtunity')
-      console.log(opp)
-      console.log(isNewInstance)
 
       const list = (isNewInstance) ? state.current.opportunities.concat([opp])
         : state.current.opportunities.map(o => (o.id === opp.id) ? opp : o)

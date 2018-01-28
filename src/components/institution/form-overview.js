@@ -17,7 +17,7 @@ class FormOverview extends React.Component {
         onInputChange(e, {name: props.name, value: target.filter(v => v !== props.value)})
       } 
     } else {
-      onInputChange(props.name, props.checked)
+      onInputChange(e, {name: props.name, value: props.checked})
     }
   }
 

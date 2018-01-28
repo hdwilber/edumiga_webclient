@@ -152,7 +152,7 @@ export function delDependency(data) {
   return (dispatch, getState) => {
     const { account, institution } = getState()
     iService.setSession(account.session)
-    const request = iService.addDependency(institution.current.id, data)
+    const request = iService.delDependency(institution.current.id, data.id)
     return handleRequestEmpty(dispatch, getState, DEL_DEPENDENCY, request,
       {
         id: data.id,

@@ -46,7 +46,7 @@ const instData = [
     name: 'description',
   },
   {
-    type: Types.string,
+    type: Types.boolean,
     name: 'draft',
     default: false,
   },
@@ -126,10 +126,10 @@ export function setData(origin) {
       if (f.type === Types.string) {
         ret[f.name] = (f.default || '')
       } else {
-        if(f.type === Types.array.string) {
-          console.log('$$$$$$$$$$---')
-          console.log(f)
-        }
+        //if(f.type === Types.array.string) {
+          //console.log('$$$$$$$$$$---')
+          //console.log(f)
+        //}
         ret[f.name] = f.default 
       }
     })
@@ -140,11 +140,11 @@ export function setData(origin) {
       if (f.type === Types.string) {
         ret[f.name] = odata || f.default || ''
       } else {
-        if(f.type === Types.array.string) {
-          console.log('$$$$$$$$$$---')
-          console.log(f)
-          console.log(odata)
-        }
+        //if(f.type === Types.array.string) {
+          //console.log('$$$$$$$$$$---')
+          //console.log(f)
+          //console.log(odata)
+        //}
         const result = odata ? (f.format ? f.format(odata): odata ): (f.default)
         console.log(result)
         ret[f.name] = result
@@ -323,8 +323,8 @@ class Create extends React.Component {
       institutionFind(dep.id)
       history.push(`/institution/${dep.id}/edit`)
     } else  if (DepListActions.REMOVE) {
-      const { instDelDep } = this.props
-      instDelDep(dep)
+      const { institution, instDelDep } = this.props
+      instDelDep(institution.current.id, dep)
     }
   }
 
