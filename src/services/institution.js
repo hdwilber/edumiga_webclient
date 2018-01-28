@@ -31,6 +31,9 @@ class Institution extends Service {
 
   getAll(filter = {}) {
     const defaultFilter = {
+      where: {
+        adminLevel: 'main',
+      },
       include: [
         {
           relation: 'account',
