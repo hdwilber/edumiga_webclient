@@ -8,7 +8,7 @@ const initialState = {
   id: null,
 
   loading: false,
-  confirmed: false,
+  confirmed: null,
   error: null,
 }
 
@@ -178,23 +178,31 @@ export default function accountReducer(state = initialState, action) {
     case actions.CONFIRM.start: {
       return {
         ...state,
-        confirmed: false,
+        confirmed: {
+          error: null,
+          ok: false,
+        },
         loading: true,
       }
     }
     case actions.CONFIRM.success: {
       return {
         ...state,
-        confirmed: true,
+        confirmed: {
+          ok: true,
+          error: null,
+        },
         loading: false,
       }
     }
     case actions.CONFIRM.failed: {
       return {
         ...state,
-        confirmed: false,
+        confirmed: {
+          ok: false,
+          error: action.payload,
+        },
         loading: false,
-        error: action.payload,
       }
     }
   }

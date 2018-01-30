@@ -20,9 +20,21 @@ class Confirm extends React.Component {
   render() {
     const { account } = this.props
     if (account && account.confirmed) {
-      return (<Header>Your account has been confirmed successfully.</Header>)
+      const { confirmed } = account
+      if (!confirmed.error && !confirmed.ok) {
+        return (<Header>Checking confirmation code...</Header>)
+      } else if (!confirmed.error && confirmed.ok) {
+        return (
+          <div>
+            <Header>Your account has been confirmed successfully.</Header>
+          </div>
+        )
+
+      } else {
+        return (<Header>Invalid token.</Header>)
+      }
     } else {
-      return (<Header>Checking confirmation code.</Header>)
+      return (<Header>Loading...</Header>)
     }
   }
 }
@@ -31,4 +43,5 @@ export default connect((state) => ({
   account: state.account,
 }), (dispatch) => ({
   accountConfirm: (uid, token) => dispatch(accountActions.confirm(uid, token)),
+  accountReConfirm: () => dispatch(accountActions.reConfirm())
 }))(withRouter(Confirm))
