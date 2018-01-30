@@ -1,15 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import { withRouter } from 'react-router'
-import { Header, Form } from 'semantic-ui-react'
+import { Header } from 'semantic-ui-react'
 import * as accountActions from '../../redux/account/actions'
 
 class Confirm extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   componentDidMount() {
-    const { location, match, accountConfirm } = this.props
+    const { location, accountConfirm } = this.props
     const { uid, token } = location.query
 
     if(uid && token) {
