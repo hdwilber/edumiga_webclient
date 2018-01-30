@@ -15,6 +15,10 @@ class Account extends Service {
     return this.createRequest('POST', 'login', data, false)
   }
 
+  confirm(uid, token) {
+    return this.createRequest('GET', `confirm?uid=${uid}&token=${token}`, null, false)
+  }
+
   get(id, filter={}) {
     const defaultFilter = {
       include: [{

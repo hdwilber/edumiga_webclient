@@ -10,6 +10,7 @@ export const RESTORE = createActionLabels('SESSION_RESTORE')
 export const FIND = createActionLabels('ACCOUNT_FIND')
 export const IDENTITY_UPDATE = createActionLabels('IDENTITY_UPDATE')
 export const UPLOAD_PHOTO = createActionLabels('IDENTITY_UPLOAD_PHOTO')
+export const CONFIRM = createActionLabels('CONFIRM')
 
 const aService = new AccountService()
 const iService = new IdentityService()
@@ -43,6 +44,13 @@ export function login(data) {
   }
 }
 
+export function confirm(uid, token) {
+  return (dispatch, getState) => {
+    const request = aService.confirm(uid, token)
+    return handleRequest(dispatch, getState, CONFIRM, request)
+  }
+}
+
 export function uploadPhoto(file) {
   return (dispatch, getState) => {
     const { account } = getState()
@@ -66,7 +74,7 @@ export function logout() {
     aService.clearSessionLocal()
     dispatch(push('/'))
     return dispatch({
-      type: LOGOUT.init,
+      type: LOGOUT.start,
     })
   }
 }
