@@ -1,7 +1,7 @@
 import { AccountService } from '../../services'
 import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
-import { createActionLabels, handleRequest } from '../utils'
+import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
 export const CREATE = createActionLabels('ACCOUNT_CREATE')
 export const LOGIN = createActionLabels('SESSION_LOGIN')
@@ -10,6 +10,8 @@ export const RESTORE = createActionLabels('SESSION_RESTORE')
 export const FIND = createActionLabels('ACCOUNT_FIND')
 export const IDENTITY_UPDATE = createActionLabels('IDENTITY_UPDATE')
 export const UPLOAD_PHOTO = createActionLabels('IDENTITY_UPLOAD_PHOTO')
+export const CONFIRM = createActionLabels('CONFIRM')
+export const RECONFIRM = createActionLabels('RECONFIRM')
 
 const aService = new AccountService()
 const iService = new IdentityService()
@@ -43,6 +45,33 @@ export function login(data) {
   }
 }
 
+export function confirm(uid, token) {
+  return (dispatch, getState) => {
+    const request = aService.confirm(uid, token)
+    return handleRequestEmpty(dispatch, getState, CONFIRM, request, null,
+      (payload) => {
+        setTimeout(() => {
+          dispatch(push('/'))
+        }, 1500)
+      },
+      (error) => {
+        setTimeout(() => {
+          dispatch(push('/'))
+        }, 1500)
+      }
+    )
+  }
+}
+
+export function reConfirm() {
+  return (dispatch, getState) => {
+    const { account: { session } } = this.props
+    aService.setSession(session)
+    const request = aService.reConfirm()
+    return handleRequestEmpty(dispatch, getState, CONFIRM, request)
+  }
+}
+
 export function uploadPhoto(file) {
   return (dispatch, getState) => {
     const { account } = getState()
@@ -66,7 +95,7 @@ export function logout() {
     aService.clearSessionLocal()
     dispatch(push('/'))
     return dispatch({
-      type: LOGOUT.init,
+      type: LOGOUT.start,
     })
   }
 }

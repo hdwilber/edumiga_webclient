@@ -6,6 +6,7 @@ import { Edit as InstitutionEdit, List as InstitutionList } from './containers/i
 import InstitutionView from './containers/institution/view'
 import OpportunityEdit from './containers/opportunity/edit'
 import AccountIdentity from './containers/account/identity'
+import AccountConfirm from './containers/account/confirm'
 
 function Routes(props) {
   const { Wrapper } = props
@@ -13,6 +14,7 @@ function Routes(props) {
     <Wrapper>
       <Route exact path="/" component={ Home } />
       <Route exact path="/account/identity" component={ AccountIdentity } />
+      <Route exact path="/account/confirm" component={ AccountConfirm } />
       <Route exact path="/institutions" component={ InstitutionList } />
       <Route exact path="/institution/create" component={ InstitutionEdit } />
       <Route exact path="/institution/:institutionId/view" component={ InstitutionView } />

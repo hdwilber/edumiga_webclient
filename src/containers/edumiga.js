@@ -28,7 +28,7 @@ class Edumiga extends Component {
       if (!account.session) {
         return false 
       }
-    } 
+    }
     return true
   }
 

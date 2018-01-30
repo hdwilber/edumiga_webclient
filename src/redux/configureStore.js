@@ -4,10 +4,15 @@ import thunkMiddleware from 'redux-thunk'
 
 import createHistory from 'history/createBrowserHistory'
 import rootReducer from './rootReducer'
+import qHistory from 'qhistory'
+import { stringify, parse } from 'qs'
 
-export const history = createHistory({
+
+export const history = qHistory( createHistory({
   basename: process.env.PUBLIC_URL
-})
+}),
+  stringify,
+  parse)
 
 const initialState = {}
 const enhancers = []
