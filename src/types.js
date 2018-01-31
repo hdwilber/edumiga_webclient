@@ -146,6 +146,69 @@ export function formatOutput(template, from) {
   return ret
 }
 
-const Opportunity = {
-
+export const AccountIdentity = {
+  id: {
+    type: Types.string,
+  },
+  displayName: {
+    type: Types.string,
+  },
+  title: {
+    type: Types.string
+  },
+  firstName: {
+    type: Types.string,
+  }, 
+  lastName: {
+    type: Types.string,
+  },
+  birthDate: {
+    notSendable: true,
+    type: Types.string,
+  }, 
+  occupation: {
+    type: Types.string,
+  }, 
+  country: {
+    type: Types.string,
+  }, 
+  state: {
+    type: Types.string,
+  },
+  county: {
+    type: Types.string,
+  },
+  address: {
+    type: Types.string,
+  },
+  phone: {
+    type: Types.string,
+  },
+  interests: {
+    type: Types.array.string,
+    default: [],
+  },
+  location: {
+    type: Types.object,
+    default: {
+      point: null,
+      zoom: 10,
+    }
+  },
+  photo: {
+    notSendable: true,
+    type: Types.object,
+    format: function (data) {
+      return {
+        file: null,
+        url: data ? (buildImageUrl(data.url)): '',
+        fakeUrl: '',
+      }
+    },
+    default: {
+      file: null,
+      url: '',
+      fakeUrl: '',
+    }
+  },
 }
