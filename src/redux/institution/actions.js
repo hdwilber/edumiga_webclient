@@ -25,6 +25,23 @@ export function getTypes() {
   }
 }
 
+export function findAllOwned(options) {
+  return (dispatch, getState) => {
+    const { account } = getState()
+    iService.setSession(account.session)
+    const request = iService.getAllOwned()
+    return handleRequestO(dispatch, FIND_ALL, request,
+      {
+        format: function(data) {
+          return {
+            list: data,
+            single: true,
+          }
+        }
+      },
+      options)
+  }
+}
 
 export function create(data, options) {
   return (dispatch, getState) => {
@@ -69,12 +86,12 @@ export function deleteI(id, options) {
 
     const request = options && options.isDependency
       ? iService.delDependency(institution.current.id, id)
-      : iService.deleteI(institution.current.id)
+      : iService.deleteI(id)
     return handleRequestEmptyO(dispatch, DELETE, request,
       {}, 
       {
         ...options,
-        id: options && options.isDependency ? id: institution.current.id,
+        id,
       })
   }
 }

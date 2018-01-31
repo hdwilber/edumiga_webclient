@@ -70,6 +70,7 @@ const MenuItemUser = (props) => {
       >
         <Dropdown.Menu>
           <Dropdown.Item as={Link} to="/account/identity" icon='edit' text='Edit Profile' />
+          <Dropdown.Item as={Link} to="/institutions?owned=me" icon='list' text='My Institutions' />
           <Dropdown.Item icon='settings' text='Account Settings' />
           <Dropdown.Item icon='sign out' text='Logout' onClick={(e) => onLogout()}/>
         </Dropdown.Menu>

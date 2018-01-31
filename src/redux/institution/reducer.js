@@ -122,9 +122,7 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.DELETE.success: {
-      console.log('---------------mmmm-------------')
-      console.log(action.payload)
-      const { id, isDependency } = action.payload
+      const { id, isDependency, inList } = action.payload
       if (isDependency) {
         return {
           ...state,
@@ -133,6 +131,12 @@ export default function institutionReducer(state = initialState, action) {
             ...state.current,
             dependencies: state.current.dependencies.filter(e =>e.id !== id)
           }
+        }
+      } else if (inList) {
+        return {
+          ...state,
+          loading: false,
+          list: state.list.filter(l => l.id !== id),
         }
       } else {
         return {
@@ -179,6 +183,7 @@ export default function institutionReducer(state = initialState, action) {
     case actions.FIND_ALL.start: {
       return {
         ...state,
+        list: null,
         loading: true,
       }
     }

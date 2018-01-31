@@ -29,6 +29,33 @@ class Institution extends Service {
     return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
 
+  getAllOwned(filter = {}) {
+    const defaultFilter = {
+      where: {
+        parentId: {
+          exists: false,
+        },
+        adminLevel: 'main',
+        accountId: this.session && this.session.accountId,
+      },
+      include: [
+        {
+          relation: 'account',
+        },
+        {
+          relation: 'logo',
+        },
+        {
+          relation: 'media',
+        },
+      ],
+
+      ...filter,
+    }
+    return this.createRequest('GET', `?filter=${JSON.stringify(defaultFilter)}`, null, false)
+  }
+
+
   getAll(filter = {}) {
     const defaultFilter = {
       where: {
