@@ -21,150 +21,7 @@ import { uploadLogo } from '../../redux/opportunity/actions'
 import { Actions as OppListActions } from '../../components/opportunity/list'
 import { Actions as DepListActions } from '../../components/institution/list'
 
-const Types = {
-  boolean: 1,
-  number: 2,
-  string: 3,
-  array: {
-    number: 4,
-    string: 5,
-  },
-  object: 6
-}
-
-const instData = [
-  {
-    type: Types.string,
-    name: 'prename',
-  },
-  {
-    type: Types.string,
-    name: 'name'
-  },
-  {
-    type: Types.string,
-    name: 'description',
-  },
-  {
-    type: Types.boolean,
-    name: 'draft',
-    default: false,
-  },
-  {
-    name: 'type',
-    type: Types.string,
-  },
-  {
-    name: 'address',
-    type: Types.string,
-  },
-  {
-    name: 'country',
-    type: Types.string,
-  },
-  {
-    name: 'county',
-    type: Types.string,
-  },
-  {
-    name: 'state',
-    type: Types.string,
-  },
-  {
-    name: 'phone',
-    type: Types.string,
-  },
-  {
-    name: 'levels',
-    type: Types.array.string,
-    default: [],
-  },
-  {
-    name: 'adminLevel',
-    type: Types.string,
-  },
-  {
-    name: 'logo',
-    type: Types.object,
-    default: {
-      file: null,
-      url: '',
-      fakeUrl: '',
-    }
-  },
-  {
-    name: 'location',
-    type: Types.object,
-    default: {
-      point: null,
-      zoom: 10,
-    }
-  },
-  {
-    name: 'logo',
-    notSendable: false,
-    type: Types.object,
-    format: function(data){
-      return {
-        file: null,
-        url: data && (buildImageUrl(data.url)),
-        fakeUrl: '',
-      }
-    },
-    default: {
-      file: null,
-      url: null,
-      fakeUrl: '',
-    },
-  }
-] 
-
-export function setData(origin) {
-  const ret = {}
-  if (!origin) {
-    instData.forEach(f => {
-      if (f.type === Types.string) {
-        ret[f.name] = (f.default || '')
-      } else {
-        //if(f.type === Types.array.string) {
-          //console.log('$$$$$$$$$$---')
-          //console.log(f)
-        //}
-        ret[f.name] = f.default 
-      }
-    })
-    return ret
-  } else {
-    instData.forEach(f => {
-      const odata = origin[f.name]
-      if (f.type === Types.string) {
-        ret[f.name] = odata || f.default || ''
-      } else {
-        //if(f.type === Types.array.string) {
-          //console.log('$$$$$$$$$$---')
-          //console.log(f)
-          //console.log(odata)
-        //}
-        const result = odata ? (f.format ? f.format(odata): odata ): (f.default)
-        console.log(result)
-        ret[f.name] = result
-      }
-    })
-    return ret
-  }
-}
-
-export function extractFormData(origin) {
-  if (origin) {
-    const ret = {}
-    instData.forEach(f => {
-      if (!f.notSendable) {
-        ret[f.name] = origin[f.name]
-      }
-    })
-    return ret
-  }
-}
+import { Institution as InstTemplate, format, formatOutput, } from '../../types'
 
 class Create extends React.Component {
   constructor(props) {
@@ -190,7 +47,7 @@ class Create extends React.Component {
     this.handleAddDependency = this.handleAddDependency.bind(this)
 
     this.state = {
-      ...setData(),
+      ...format(InstTemplate),
 
       opportunity: null,
       showOpportunityForm: false,
@@ -223,9 +80,8 @@ class Create extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { institution } = nextProps
     if (institution && institution.current) {
-      const i = institution.current
       this.setState({
-        ...setData(i),
+        ...format(InstTemplate, institution.current),
       })
     }
   }
@@ -233,9 +89,11 @@ class Create extends React.Component {
   // Save institution overview and location
   handleSave() {
     const { institution, institutionUpdate } = this.props
+    const output = formatOutput(InstTemplate, this.state)
+    console.log(output)
     institutionUpdate({
-      id: institution.current.id,
-      ...extractFormData(this.state)
+      //...formatOutput(InstTemplate, this.state)
+      ...output
     })
   }
 
@@ -374,7 +232,7 @@ class Create extends React.Component {
                 name="logo" 
                 onChange={this.handleInputChange}
                 onUpload={this.handleClickUploadLogo}
-                url={logo.url}
+                url={logo.url || logo.fakeUrl}
                 disabled={!logo.fakeUrl}
               />
             </Segment>
