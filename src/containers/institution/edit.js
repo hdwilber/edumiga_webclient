@@ -28,6 +28,7 @@ class Create extends React.Component {
     super(props)
 
     this.handleSave = this.handleSave.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
@@ -36,22 +37,24 @@ class Create extends React.Component {
     this.handleOpportunitySave = this.handleOpportunitySave.bind(this)
     this.handleOpportunityCancel = this.handleOpportunityCancel.bind(this)
 
+    this.handleAddDependency = this.handleAddDependency.bind(this)
     this.handleDepSelectRow = this.handleDepSelectRow.bind(this)
     this.handleDepListAction = this.handleDepListAction.bind(this)
 
-    //this.serializeData = this.serializeData.bind(this)
     this.handleOppSelectRow = this.handleOppSelectRow.bind(this)
     this.handleOppListAction = this.handleOppListAction.bind(this)
     this.handleInstSave = this.handleInstSave.bind(this)
     this.handleInstCancel = this.handleInstCancel.bind(this)
-    this.handleAddDependency = this.handleAddDependency.bind(this)
 
     this.state = {
       ...format(InstTemplate),
+      isNew: true,
 
+      selectedDep: null,
       opportunity: null,
       showOpportunityForm: false,
       showInstForm: false,
+      institution: null,
 
       currentLocation: {
         point: {
@@ -69,32 +72,50 @@ class Create extends React.Component {
 
     if (institutionId) {
       institutionFind(institutionId)
-    } else {
-      const { institutionCreate } = this.props
-      institutionCreate({})
     }
+
     this.props.institutionGetTypes()
     this.props.opportunityGetTypes()
   }
 
   componentWillReceiveProps(nextProps) {
     const { institution } = nextProps
-    if (institution && institution.current) {
-      this.setState({
-        ...format(InstTemplate, institution.current),
-      })
+    if (institution) {
+      if (institution.current === undefined && this.state.isNew) {
+        this.setState({
+          ...format(InstTemplate, null),
+          isNew: true,
+        })
+      } else if (institution && institution.current) {
+        this.setState({
+          ...format(InstTemplate, institution.current),
+          isNew: false,
+        })
+      }
     }
   }
 
   // Save institution overview and location
   handleSave() {
-    const { institution, institutionUpdate } = this.props
+    const { institutionCreate, institutionUpdate } = this.props
     const output = formatOutput(InstTemplate, this.state)
-    console.log(output)
-    institutionUpdate({
-      //...formatOutput(InstTemplate, this.state)
-      ...output
-    })
+    if (this.state.id) {
+      institutionUpdate({
+        ...output
+      })
+    } else {
+      delete(output.id)
+      institutionCreate({
+        ...output
+      })
+    }
+  }
+
+  handleDelete() {
+    const { institutionDelete } = this.props
+    if (!this.state.isNew) {
+      institutionDelete(this.state.id)
+    }
   }
 
   handleInputChange(e, props) {
@@ -181,18 +202,33 @@ class Create extends React.Component {
       institutionFind(dep.id)
       history.push(`/institution/${dep.id}/edit`)
     } else  if (DepListActions.REMOVE) {
-      const { institution, instDelDep } = this.props
-      instDelDep(institution.current.id, dep)
+      const { institution, institutionDelete } = this.props
+      institutionDelete(dep.id, { isDependency: true })
     }
   }
 
   handleDepSelectRow(dep) {
+    this.setState({
+      selectedDep: dep,
+      showInstForm: true,
+    })
   }
 
   handleInstSave(data) {
-    console.log(data)
-    const { instAddDep } = this.props
-    instAddDep(this.state.dependency, data)
+    if(data.id) {
+      const { institutionUpdate } = this.props
+      institutionUpdate(data, {
+        isDependency: true
+      })
+    } else {
+      delete(data.id)
+      data.parentId = this.state.id
+      const { institutionCreate } = this.props
+      institutionCreate(data, {
+        isDependency: true,
+      })
+    }
+      //instAddDep(this.state.dependency, data)
     this.setState({
       showInstForm: false,
     })
@@ -204,28 +240,30 @@ class Create extends React.Component {
   }
 
   render() {
-    console.log('Rendering Inst/Edit')
     const { institution } = this.props
-    const { logo, location } = this.state
-    if (institution && institution.current && institution.constants) {
+    const { isNew, logo, location } = this.state
+
+    if (institution && institution.constants) {
+      console.log(this.state)
       return (
         <Grid container>
           <Grid.Column width={16}>
-            <Header size="huge">Institution:
-              {institution.current.name}
+            <Header size="huge">
+              {isNew ? "Create a new Institution": this.state.name}
             </Header>
           </Grid.Column>
           <Grid.Column width={6}>
             
-          {(institution.current.head && institution.current.head.id) && (
+          {!isNew && this.state.head && (
               <Segment>
                 <Header size="tiny">Depends on:</Header>
                 <Button onClick={() => this.props.institutionFind(institution.current.head.id, true)}>
-                  {institution.current.head.name}
+                  {this.state.head.name}
                 </Button>
               </Segment>
             )}
 
+          {!isNew && (
             <Segment>
               <Header size="medium">Logo Profile</Header>
               <SimpleMediaUploader
@@ -236,6 +274,7 @@ class Create extends React.Component {
                 disabled={!logo.fakeUrl}
               />
             </Segment>
+          )}
             <Segment>
               <Header size="medium">Location</Header>
               <LocationMap
@@ -256,24 +295,32 @@ class Create extends React.Component {
               />
             </Segment>
 
-            <Segment>
-              <Header size="medium">Dependencies <Button default onClick={this.handleAddDependency}>Add</Button></Header>
-              <InstList items={institution.current.dependencies} onSelectRow={this.handleDepSelectRow}
-                onClickAction={this.handleDepListAction}
-              />
-            </Segment>
-
-            <Segment>
-              <Header size="medium">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-              <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
-                onClickAction={this.handleOppListAction}
-              />
-            </Segment>
-
             <Button loading={institution.loading} disabled={institution.loading} 
               default
               onClick={this.handleSave}
             >Save</Button>
+            <Button loading={institution.loading} disabled={institution.loading} 
+              default
+              onClick={this.handleDelete}
+            >Delete</Button>
+
+            {!isNew && institution.current && (
+              <Segment>
+                <Header size="medium">Dependencies <Button default onClick={this.handleAddDependency}>Add</Button></Header>
+                <InstList items={institution.current.dependencies} onSelectRow={this.handleDepSelectRow}
+                  onClickAction={this.handleDepListAction}
+                />
+              </Segment>
+            )}
+
+            {!isNew && institution.current && (
+              <Segment>
+                <Header size="medium">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
+                <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
+                  onClickAction={this.handleOppListAction}
+                />
+              </Segment>
+            )}
 
           </Grid.Column>
 
@@ -283,7 +330,8 @@ class Create extends React.Component {
             onCancel={this.handleOpportunityCancel}
             onLogoUpload={this.handleOppLogoUpload}
           />
-          <InstForm visible={this.state.showInstForm} institution={this.state.institution}
+          <InstForm visible={this.state.showInstForm} 
+            institution={this.state.selectedDep}
             constants={institution.constants}
             onSave={this.handleInstSave} 
             onCancel={this.handleInstCancel}
@@ -304,15 +352,14 @@ export default connect((state) => ({
   institution: state.institution,
   opp: state.opp,
 }), (dispatch) => ({
-  institutionCreate: (data) => dispatch(institutionActions.create(data)),
+  institutionCreate: (data, opts) => dispatch(institutionActions.create(data, opts)),
   institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
   institutionFind: (id, change) => dispatch(institutionActions.findById(id, change)),
-  institutionUpdate: (data) => dispatch(institutionActions.update(data)),
+  institutionUpdate: (data, opts) => dispatch(institutionActions.update(data, opts)),
+  institutionDelete: (data, opts) => dispatch(institutionActions.deleteI(data, opts)),
   institutionAddOpp: (opp, data) => dispatch(institutionActions.addOpportunity(opp, data)),
   institutionOppUploadLogo: (id, data) => dispatch(uploadLogo(id, data)),
   institutionRemOpp: (opp) => dispatch(institutionActions.removeOpportunity(opp)),
-  instAddDep: (id, data) => dispatch(institutionActions.addDependency(data)),
-  instDelDep: (id, data) => dispatch(institutionActions.delDependency(data)),
   institutionGetTypes: () => dispatch(institutionActions.getTypes()),
   opportunityGetTypes: () => dispatch(opportunityActions.getTypes()),
 

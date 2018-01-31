@@ -1,6 +1,6 @@
 import { push } from 'react-router-redux'
 import { InstitutionService, OpportunityService } from '../../services'
-import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
@@ -9,6 +9,7 @@ export const UPLOAD_LOGO = createActionLabels('INST_UPLOAD_LOGO')
 export const FIND = createActionLabels('INST_FIND')
 export const FIND_ALL = createActionLabels('INST_FIND_ALL')
 export const UPDATE = createActionLabels('INST_UPDATE')
+export const DELETE = createActionLabels('INST_DELETE')
 export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
 export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
 export const ADD_DEPENDENCY = createActionLabels('INST_ADD_DEPENDENCY')
@@ -25,35 +26,60 @@ export function getTypes() {
 }
 
 
-export function create(data) {
+export function create(data, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.create(data)
-    return handleRequest(dispatch, getState, CREATE, request,
-      (data) => {
-        return {
-          institution: data,
-          single: true,
+    return handleRequestO(dispatch, CREATE, request,
+      {
+        format: function(data) {
+          return {
+            institution: data,
+            single: true,
+          }
         }
-      })
+      },
+      options)
   }
 }
 
-export function update(data) {
+export function update(data, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.update(data)
-    return handleRequest(dispatch, getState, UPDATE, request, 
-    (data) => {
-      return {
-        institution: data,
-        single: true,
-      }
-    })
+    return handleRequestO(dispatch, UPDATE, request, 
+      {
+        format: function(data) {
+          return {
+            institution: data,
+            single: true,
+          }
+        }
+      },
+      options)
   }
 }
+
+export function deleteI(id, options) {
+  return (dispatch, getState) => {
+    const { account, institution } = getState()
+    iService.setSession(account.session)
+
+    const request = options && options.isDependency
+      ? iService.delDependency(institution.current.id, id)
+      : iService.deleteI(institution.current.id)
+    return handleRequestEmptyO(dispatch, DELETE, request,
+      {}, 
+      {
+        ...options,
+        id: options && options.isDependency ? id: institution.current.id,
+      })
+  }
+}
+
+
 
 export function uploadLogo(id, file) {
   return (dispatch, getState) => {
@@ -130,33 +156,6 @@ export function removeOpportunity(opp) {
 
     return handleRequestEmpty(dispatch, getState, REM_OPPORTUNITY, request,
       { id: opp.id })
-  }
-}
-
-export function addDependency(data) {
-  return (dispatch, getState) => {
-    const { account, institution } = getState()
-    iService.setSession(account.session)
-    const request = iService.addDependency(institution.current.id, data)
-    return handleRequest(dispatch, getState, ADD_DEPENDENCY, request,
-      data => {
-        return {
-          dep: data,
-          isNewInstance: true,
-        }
-      })
-  }
-}
-
-export function delDependency(data) {
-  return (dispatch, getState) => {
-    const { account, institution } = getState()
-    iService.setSession(account.session)
-    const request = iService.delDependency(institution.current.id, data.id)
-    return handleRequestEmpty(dispatch, getState, DEL_DEPENDENCY, request,
-      {
-        id: data.id,
-      })
   }
 }
 

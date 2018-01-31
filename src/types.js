@@ -15,6 +15,7 @@ export const Types = {
 export const Institution = {
   id: {
     type: Types.string,
+    default: null,
   },
   prename: {
     type: Types.string,
@@ -76,6 +77,16 @@ export const Institution = {
       url: '',
       fakeUrl: '',
     }
+  },
+  head: {
+    notSendable: true,
+    type: Types.object,
+    default: null
+  },
+  dependencies: {
+    notSendable: true,
+    type: Types.array.object,
+    default: [],
   }
 }
 
@@ -88,13 +99,16 @@ export function format (template, from = null) {
         ret[name] = field.default || ''
       } else {
         ret[name] = field.default
+        if (name === 'dependencies') {
+          //console.log(field)
+        }
       }
     }
     return ret
 
   } else {
     for( const name in template ) {
-      console.log('%o : %o ', name, from[name])
+      //console.log('%o : %o ', name, from[name])
       const field = template[name]
       if (field.type === Types.string) {
         ret[name] = from[name] || ''

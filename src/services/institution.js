@@ -6,7 +6,7 @@ class Institution extends Service {
   }
 
   create(data) {
-    return this.createRequest('POST', '', data, false )
+    return this.createRequest('POST', '', data, true)
   }
 
   get(id, filter = {}) {
@@ -74,6 +74,10 @@ class Institution extends Service {
 
   delDependency(id, did) {
     return this.createRequest('DELETE', `${id}/dependencies/${did}`)
+  }
+
+  deleteI(id) {
+    return this.createRequest('DELETE', `${id}`)
   }
 }
 

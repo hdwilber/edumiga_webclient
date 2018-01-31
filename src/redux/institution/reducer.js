@@ -34,6 +34,47 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
+
+    case actions.UPDATE.start: {
+      return {
+        ...state,
+        laoding: true,
+      }
+    }
+
+    case actions.UPDATE.success: {
+      const { isDependency, institution, single } = action.payload
+      console.log('UPDATE')
+      console.log(action.payload)
+      if(isDependency) {
+        const list = state.current.dependencies.map(d => (d.id === institution.id) ? institution: d)
+        return {
+          ...state,
+          loading: false,
+          current: {
+            ...state.current,
+            dependencies: list,
+          }
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+          current: {
+            ...state.current,
+            ...institution,
+          },
+        }
+      }
+    }
+    case actions.UPDATE.failed: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
     case actions.CREATE.start: {
       return {
         ...state,
@@ -42,20 +83,73 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.CREATE.success: {
-      return {
-        ...state,
-        current: action.payload.institution,
-        loading: false,
+      const { institution, isDependency } = action.payload
+      console.log('CREATE')
+      console.log(action.payload)
+      if (isDependency) {
+        const list = state.current.dependencies.concat([institution])
+        return {
+          ...state,
+          loading: false,
+          current: {
+            ...state.current,
+            dependencies: list,
+          }
+        }
+      } else {
+        return {
+          ...state,
+          current: institution,
+          loading: false,
+        }
       }
     }
 
     case actions.CREATE.failed: {
+
       return {
         ...state,
         current: null,
         loading: false,
       }
     }
+
+    case actions.DELETE.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.DELETE.success: {
+      console.log('---------------mmmm-------------')
+      console.log(action.payload)
+      const { id, isDependency } = action.payload
+      if (isDependency) {
+        return {
+          ...state,
+          loading: false,
+          current: {
+            ...state.current,
+            dependencies: state.current.dependencies.filter(e =>e.id !== id)
+          }
+        }
+      } else {
+        return {
+          ...state,
+          current: null,
+          loading: false,
+        }
+      }
+    }
+
+    case actions.DELETE.failed: {
+      return {
+        ...state,
+        loading: false,
+      }
+    }
+
 
     case actions.FIND.start: {
       return {
@@ -135,32 +229,6 @@ export default function institutionReducer(state = initialState, action) {
       return {
         ...state,
         error: action.payload,
-        loading: false,
-      }
-    }
-
-    case actions.DEL_DEPENDENCY.start: {
-      return {
-        ...state,
-        loading: true,
-      }
-    }
-
-    case actions.DEL_DEPENDENCY.success: {
-      const { id } = action.payload
-      return {
-        ...state,
-        loading: false,
-        current: {
-          ...state.current,
-          dependencies: state.current.dependencies.filter(e =>e.id !== id)
-        }
-      }
-    }
-
-    case actions.DEL_DEPENDENCY.failed: {
-      return {
-        ...state,
         loading: false,
       }
     }
