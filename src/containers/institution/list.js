@@ -5,17 +5,51 @@ import { Grid, Card, Header } from 'semantic-ui-react'
 import { Card as InstitutionCard } from '../../components/institution'
 import SideMenu from '../../components/side-menu'
 
+import { ActionTypes } from '../../components/institution/card'
+
 import * as institutionActions from '../../redux/institution/actions'
 
 class InstList extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleCardAction = this.handleCardAction.bind(this)
+  }
 
   componentDidMount() {
-    const { institutionFindAll } = this.props
-    institutionFindAll()
+    const { location, institutionFindAll } = this.props
+    const { owned } = location.query
+
+    if (owned === 'me') {
+      const { institutionFindAllOwned } = this.props
+      institutionFindAllOwned()
+    } else {
+      institutionFindAll()
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location && nextProps.location.key) {
+      if (nextProps.location.key !== this.props.location.key) {
+        const { owned } = nextProps.location.query
+        if (owned === 'me') {
+          const { institutionFindAllOwned } = this.props
+          institutionFindAllOwned()
+        } else {
+          const { institutionFindAll } = this.props
+          institutionFindAll()
+        }
+      }
+    }
+  }
+
+  handleCardAction(type, institution) {
+    if(type === ActionTypes.DELETE) {
+      const {institutionDelete} = this.props
+      institutionDelete(institution.id, {inList: true})
+    }
   }
 
   render() {
-    const { institution } = this.props
+    const { account, institution } = this.props
     if (institution) {
       return (
         <Grid fluid>
@@ -29,7 +63,10 @@ class InstList extends React.Component {
                 {(institution.list) &&(
                   institution.list.map(i => {
                     return (
-                      <InstitutionCard institution={i} />
+                      <InstitutionCard session={account && account.session} 
+                        institution={i} 
+                        onAction={this.handleCardAction}
+                      />
                     )
                   })
                 )}
@@ -49,5 +86,7 @@ export default connect((state) => ({
   institution: state.institution,
 }), (dispatch) => ({
   institutionFindAll: (filter) => dispatch(institutionActions.findAll(filter)),
+  institutionFindAllOwned: (filter) => dispatch(institutionActions.findAllOwned(filter)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
+  institutionDelete: (id, opts) => dispatch(institutionActions.deleteI(id, opts)),
 })) (withRouter(InstList))

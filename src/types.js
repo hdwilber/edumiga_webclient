@@ -15,6 +15,7 @@ export const Types = {
 export const Institution = {
   id: {
     type: Types.string,
+    default: null,
   },
   prename: {
     type: Types.string,
@@ -76,6 +77,16 @@ export const Institution = {
       url: '',
       fakeUrl: '',
     }
+  },
+  head: {
+    notSendable: true,
+    type: Types.object,
+    default: null
+  },
+  dependencies: {
+    notSendable: true,
+    type: Types.array.object,
+    default: [],
   }
 }
 
@@ -88,13 +99,16 @@ export function format (template, from = null) {
         ret[name] = field.default || ''
       } else {
         ret[name] = field.default
+        if (name === 'dependencies') {
+          //console.log(field)
+        }
       }
     }
     return ret
 
   } else {
     for( const name in template ) {
-      console.log('%o : %o ', name, from[name])
+      //console.log('%o : %o ', name, from[name])
       const field = template[name]
       if (field.type === Types.string) {
         ret[name] = from[name] || ''
@@ -132,6 +146,69 @@ export function formatOutput(template, from) {
   return ret
 }
 
-const Opportunity = {
-
+export const AccountIdentity = {
+  id: {
+    type: Types.string,
+  },
+  displayName: {
+    type: Types.string,
+  },
+  title: {
+    type: Types.string
+  },
+  firstName: {
+    type: Types.string,
+  }, 
+  lastName: {
+    type: Types.string,
+  },
+  birthDate: {
+    notSendable: true,
+    type: Types.string,
+  }, 
+  occupation: {
+    type: Types.string,
+  }, 
+  country: {
+    type: Types.string,
+  }, 
+  state: {
+    type: Types.string,
+  },
+  county: {
+    type: Types.string,
+  },
+  address: {
+    type: Types.string,
+  },
+  phone: {
+    type: Types.string,
+  },
+  interests: {
+    type: Types.array.string,
+    default: [],
+  },
+  location: {
+    type: Types.object,
+    default: {
+      point: null,
+      zoom: 10,
+    }
+  },
+  photo: {
+    notSendable: true,
+    type: Types.object,
+    format: function (data) {
+      return {
+        file: null,
+        url: data ? (buildImageUrl(data.url)): '',
+        fakeUrl: '',
+      }
+    },
+    default: {
+      file: null,
+      url: '',
+      fakeUrl: '',
+    }
+  },
 }

@@ -1,11 +1,24 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Label, Card, Image, Icon } from 'semantic-ui-react'
+import { Button, Label, Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
 
+export const ActionTypes = {
+  DELETE: 3,
+}
+
+function renderOwnerActions (props) {
+  const { institution, onAction } = props
+  return (
+    <div>
+      <Button icon='delete' onClick={(e) => onAction(ActionTypes.DELETE, institution)}>
+      </Button> 
+    </div>
+  )
+}
 const InstCard = (props) => {
-  const { institution } = props
+  const { session, institution } = props
   if (institution) {
     return (
       <Card>
@@ -30,6 +43,7 @@ const InstCard = (props) => {
             <Icon name='list' />
             {institution.opportunities && institution.opportunities.length} Opportunities
           </a>
+          { session.accountId === institution.accountId && renderOwnerActions(props)}
         </Card.Content>
       </Card>
     )

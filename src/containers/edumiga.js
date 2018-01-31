@@ -24,9 +24,11 @@ class Edumiga extends Component {
 
   checkAuthorization() {
     const { account, location } =  this.props
-    if (location.pathname.indexOf('institution/create') > -1) {
+    if (location.pathname.indexOf('institution/create') > -1 || location.pathname.indexOf('institution/list')) {
       if (!account.session) {
         return false 
+      } else if (!location.query.owned) {
+        return true 
       }
     }
     return true

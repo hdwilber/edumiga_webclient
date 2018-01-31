@@ -28,6 +28,91 @@ export function handleRequestEmpty(dispatch, getState, action, request, data, po
   })
 }
 
+export function handleRequestEmptyO(dispatch, action, request, fncs  = {}, options = {}) {
+  request.then (response => {
+    if (response.ok) {
+      dispatch({
+        type: action.success,
+        payload: options,
+
+      })
+    }
+    else {
+      return Promise.reject(new Error('Request failed'))
+    }
+  })
+  .then(data => {
+    const payload = fncs.format ? fncs.format(data): data
+    dispatch({
+      type: action.success,
+      payload: {
+        ...payload,
+        ...options,
+      }
+    })
+
+    if (fncs.postThen) fncs.postThen(payload, options)
+  })
+  .catch(error => {
+    console.log(error)
+    dispatch({
+      type: action.failed,
+      payload: {
+        error,
+        ...options,
+      }
+    })
+
+    if (fncs.postCatch) fncs.postCatch(error, options)
+
+  })
+  return dispatch({
+    type: action.start,
+    payload: {
+      ...options,
+    }
+  })
+}
+export function handleRequestO(dispatch, action, request, fncs  = {}, options = {}) {
+  request.then (response => {
+    if (response.ok) return response.json()
+    else {
+      return Promise.reject(new Error('Request failed'))
+    }
+  })
+  .then(data => {
+    const payload = fncs.format ? fncs.format(data): data
+    dispatch({
+      type: action.success,
+      payload: {
+        ...payload,
+        ...options,
+      }
+    })
+
+    if (fncs.postThen) fncs.postThen(payload, options)
+  })
+  .catch(error => {
+    console.log(error)
+    dispatch({
+      type: action.failed,
+      payload: {
+        error,
+        ...options,
+      }
+    })
+
+    if (fncs.postCatch) fncs.postCatch(error, options)
+
+  })
+  return dispatch({
+    type: action.start,
+    payload: {
+      ...options,
+    }
+  })
+}
+
 export function handleRequest(dispatch, getState, action, request, formatter  = null, postThen = null, postCatch = null) {
   request.then (response => {
     if (response.ok) return response.json()

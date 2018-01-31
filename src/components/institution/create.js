@@ -2,6 +2,7 @@ import React from 'react'
 import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
 import SimpleMediaUploader from '../../components/media/image-uploader'
 import FormOverview from './form-overview'
+import LocationMap from '../../components/location/map'
 
 import { Institution as InstTemplate, format, formatOutput, } from '../../types'
 
@@ -10,11 +11,18 @@ import { buildImageUrl } from '../../redux/utils'
 class InstForm extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
-      ...format(props.institution)
+      ...format(InstTemplate, props.institution),
+      isNew: !props.institution,
+      currentLocation: {
+        point: {
+          lat: 0,
+          lng: 0,
+        },
+        zoom: 3,
+      }
     }
-    console.log('###############')
-    console.log(this.state)
 
     this.handleClickSave = this.handleClickSave.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -23,14 +31,14 @@ class InstForm extends React.Component {
   handleClickSave() {
     const { onSave } = this.props
     onSave({
-      ...format(this.state)
+      ...formatOutput(InstTemplate, this.state)
     })
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.institution) {
       this.setState({
-        data: format(nextProps.institution),
+        ...format(InstTemplate, nextProps.institution),
       })
     } 
   }
@@ -43,7 +51,7 @@ class InstForm extends React.Component {
 
   render() {
     const { constants, onLogoUpload, onCancel, visible } = this.props
-    const { logo } = this.state
+    const { isNew, location, logo } = this.state
     return (
       <Modal size="large" open={visible} >
         <Modal.Header>Enter a new Dependency</Modal.Header>
@@ -51,16 +59,12 @@ class InstForm extends React.Component {
           <Grid container>
             <Grid.Column width={5}>
               <Segment>
-                <Header size="medium">Logo Profile</Header>
-      {logo &&(
-                <SimpleMediaUploader
-                  name="logo"
-                  onChange={this.handleInputChange}
-                  onUpload={onLogoUpload}
-                  disabled={false}
-                  url={this.state.logo && (this.state.logo.fakeUrl === '' ? this.state.logo.url : this.state.logo.fakeUrl) }
+                <Header size="medium">Location</Header>
+                <LocationMap
+                  name="location"
+                  onCenterChange={this.handleInputChange}
+                  data={location.point ? location : this.state.currentLocation}
                 />
-      )}
               </Segment>
             </Grid.Column>
             <Grid.Column width={11}>

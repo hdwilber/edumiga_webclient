@@ -6,7 +6,7 @@ class Institution extends Service {
   }
 
   create(data) {
-    return this.createRequest('POST', '', data, false )
+    return this.createRequest('POST', '', data, true)
   }
 
   get(id, filter = {}) {
@@ -28,6 +28,33 @@ class Institution extends Service {
   uploadLogo(id, file)  {
     return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
+
+  getAllOwned(filter = {}) {
+    const defaultFilter = {
+      where: {
+        parentId: {
+          exists: false,
+        },
+        adminLevel: 'main',
+        accountId: this.session && this.session.accountId,
+      },
+      include: [
+        {
+          relation: 'account',
+        },
+        {
+          relation: 'logo',
+        },
+        {
+          relation: 'media',
+        },
+      ],
+
+      ...filter,
+    }
+    return this.createRequest('GET', `?filter=${JSON.stringify(defaultFilter)}`, null, false)
+  }
+
 
   getAll(filter = {}) {
     const defaultFilter = {
@@ -74,6 +101,10 @@ class Institution extends Service {
 
   delDependency(id, did) {
     return this.createRequest('DELETE', `${id}/dependencies/${did}`)
+  }
+
+  deleteI(id) {
+    return this.createRequest('DELETE', `${id}`)
   }
 }
 
