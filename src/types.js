@@ -146,6 +146,90 @@ export function formatOutput(template, from) {
   return ret
 }
 
+export const Opportunity = {
+  id: {
+    type: Types.string,
+  },
+  name: {
+    type: Types.string,
+  },
+  duration: {
+    type: Types.number,
+  },
+  description: {
+    type: Types.string,
+  },
+  regime: {
+    type: Types.string,
+  },
+  draft: {
+    type: Types.boolean,
+    default: false,
+  },
+  type: {
+    type: Types.string,
+  },
+  degrees: {
+    type: Types.array.string,
+    default: []
+  },
+  logo: {
+    notSendable: true,
+    type: Types.object,
+    format: function (data) {
+      return {
+        file: null,
+        url: data ? (buildImageUrl(data.url)): '',
+        fakeUrl: '',
+      }
+    },
+    default: {
+      file: null,
+      url: '',
+      fakeUrl: '',
+    }
+  },
+}
+
+
+export const Course = {
+  id: {
+    type: Types.string,
+  },
+  name: {
+    type: Types.string
+  },
+  code: {
+    type: Types.string
+  },
+  description: {
+    type: Types.string
+  },
+  duration: {
+    type: Types.number,
+    default: 0,
+  },
+  draft: {
+    type: Types.boolean,
+    default: false,
+  },
+  optional: {
+    type: Types.boolean,
+    default: false
+  },
+  type: {
+    type: Types.string,
+  },
+  prerequisites: {
+    notSendable: true,
+    type: Types.array.object,
+    default: [],
+    format: function(data = [], options = {}) {
+      return data.map((c,idx) => c.value) 
+    }
+  }
+}
+
 export const AccountIdentity = {
   id: {
     type: Types.string,

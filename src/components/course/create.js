@@ -1,6 +1,7 @@
 import React from 'react'
 import { Grid, Segment, Button, Modal } from 'semantic-ui-react'
 import FormOverview from './form-overview'
+import { Course as CourseTemplate, format, formatOutput, } from '../../types'
 
 export const ActionTypes = {
   SAVE: 1,
@@ -9,31 +10,20 @@ export const ActionTypes = {
 class CourseCreate extends React.Component {
   constructor(props) {
     super(props)
-    if (props.course) {
-      const { id, code, name, draft, description, duration, durationUnit, optional, prerequisites } = props.course
 
-      this.state = {
-        id, code, name, description, draft, duration, durationUnit, optional, prerequisites: prerequisites || [],
-      }
-    } else {
-      this.state = {
-        id: null, code: '', draft: '', name:'', description:'', duration:0, durationUnit:'', 
-        optional: false, prerequisites: [],
-      } 
-    } 
+    this.state = {
+      ...format(CourseTemplate, props.course),
+    }
 
     this.handleClickSave = this.handleClickSave.bind(this)
     this.handleClickCancel = this.handleClickCancel.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.serializeData = this.serializeData.bind(this)
+    //this.serializeData = this.serializeData.bind(this)
   }
 
   handleClickSave() {
     const { onAction } = this.props
-    const { id, code, draft, name, description, duration, durationUnit, optional, prerequisites } = this.state
-    onAction(ActionTypes.SAVE, {
-      id, name, code, draft, prerequisites, description, duration, durationUnit, optional,
-    })
+    onAction(ActionTypes.SAVE, formatOutput(CourseTemplate, this.state))
   }
 
   handleClickCancel() {
@@ -41,26 +31,28 @@ class CourseCreate extends React.Component {
     onAction(ActionTypes.CANCEL, null)
   }
 
-  serializeData() {
-    const { id, code, draft, name, description, duration, durationUnit, optional, prerequisites } = this.state
+  //serializeData() {
+    //const { id, code, draft, name, description, duration, durationUnit, optional, prerequisites } = this.state
 
-    return {
-      id,
-      name, code, draft, description, duration, durationUnit, optional, prerequisites,
-    }
-  }
+    //return {
+      //id,
+      //name, code, draft, description, duration, durationUnit, optional, prerequisites,
+    //}
+  //}
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.course) {
-      const { id, code, draft, name, description, 
-        duration, durationUnit, optional, prerequisites } = nextProps.course
+      //const { id, code, draft, name, description, 
+        //duration, durationUnit, optional, prerequisites } = nextProps.course
+      //this.setState({
+        //id, code, name, draft, description, duration, durationUnit, optional, prerequisites: prerequisites ? prerequisites.map(p => p.id) : [],
+      //})
       this.setState({
-        id, code, name, draft, description, duration, durationUnit, optional, prerequisites: prerequisites ? prerequisites.map(p => p.id) : [],
+        ...format(CourseTemplate, nextProps.course),
       })
     } else if (nextProps.course === null)  {
       this.setState({
-        id: null, code: '', draft: '', name:'', description:'', duration:0, durationUnit:'', 
-        optional: false, prerequisites: [],
+        ...format(CourseTemplate, null),
       })
     } 
   }
@@ -85,8 +77,9 @@ class CourseCreate extends React.Component {
 
   render() {
     const { visible, courses, course } = this.props
-    if (course) {
-      const data = this.serializeData()
+    console.log(this.state)
+    if (course && courses) {
+      //const data = this.serializeData()
       const courseList =this.convertCourseList(this.state.prerequisites, course, courses)
       return (
         <Modal size="small" open={visible} >
@@ -96,7 +89,7 @@ class CourseCreate extends React.Component {
               <Grid.Column width={16}>
                 <Segment>
                   <FormOverview onInputChange={this.handleInputChange}
-                    data={data}
+                    data={this.state}
                     courses={courseList}
                   />
                   <Button.Group>
