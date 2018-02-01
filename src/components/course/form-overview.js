@@ -64,7 +64,7 @@ const FormOverview = (props) => {
         />
       </Form.Field>
       <Form.Group>
-        <Form.Checkbox label="Is mandatory?" checked={data.mandatory} name="mandatory"
+        <Form.Checkbox label="Is optional?" checked={!data.optional} name="optional"
           onChange={handleCheckboxChange}
         />
         <Form.Checkbox label="Keep it as draft?" checked={data.draft} name="draft"

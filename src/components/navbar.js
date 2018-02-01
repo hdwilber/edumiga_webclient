@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, Button, Dropdown, Image, Menu } from 'semantic-ui-react'
 
+import { buildImageUrl } from '../redux/utils'
+
 const logo = require('../images/edumiga-logo.png')
 
 const Items = {
@@ -50,6 +52,10 @@ class Navbar extends React.Component {
           Opportunities
         </Menu.Item>
 
+        <Menu.Item position="right">
+          <Image avatar circular src={account.identity && account.identity.photo ? buildImageUrl(account.identity.photo.url): null } />
+        </Menu.Item>
+
         {(account && account.session) ? <MenuItemUser onLogout={onLogout} account={account}/> : (
           <Menu.Item position="right">
             <Button><Icon name="sign in" /> Login</Button>
@@ -63,9 +69,11 @@ class Navbar extends React.Component {
 const MenuItemUser = (props) => {
   const { account: { current, identity }, onLogout } = props
   if (identity) {
+    const { photo } = identity
     return (
-      <Menu.Item as={Dropdown} item 
-        text={(identity && identity.displayName === '') ? (current || current.email): (identity.displayName)}
+      <Dropdown item 
+        text={
+          (identity && identity.displayName === '') ? (current || current.email): (identity.displayName)}
         position="right"
       >
         <Dropdown.Menu>
@@ -74,7 +82,7 @@ const MenuItemUser = (props) => {
           <Dropdown.Item icon='settings' text='Account Settings' />
           <Dropdown.Item icon='sign out' text='Logout' onClick={(e) => onLogout()}/>
         </Dropdown.Menu>
-      </Menu.Item>
+      </Dropdown>
     )
   } else {
     return <Menu.Item>Loading...</Menu.Item>

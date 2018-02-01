@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router'
 import { withRouter } from 'react-router-dom'
 import Navbar from '../components/navbar'
 import * as accountActions from '../redux/account/actions'
@@ -23,12 +24,18 @@ class Edumiga extends Component {
   }
 
   checkAuthorization() {
-    const { account, location } =  this.props
-    if (location.pathname.indexOf('institution/create') > -1 || location.pathname.indexOf('institution/list')) {
-      if (!account.session) {
+    const { history, account: { session }, location: { pathname, query } } =  this.props
+    if (pathname.indexOf('institution/create') > -1) {
+      if (!session) {
         return false 
-      } else if (!location.query.owned) {
+      } else if (!query.owned) {
         return true 
+      }
+    } else if (pathname.indexOf('institution/list') > -1) {
+      if (query.owned) {
+        if (!session) {
+          return false
+        }
       }
     }
     return true
@@ -41,8 +48,7 @@ class Edumiga extends Component {
         <Navbar account={account}
           onLogout={this.handleLogout}
         />
-
-        { this.checkAuthorization() && (this.props.children) }
+        { this.checkAuthorization() ? (this.props.children): (<Redirect to="/"/>)}
       </div>)
   }
 }

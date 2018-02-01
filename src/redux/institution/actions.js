@@ -12,8 +12,6 @@ export const UPDATE = createActionLabels('INST_UPDATE')
 export const DELETE = createActionLabels('INST_DELETE')
 export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
 export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
-export const ADD_DEPENDENCY = createActionLabels('INST_ADD_DEPENDENCY')
-export const DEL_DEPENDENCY = createActionLabels('INST_DEL_DEPENDENCY')
 
 const iService = new InstitutionService()
 const oService = new OpportunityService()
