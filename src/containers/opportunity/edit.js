@@ -14,6 +14,8 @@ import CourseCreate from '../../components/course/create'
 import CourseList from '../../components/course/list'
 import { Actions as CourseListActions } from '../../components/course/list'
 
+import { Opportunity as OppTemplate, format, formatOutput } from '../../types'
+
 class Edit extends React.Component {
   constructor(props) {
     super(props)
@@ -23,7 +25,7 @@ class Edit extends React.Component {
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
 
-    this.serializeData = this.serializeData.bind(this)
+    //this.serializeData = this.serializeData.bind(this)
 
     this.handleCenterChange = this.handleCenterChange.bind(this)
     this.handleLocationFound = this.handleLocationFound.bind(this)
@@ -38,20 +40,8 @@ class Edit extends React.Component {
     this.handleCourseListClick = this.handleCourseListClick.bind(this)
 
     this.state = {
+      ...format(OppTemplate, null),
       showCourseCreateForm: false,
-      name: '',
-      duration: '',
-      description: '',
-      regime: '',
-      draft: '',
-      type: '',
-      degrees: [], 
-
-      logo: {
-        file: null,
-        url: '',
-        fakeUrl: '',
-      },
     }
   }
 
@@ -68,44 +58,45 @@ class Edit extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { opp } = nextProps
     if (opp && opp.current) {
-      const i = opp.current
       this.setState({
-        name: i.name,
-        description: i.description,
-        draft: i.draft,
-        degrees: i.degrees,
-        duration: i.duration,
-        regime: i.regime,
-        type: i.type,
-        logo: {
-          file: null,
-          url: i.logo && (buildImageUrl(i.logo.url)),
-          fakeUrl: '',
-        },
+        ...format(OppTemplate, opp.current)
+        //name: i.name,
+        //description: i.description,
+        //draft: i.draft,
+        //degrees: i.degrees,
+        //duration: i.duration,
+        //regime: i.regime,
+        //type: i.type,
+        //logo: {
+          //file: null,
+          //url: i.logo && (buildImageUrl(i.logo.url)),
+          //fakeUrl: '',
+        //},
       })
     } 
   }
 
-  serializeData() {
-    const { opp } = this.props
-    return {
-      id: opp.current.id,
-      name: this.state.name,
-      description: this.state.description,
-      draft: this.state.draft,
-      degrees: this.state.degrees,
-      regime: this.state.regime,
-      type: this.state.type,
-      duration: this.state.duration,
-      location: this.state.location,
-      logo: this.state.logo,
-    }
-  }
+  //serializeData() {
+    //const { opp } = this.props
+    //return {
+      //id: opp.current.id,
+      //name: this.state.name,
+      //description: this.state.description,
+      //draft: this.state.draft,
+      //degrees: this.state.degrees,
+      //regime: this.state.regime,
+      //type: this.state.type,
+      //duration: this.state.duration,
+      //location: this.state.location,
+      //logo: this.state.logo,
+    //}
+  //}
 
   handleSave() {
     const { oppUpdate } = this.props
     oppUpdate({
-      ...this.serializeData()
+      ...formatOutput(OppTemplate, this.state)
+      //...this.serializeData()
     })
   }
 
@@ -208,7 +199,6 @@ class Edit extends React.Component {
   render() {
     const { opp } = this.props
     if (opp && opp.current && opp.constants) {
-      const data = this.serializeData()
       const instOwner = opp.current.institution
       return (
         <Grid container>
@@ -228,8 +218,8 @@ class Edit extends React.Component {
               <SimpleMediaUploader
                 name="logo"
                 onChange={this.handleInputChange}
-                url={data.logo.fakeUrl === '' ? data.logo.url : data.logo.fakeUrl }
-                disabled={!data.logo.fakeUrl}
+                url={this.state.logo.fakeUrl === '' ? this.state.logo.url : this.state.logo.fakeUrl }
+                disabled={!this.state.logo.fakeUrl}
                 onUpload={this.handleClickUploadLogo}
               />
             </Segment>
@@ -240,7 +230,7 @@ class Edit extends React.Component {
               <Header size="medium">Overview</Header>
               <OppForm onInputChange={this.handleInputChange}
                 onCheckboxChange={this.handleCheckboxChange}
-                data={data}
+                data={this.state}
                 constants={opp.constants}
               />
             </Segment>

@@ -40,13 +40,6 @@ const FormOverview = (props) => {
         <Form.Input value={data.duration} name="duration" onChange={onInputChange} 
           label="Duration" type="text" width={2}
         />
-        <Form.Field>
-          <label>Units</label>
-          <Select value={data.durationUnit} name="durationUnit" 
-            onChange={onInputChange} 
-            options={DurationUnitsTypes}
-          />
-        </Form.Field>
       </Form.Group>
 
       <Form.Field>
