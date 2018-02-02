@@ -25,8 +25,6 @@ class Edit extends React.Component {
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.handleClickUploadLogo = this.handleClickUploadLogo.bind(this)
 
-    //this.serializeData = this.serializeData.bind(this)
-
     this.handleCenterChange = this.handleCenterChange.bind(this)
     this.handleLocationFound = this.handleLocationFound.bind(this)
 
@@ -60,43 +58,14 @@ class Edit extends React.Component {
     if (opp && opp.current) {
       this.setState({
         ...format(OppTemplate, opp.current)
-        //name: i.name,
-        //description: i.description,
-        //draft: i.draft,
-        //degrees: i.degrees,
-        //duration: i.duration,
-        //regime: i.regime,
-        //type: i.type,
-        //logo: {
-          //file: null,
-          //url: i.logo && (buildImageUrl(i.logo.url)),
-          //fakeUrl: '',
-        //},
       })
     } 
   }
-
-  //serializeData() {
-    //const { opp } = this.props
-    //return {
-      //id: opp.current.id,
-      //name: this.state.name,
-      //description: this.state.description,
-      //draft: this.state.draft,
-      //degrees: this.state.degrees,
-      //regime: this.state.regime,
-      //type: this.state.type,
-      //duration: this.state.duration,
-      //location: this.state.location,
-      //logo: this.state.logo,
-    //}
-  //}
 
   handleSave() {
     const { oppUpdate } = this.props
     oppUpdate({
       ...formatOutput(OppTemplate, this.state)
-      //...this.serializeData()
     })
   }
 
@@ -198,7 +167,7 @@ class Edit extends React.Component {
 
   render() {
     const { opp } = this.props
-    if (opp && opp.current && opp.constants) {
+    if (opp && opp.courses && opp.current && opp.constants) {
       const instOwner = opp.current.institution
       return (
         <Grid container>

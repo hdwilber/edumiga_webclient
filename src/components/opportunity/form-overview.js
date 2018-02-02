@@ -64,7 +64,7 @@ class FormOverview extends React.Component {
           </Form.Group>
             
           <Form.Field>
-            <Checkbox key={0} label="Keep it as draft?" checked={data.draft} name="draft"
+            <Checkbox key={0} label="Make it visible?" checked={data.published} name="published"
               onChange={this.handleCheckboxChange}
             />
           </Form.Field>

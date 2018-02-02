@@ -1,5 +1,5 @@
 import { OpportunityService, CourseService } from '../../services'
-import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -25,33 +25,40 @@ export function getTypes(type) {
   }
 }
 
-export function create(data) {
+export function create(data, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     oService.setSession(account.session)
     const request = oService.create(data)
-    return handleRequest(dispatch, getState, CREATE, request,
-      (data) => {
-        return {
-          opportunity: data,
-          single: true,
-        }
-      })
+    return handleRequestO(dispatch, CREATE, request,
+      {
+        format: function(data) {
+          return {
+            opportunity: data,
+            single: true,
+          }
+        },
+
+      },
+      options)
   }
 }
 
-export function update(data) {
+export function update(data, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     oService.setSession(account.session)
     const request = oService.update(data)
-    return handleRequest(dispatch, getState, UPDATE, request, 
-    (data) => {
-      return {
-        opportunity: data,
-        single: true,
-      }
-    })
+    return handleRequestO(dispatch, UPDATE, request, 
+      {
+        format: function(data) {
+          return {
+            opportunity: data,
+            single: true,
+          }
+        }
+      },
+      options)
   }
 }
 
