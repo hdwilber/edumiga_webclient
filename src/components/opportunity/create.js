@@ -3,7 +3,6 @@ import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
 import SimpleMediaUploader from '../../components/media/image-uploader'
 import FormOverview from './form-overview'
 
-import { buildImageUrl } from '../../redux/utils'
 import { Opportunity as OppTemplate, format, formatOutput } from '../../types'
 
 class OppForm extends React.Component {
@@ -39,7 +38,6 @@ class OppForm extends React.Component {
 
   render() {
     const { constants, onLogoUpload, onCancel, visible } = this.props
-    const { logo } = this.state
 
     if (constants) {
       return (

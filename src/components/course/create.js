@@ -18,7 +18,6 @@ class CourseCreate extends React.Component {
     this.handleClickSave = this.handleClickSave.bind(this)
     this.handleClickCancel = this.handleClickCancel.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    //this.serializeData = this.serializeData.bind(this)
   }
 
   handleClickSave() {
@@ -31,22 +30,8 @@ class CourseCreate extends React.Component {
     onAction(ActionTypes.CANCEL, null)
   }
 
-  //serializeData() {
-    //const { id, code, draft, name, description, duration, durationUnit, optional, prerequisites } = this.state
-
-    //return {
-      //id,
-      //name, code, draft, description, duration, durationUnit, optional, prerequisites,
-    //}
-  //}
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.course) {
-      //const { id, code, draft, name, description, 
-        //duration, durationUnit, optional, prerequisites } = nextProps.course
-      //this.setState({
-        //id, code, name, draft, description, duration, durationUnit, optional, prerequisites: prerequisites ? prerequisites.map(p => p.id) : [],
-      //})
       this.setState({
         ...format(CourseTemplate, nextProps.course),
       })
@@ -69,7 +54,7 @@ class CourseCreate extends React.Component {
         value: c.id,
         text: c.name,
         key: idx,
-        disabled: course.id === c.id,
+        disabled: course ? course.id === c.id: false,
         active: (pre.indexOf(c.id) > -1),
       }
     })
@@ -77,9 +62,7 @@ class CourseCreate extends React.Component {
 
   render() {
     const { visible, courses, course } = this.props
-    console.log(this.state)
-    if (course && courses) {
-      //const data = this.serializeData()
+    if (courses) {
       const courseList =this.convertCourseList(this.state.prerequisites, course, courses)
       return (
         <Modal size="small" open={visible} >

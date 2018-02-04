@@ -1,6 +1,8 @@
 import { OpportunityService, CourseService } from '../../services'
 import { handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
+import { fillData as courseFillData } from '../course/actions'
+
 const oService = new OpportunityService()
 const cService = new CourseService()
 
@@ -91,18 +93,26 @@ export function uploadLogo(id, file) {
   }
 }
 
-export function findById(id) {
+export function findById(id, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     oService.setSession(account.session)
     const request = oService.get(id)
-    return handleRequest(dispatch, getState, FIND, request, 
-    (data) => {
-      return {
-        opportunity: data,
-        single: true,
-      }
-    })
+    return handleRequestO(dispatch, FIND, request, 
+      {
+        format: function(data) {
+          return {
+            opportunity: data,
+            single: true,
+          }
+        },
+        postThen: function (payload) {
+          dispatch(courseFillData({
+            list: payload.opportunity.courses
+          }))
+        }
+      },
+      options)
   }
 }
 
@@ -146,16 +156,9 @@ export function courseUpdate(data) {
   }
 }
 
-export function courseSet(course) {
-  return {
-    type: COURSE_SET,
-    payload: course,
-  }
-}
-
 export function deletex(id, options) {
   return (dispatch, getState) => {
-    const { account, institution } = getState()
+    const { account } = getState()
     oService.setSession(account.session)
     const request = oService.deletex(id)
     return handleRequestEmptyO(dispatch, DELETE, request,

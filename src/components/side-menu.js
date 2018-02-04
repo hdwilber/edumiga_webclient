@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Dropdown, Menu, Label, Input, } from 'semantic-ui-react'
+import { Button, Dropdown, Menu, Input, } from 'semantic-ui-react'
 
 class SideMenu extends React.Component {
 
@@ -20,21 +20,23 @@ class SideMenu extends React.Component {
     const options = [{
       value: 0,
       text: 'Institutions',
+      key: 1,
     },
     {
       value: 1,
       text: 'Opportunities',
+      key: 2,
     },
     {
       value: 1,
       text: 'Dependencies',
+      key: 3,
     },
     ]
     return (
       <Menu vertical fluid>
         <Menu.Item>
-          <Input icon='search' 
-          fluid
+          <Input fluid
           >
             <input />
             <Dropdown button basic floating options={options} defaultValue='page' />

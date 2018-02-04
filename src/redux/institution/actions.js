@@ -1,6 +1,6 @@
 import { push } from 'react-router-redux'
-import { InstitutionService, OpportunityService } from '../../services'
-import { handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { InstitutionService } from '../../services'
+import { handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest } from '../utils'
 import { fillData as oppFillData } from '../opportunity/actions'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')

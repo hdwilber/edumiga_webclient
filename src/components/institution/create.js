@@ -1,12 +1,9 @@
 import React from 'react'
 import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
-import SimpleMediaUploader from '../../components/media/image-uploader'
 import FormOverview from './form-overview'
 import LocationMap from '../../components/location/map'
 
 import { Institution as InstTemplate, format, formatOutput, } from '../../types'
-
-import { buildImageUrl } from '../../redux/utils'
 
 class InstForm extends React.Component {
   constructor(props) {
@@ -50,8 +47,8 @@ class InstForm extends React.Component {
   }
 
   render() {
-    const { constants, onLogoUpload, onCancel, visible } = this.props
-    const { isNew, location, logo } = this.state
+    const { constants, onCancel, visible } = this.props
+    const { location } = this.state
     return (
       <Modal size="large" open={visible} >
         <Modal.Header>Enter a new Dependency</Modal.Header>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { Grid, Button, Segment, Header } from 'semantic-ui-react'
 import { FormOverview } from '../../components/institution'
 
@@ -12,7 +12,6 @@ import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import InstForm from '../../components/institution/create'
 import InstList from '../../components/institution/list'
-import { buildImageUrl } from '../../redux/utils'
 
 import * as institutionActions from '../../redux/institution/actions'
 import * as opportunityActions from '../../redux/opportunity/actions'
@@ -197,10 +196,14 @@ class Create extends React.Component {
   handleOppListAction(type, opp) {
     const { institution, history } = this.props
     if (type === OppListActions.EDIT) {
+
       history.push(`/institution/${institution.current.id}/opportunity/${opp.id}`)
-    } else if (type === OppListActions.REMOVE){
+
+    } else if (type === OppListActions.REMOVE) {
+
       const { opportunityDelete } = this.props
       opportunityDelete(opp.id, { inList: true })
+
     }
   }
 
@@ -217,7 +220,7 @@ class Create extends React.Component {
       institutionFind(dep.id)
       history.push(`/institution/${dep.id}/edit`)
     } else  if (DepListActions.REMOVE) {
-      const { institution, institutionDelete } = this.props
+      const { institutionDelete } = this.props
       institutionDelete(dep.id, { isDependency: true })
     }
   }

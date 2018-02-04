@@ -2,7 +2,7 @@ import * as actions from './actions'
 
 const initialState = {
   current: null,
-  list: null,
+  list: [],
   loading: false,
   error: null,
   courses: [],

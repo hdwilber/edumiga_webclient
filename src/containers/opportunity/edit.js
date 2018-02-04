@@ -7,9 +7,9 @@ import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import OppForm from '../../components/opportunity/form-overview'
 
-import { buildImageUrl } from '../../redux/utils'
-
 import * as opportunityActions from '../../redux/opportunity/actions'
+import * as courseActions from '../../redux/course/actions'
+
 import CourseCreate from '../../components/course/create'
 import CourseList from '../../components/course/list'
 import { Actions as CourseListActions } from '../../components/course/list'
@@ -27,9 +27,6 @@ class Edit extends React.Component {
 
     this.handleCenterChange = this.handleCenterChange.bind(this)
     this.handleLocationFound = this.handleLocationFound.bind(this)
-
-    this.handleOppSelectRow = this.handleOppSelectRow.bind(this)
-
 
     this.handleCourseCreateStart = this.handleCourseCreateStart.bind(this)
     this.handleCourseCreateAction = this.handleCourseCreateAction.bind(this)
@@ -114,29 +111,30 @@ class Edit extends React.Component {
       oppUploadLogo(opp.current.id, this.state.logo.file)
   }
 
-  handleOppSelectRow(opp) {
-    this.setState({
-      opportunity: opp,
-      showOpportunityForm: true,
-    })
-  }
-
   handleCourseCreateStart() {
-    const { courseSet, courseAdd } = this.props
+    const { courseSet } = this.props
     courseSet(null)
     this.setState({
       showCourseCreateForm: true,
-    }, () => {
-      courseAdd({})
     })
   }
 
   handleCourseCreateAction(type, data) {
-    const { courseSet } = this.props
+    const { courseSet, courseCreate } = this.props
     if (type === 1) {
-      const { courseUpdate } = this.props
-      courseUpdate(data)
-    } 
+      if (data.id) {
+        const { courseUpdate } = this.props
+        courseUpdate(data, { inList: true })
+
+      } else {
+        delete(data.id)
+        courseCreate({
+          ...data,
+          opportunityId: this.props.opp.current.id,
+        }, { inList: true })
+      }
+    }
+
     this.setState({
       showCourseCreateForm: false,
     }, () => courseSet(null))
@@ -144,7 +142,7 @@ class Edit extends React.Component {
 
   handleCourseListClick(course) {
     if (course) {
-      this.props.courseSet(course)
+      this.props.courseSet(course.id)
       this.setState({
         showCourseCreateForm: true,
       })
@@ -154,20 +152,19 @@ class Edit extends React.Component {
   handleCourseListAction(type, course) {
     if (type === CourseListActions.EDIT) {
       const { courseSet } = this.props
-      courseSet(course)
-
+      courseSet(course.id)
       this.setState({
         showCourseCreateForm: true, 
       })
     } else if (type === CourseListActions.DELETE) {
-      const { courseDel } = this.props
-      courseDel(course.id)
+      const { courseDelete } = this.props
+      courseDelete(course.id, { inList: true })
     }
   }
 
   render() {
-    const { opp } = this.props
-    if (opp && opp.courses && opp.current && opp.constants) {
+    const { course, opp } = this.props
+    if (opp && course && opp.current && opp.constants) {
       const instOwner = opp.current.institution
       return (
         <Grid container>
@@ -206,7 +203,7 @@ class Edit extends React.Component {
 
             <Segment>
               <Header size="medium">Courses<Button default onClick={this.handleCourseCreateStart}>Add</Button></Header>
-              <CourseList items={opp.courses} onClickItem={this.handleCourseListClick}
+              <CourseList items={course.list} onClickItem={this.handleCourseListClick}
                 onClickAction={this.handleCourseListAction}
               />
             </Segment>
@@ -216,10 +213,10 @@ class Edit extends React.Component {
               onClick={this.handleSave}
             >Save</Button>
           </Grid.Column>
-          <CourseCreate course={opp.currentCourse}
+          <CourseCreate course={course.current}
             onAction={this.handleCourseCreateAction}
             visible={this.state.showCourseCreateForm}
-            courses={opp.courses}
+            courses={course.list}
           />
         </Grid>
       )
@@ -232,14 +229,17 @@ class Edit extends React.Component {
 export default connect((state) => ({
   account: state.account,
   institution: state.institution,
-  opp: state.opp
+  opp: state.opp,
+  course: state.course, 
 }), (dispatch) => ({
   oppUploadLogo: (id, file) => dispatch(opportunityActions.uploadLogo(id, file)),
   oppFind: (id) => dispatch(opportunityActions.findById(id)),
   oppUpdate: (data) => dispatch(opportunityActions.update(data)),
   oppGetTypes: () => dispatch(opportunityActions.getTypes()),
-  courseAdd: (data) => dispatch(opportunityActions.courseAdd(data)),
-  courseDel: (id) => dispatch(opportunityActions.courseDel(id)),
-  courseUpdate: (data) => dispatch(opportunityActions.courseUpdate(data)),
-  courseSet: (course) => dispatch(opportunityActions.courseSet(course)),
+  courseCreate: (data, opts) => dispatch(courseActions.create(data, opts)),
+  courseDelete: (id, opts) => dispatch(courseActions.deletex(id, opts)),
+  courseUpdate: (data, opts) => dispatch(courseActions.update(data, opts)),
+  courseAddPre: (id, rid, opts) => dispatch(courseActions.addPrerequisite(id, rid, opts)),
+  courseSet: (id) => dispatch(courseActions.set(id)),
 })) (withRouter(Edit))
+
