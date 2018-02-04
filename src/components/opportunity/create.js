@@ -3,98 +3,31 @@ import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
 import SimpleMediaUploader from '../../components/media/image-uploader'
 import FormOverview from './form-overview'
 
-import { buildImageUrl } from '../../redux/utils'
+import { Opportunity as OppTemplate, format, formatOutput } from '../../types'
 
 class OppForm extends React.Component {
   constructor(props) {
     super(props)
-    if (props.opportunity) {
-      const { logo, name, type, regime, degrees, description, draft, duration } = props.opportunity
-      this.state = {
-        name,
-        description,
-        degrees,
-        type,
-        draft,
-        regime,
-        duration,
-        logo: {
-          file: null,
-          url: logo ? (buildImageUrl(logo.url)): '',
-          fakeUrl: '',
-        }
-      }
-    } else {
-      this.state ={
-        name : '',
-        description: '',
-        draft: true,
-        regime: '',
-        type: '',
-        degrees: [],
-        duration: 0,
-        logo: {
-          file: null,
-          url: '',
-          fakeUrl: '',
-        }
-      }
-    }
+
+    this.state = format(OppTemplate, props.opportunity)
 
     this.handleClickSave = this.handleClickSave.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.serializeData = this.serializeData.bind(this)
   }
 
   handleClickSave() {
     const { onSave } = this.props
     onSave({
-      id: this.state.id,
-      name: this.state.name,
-      description: this.state.description,
-      draft: this.state.draft,
-      duration: this.state.duration,
-      type: this.state.type,
-      degrees: this.state.degrees,
-      regime: this.state.regime,
+      ...formatOutput(OppTemplate, this.state)
     })
   }
 
-  serializeData(returnData = false) {
-    const { opportunity } = this.props
-
-    return {
-      id: (opportunity) ? opportunity.id: null,
-      name: this.state.name,
-      description: this.state.description,
-      draft: this.state.draft,
-      duration: this.state.duration,
-      degrees: this.state.degrees,
-      regime: this.state.regime,
-      type: this.state.type,
-      [returnData ? 'logoId': 'logo']: returnData ? this.state.logo.id: this.state.logo,
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
-    if (nextProps.opportunity) {
-      const { id, name, type, regime, degrees, description, draft, duration, logo } = nextProps.opportunity
+    if (nextProps.opportunity !== undefined) {
       this.setState({
-        id,
-        name,
-        description,
-        draft,
-        regime,
-        duration,
-        type,
-        degrees,
-        logo: {
-          file: null,
-          url: logo && (buildImageUrl(logo.url)),
-          fakeUrl: '',
-        },
+        ...format(OppTemplate, nextProps.opportunity),
       })
-    } 
+    }
   }
 
   handleInputChange(e, props) {
@@ -105,10 +38,8 @@ class OppForm extends React.Component {
 
   render() {
     const { constants, onLogoUpload, onCancel, visible } = this.props
-    const { logo } = this.state
 
-    const data = this.serializeData()
-    if (data && constants) {
+    if (constants) {
       return (
         <Modal size="large" open={visible} >
           <Modal.Header>Enter a new Opportunity</Modal.Header>
@@ -122,14 +53,14 @@ class OppForm extends React.Component {
                     onChange={this.handleInputChange}
                     onUpload={onLogoUpload}
                     disabled={false}
-                    url={logo.fakeUrl === '' ? logo.url : logo.fakeUrl }
+                    url={this.state.logo.fakeUrl === '' ? this.state.logo.url : this.state.logo.fakeUrl }
                   />
                 </Segment>
               </Grid.Column>
               <Grid.Column width={11}>
                 <Segment>
                   <FormOverview onInputChange={this.handleInputChange}
-                    data={data}
+                    data={this.state}
                     constants={constants}
                   />
                   <Button.Group>

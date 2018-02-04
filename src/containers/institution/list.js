@@ -52,7 +52,7 @@ class InstList extends React.Component {
     const { account, institution } = this.props
     if (institution) {
       return (
-        <Grid fluid>
+        <Grid>
           <Header size="huge">Institutions</Header>
           <Grid.Row>
             <Grid.Column width={4}>
@@ -61,9 +61,9 @@ class InstList extends React.Component {
             <Grid.Column width={12}>
               <Card.Group>
                 {(institution.list) &&(
-                  institution.list.map(i => {
+                  institution.list.map((i,idx) => {
                     return (
-                      <InstitutionCard session={account && account.session} 
+                      <InstitutionCard key={idx} session={account && account.session} 
                         institution={i} 
                         onAction={this.handleCardAction}
                       />

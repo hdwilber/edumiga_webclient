@@ -41,8 +41,6 @@ class Opportunity extends Service {
   }
 
   uploadLogo(id, file)  {
-    console.log('Service Opportunity')
-    console.log(file)
     return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
 
@@ -64,6 +62,9 @@ class Opportunity extends Service {
 
   getTypes(type) {
     return this.createRequest('GET', `types`, null, false)
+  }
+  deletex(id) {
+    return this.createRequest('DELETE', `${id}`)
   }
 }
 

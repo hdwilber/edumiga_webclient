@@ -9,14 +9,11 @@ import SimpleMediaUploader from '../../components/media/image-uploader'
 import * as accountActions from '../../redux/account/actions'
 import * as constantsActions from '../../redux/constants/actions'
 
-import { buildImageUrl } from '../../redux/utils'
 import { AccountIdentity as IdTemplate, format, formatOutput, } from '../../types'
 
 class Identity extends React.Component {
   constructor(props){
     super(props)
-
-    const { account } = props
 
     this.state = {
       ...format(IdTemplate),

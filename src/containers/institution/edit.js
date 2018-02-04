@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { Grid, Button, Segment, Header } from 'semantic-ui-react'
 import { FormOverview } from '../../components/institution'
 
@@ -12,7 +12,6 @@ import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import InstForm from '../../components/institution/create'
 import InstList from '../../components/institution/list'
-import { buildImageUrl } from '../../redux/utils'
 
 import * as institutionActions from '../../redux/institution/actions'
 import * as opportunityActions from '../../redux/opportunity/actions'
@@ -72,6 +71,12 @@ class Create extends React.Component {
 
     if (institutionId) {
       institutionFind(institutionId)
+    } else {
+      this.props.institutionUnset()
+      this.setState({
+        ...format(InstTemplate, null),
+        isNew: true,
+      })
     }
 
     this.props.institutionGetTypes()
@@ -80,18 +85,12 @@ class Create extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { institution } = nextProps
-    if (institution) {
-      if (institution.current === undefined && this.state.isNew) {
-        this.setState({
-          ...format(InstTemplate, null),
-          isNew: true,
-        })
-      } else if (institution && institution.current) {
-        this.setState({
-          ...format(InstTemplate, institution.current),
-          isNew: false,
-        })
-      }
+
+    if (institution && institution.current) {
+      this.setState({
+        ...format(InstTemplate, institution.current),
+        isNew: !institution.current,
+      })
     }
   }
 
@@ -120,7 +119,7 @@ class Create extends React.Component {
 
   handleInputChange(e, props) {
     if (props.name === 'currentLocation') {
-      console.log(props)
+      console.log('Current localization: %o', props)
     }
     this.setState({
       [props.name]: props.value,
@@ -152,8 +151,20 @@ class Create extends React.Component {
   }
 
   handleOpportunitySave(data) {
-    const { institutionAddOpp } = this.props
-    institutionAddOpp(this.state.opportunity, data)
+    const { opportunityCreate, opportunityUpdate, institution } = this.props
+    const { current } = institution
+    if (!data.id) {
+      delete(data.id)
+      opportunityCreate({
+        ...data,
+        institutionId: current && current.id
+      }, { inList: true })
+    } else {
+      opportunityUpdate({
+        ...data,
+      }, { inList: true })
+    }
+
     this.setState({
       showOpportunityForm: false,
     })
@@ -166,6 +177,8 @@ class Create extends React.Component {
   }
 
   handleAddOpportunity() {
+    const { opportunitySet } = this.props
+    opportunitySet(null)
     this.setState({
       showOpportunityForm: true,
       opportunity: null,
@@ -173,8 +186,9 @@ class Create extends React.Component {
   }
 
   handleOppSelectRow(opp) {
+    const { opportunitySet } = this.props
+    opportunitySet(opp.id)
     this.setState({
-      opportunity: opp,
       showOpportunityForm: true,
     })
   }
@@ -182,10 +196,14 @@ class Create extends React.Component {
   handleOppListAction(type, opp) {
     const { institution, history } = this.props
     if (type === OppListActions.EDIT) {
+
       history.push(`/institution/${institution.current.id}/opportunity/${opp.id}`)
-    } else if (type === OppListActions.REMOVE){
-      const { institutionRemOpp } = this.props
-      institutionRemOpp(opp)
+
+    } else if (type === OppListActions.REMOVE) {
+
+      const { opportunityDelete } = this.props
+      opportunityDelete(opp.id, { inList: true })
+
     }
   }
 
@@ -202,7 +220,7 @@ class Create extends React.Component {
       institutionFind(dep.id)
       history.push(`/institution/${dep.id}/edit`)
     } else  if (DepListActions.REMOVE) {
-      const { institution, institutionDelete } = this.props
+      const { institutionDelete } = this.props
       institutionDelete(dep.id, { isDependency: true })
     }
   }
@@ -228,7 +246,7 @@ class Create extends React.Component {
         isDependency: true,
       })
     }
-      //instAddDep(this.state.dependency, data)
+
     this.setState({
       showInstForm: false,
     })
@@ -240,11 +258,10 @@ class Create extends React.Component {
   }
 
   render() {
-    const { institution } = this.props
+    const { opp, institution } = this.props
     const { isNew, logo, location } = this.state
 
-    if (institution && institution.constants) {
-      console.log(this.state)
+    if (institution && opp && institution.constants && opp.constants) {
       return (
         <Grid container>
           <Grid.Column width={16}>
@@ -316,7 +333,7 @@ class Create extends React.Component {
             {!isNew && institution.current && (
               <Segment>
                 <Header size="medium">Opportunities <Button default onClick={this.handleAddOpportunity}>Add</Button></Header>
-                <OpportunitiesList items={institution.current.opportunities} onSelectRow={this.handleOppSelectRow}
+                <OpportunitiesList items={opp.list} onSelectRow={this.handleOppSelectRow}
                   onClickAction={this.handleOppListAction}
                 />
               </Segment>
@@ -324,7 +341,7 @@ class Create extends React.Component {
 
           </Grid.Column>
 
-          <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.state.opportunity} 
+          <OpportunityForm visible={this.state.showOpportunityForm} opportunity={this.props.opp.current} 
             constants={this.props.opp.constants}
             onSave={this.handleOpportunitySave} 
             onCancel={this.handleOpportunityCancel}
@@ -355,13 +372,16 @@ export default connect((state) => ({
   institutionCreate: (data, opts) => dispatch(institutionActions.create(data, opts)),
   institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
   institutionFind: (id, change) => dispatch(institutionActions.findById(id, change)),
+  institutionUnset: () => dispatch(institutionActions.unset()),
   institutionUpdate: (data, opts) => dispatch(institutionActions.update(data, opts)),
   institutionDelete: (data, opts) => dispatch(institutionActions.deleteI(data, opts)),
-  institutionAddOpp: (opp, data) => dispatch(institutionActions.addOpportunity(opp, data)),
   institutionOppUploadLogo: (id, data) => dispatch(uploadLogo(id, data)),
-  institutionRemOpp: (opp) => dispatch(institutionActions.removeOpportunity(opp)),
   institutionGetTypes: () => dispatch(institutionActions.getTypes()),
   opportunityGetTypes: () => dispatch(opportunityActions.getTypes()),
+  opportunityCreate: (data, opts) => dispatch(opportunityActions.create(data, opts)),
+  opportunityUpdate: (data, opts) => dispatch(opportunityActions.update(data, opts)),
+  opportunitySet: (id, opts) => dispatch(opportunityActions.set(id, opts)),
+  opportunityDelete: (id, opts) => dispatch(opportunityActions.deletex(id, opts)),
 
 })) (withRouter(Create))
 

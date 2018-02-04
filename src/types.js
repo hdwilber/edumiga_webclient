@@ -26,7 +26,7 @@ export const Institution = {
   description: {
     type: Types.string,
   },
-  draft: {
+  published: {
     type: Types.boolean,
     default: false,
   },
@@ -149,6 +149,7 @@ export function formatOutput(template, from) {
 export const Opportunity = {
   id: {
     type: Types.string,
+    default: null,
   },
   name: {
     type: Types.string,
@@ -162,9 +163,9 @@ export const Opportunity = {
   regime: {
     type: Types.string,
   },
-  draft: {
+  published: {
     type: Types.boolean,
-    default: false,
+    default: true,
   },
   type: {
     type: Types.string,
@@ -195,6 +196,7 @@ export const Opportunity = {
 export const Course = {
   id: {
     type: Types.string,
+    default: null,
   },
   name: {
     type: Types.string
@@ -209,7 +211,7 @@ export const Course = {
     type: Types.number,
     default: 0,
   },
-  draft: {
+  published: {
     type: Types.boolean,
     default: false,
   },
@@ -233,6 +235,7 @@ export const Course = {
 export const AccountIdentity = {
   id: {
     type: Types.string,
+    default: null,
   },
   displayName: {
     type: Types.string,

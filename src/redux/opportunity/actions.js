@@ -1,5 +1,7 @@
 import { OpportunityService, CourseService } from '../../services'
-import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+
+import { fillData as courseFillData } from '../course/actions'
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -11,12 +13,17 @@ export const UPLOAD_LOGO  = createActionLabels('OPP_UPLOAD_LOGO')
 export const FIND = createActionLabels('OPP_FIND')
 export const FIND_ALL = createActionLabels('OPP_FIND_ALL')
 export const UPDATE = createActionLabels('OPP_UPDATE')
+export const DELETE = createActionLabels('OPP_DELETE')
 export const COURSE_ADD = createActionLabels('OPP_COURSE_ADD')
 export const COURSE_DEL = createActionLabels('OPP_COURSE_DEL')
 export const COURSE_UPDATE = createActionLabels('OPP_COURSE_UPDATE')
 export const COURSE_SET = createActionLabels('OPP_COURSE_SET')
 export const COURSE_ADD_PRE = createActionLabels('OPP_COURSE_ADD_PRE')
 export const COURSE_DEL_PRE = createActionLabels('OPP_COURSE_DEL_PRE')
+
+
+export const SET = 'OPP_SET'
+export const FILL_DATA = 'OPP_FILL_DATA'
 
 export function getTypes(type) {
   return (dispatch, getState) => {
@@ -25,33 +32,55 @@ export function getTypes(type) {
   }
 }
 
-export function create(data) {
+
+export function fillData(data) {
+  return { 
+    type: FILL_DATA,
+    payload: data,
+  }
+}
+
+export function set(id, options) {
+  return {
+    type: SET,
+    payload: { id },
+  }
+}
+
+export function create(data, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     oService.setSession(account.session)
     const request = oService.create(data)
-    return handleRequest(dispatch, getState, CREATE, request,
-      (data) => {
-        return {
-          opportunity: data,
-          single: true,
-        }
-      })
+    return handleRequestO(dispatch, CREATE, request,
+      {
+        format: function(data) {
+          return {
+            opportunity: data,
+            single: true,
+          }
+        },
+
+      },
+      options)
   }
 }
 
-export function update(data) {
+export function update(data, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     oService.setSession(account.session)
     const request = oService.update(data)
-    return handleRequest(dispatch, getState, UPDATE, request, 
-    (data) => {
-      return {
-        opportunity: data,
-        single: true,
-      }
-    })
+    return handleRequestO(dispatch, UPDATE, request, 
+      {
+        format: function(data) {
+          return {
+            opportunity: data,
+            single: true,
+          }
+        }
+      },
+      options)
   }
 }
 
@@ -64,18 +93,26 @@ export function uploadLogo(id, file) {
   }
 }
 
-export function findById(id) {
+export function findById(id, options) {
   return (dispatch, getState) => {
     const { account } = getState()
     oService.setSession(account.session)
     const request = oService.get(id)
-    return handleRequest(dispatch, getState, FIND, request, 
-    (data) => {
-      return {
-        opportunity: data,
-        single: true,
-      }
-    })
+    return handleRequestO(dispatch, FIND, request, 
+      {
+        format: function(data) {
+          return {
+            opportunity: data,
+            single: true,
+          }
+        },
+        postThen: function (payload) {
+          dispatch(courseFillData({
+            list: payload.opportunity.courses
+          }))
+        }
+      },
+      options)
   }
 }
 
@@ -119,10 +156,16 @@ export function courseUpdate(data) {
   }
 }
 
-export function courseSet(course) {
-  return {
-    type: COURSE_SET,
-    payload: course,
+export function deletex(id, options) {
+  return (dispatch, getState) => {
+    const { account } = getState()
+    oService.setSession(account.session)
+    const request = oService.deletex(id)
+    return handleRequestEmptyO(dispatch, DELETE, request,
+      {}, 
+      {
+        ...options,
+        id,
+      })
   }
 }
-

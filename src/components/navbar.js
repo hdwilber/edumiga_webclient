@@ -69,7 +69,6 @@ class Navbar extends React.Component {
 const MenuItemUser = (props) => {
   const { account: { current, identity }, onLogout } = props
   if (identity) {
-    const { photo } = identity
     return (
       <Dropdown item 
         text={
