@@ -2,6 +2,7 @@ import * as actions from './actions'
 
 const initialState = {
   current: null,
+  currentOpp: null,
   list: null,
   loading: false,
   error: null,
@@ -10,6 +11,13 @@ const initialState = {
 
 export default function institutionReducer(state = initialState, action) {
   switch (action.type) {
+    case actions.UNSET: {
+      return {
+        ...state,
+        current: null,
+      }
+    }
+
     case actions.GET_TYPES.success: {
       const data = action.payload
       return {
@@ -206,6 +214,13 @@ export default function institutionReducer(state = initialState, action) {
         error: action.payload
       }
     }
+
+    //case actions.SET_CURRENT_OPP: {
+      //return {
+        //...state,
+        //currentOpp: action.payload.opp,
+      //}
+    //}
 
     case actions.ADD_OPPORTUNITY.start: {
       return {

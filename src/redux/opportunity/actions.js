@@ -1,5 +1,5 @@
 import { OpportunityService, CourseService } from '../../services'
-import { handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -11,6 +11,7 @@ export const UPLOAD_LOGO  = createActionLabels('OPP_UPLOAD_LOGO')
 export const FIND = createActionLabels('OPP_FIND')
 export const FIND_ALL = createActionLabels('OPP_FIND_ALL')
 export const UPDATE = createActionLabels('OPP_UPDATE')
+export const DELETE = createActionLabels('OPP_DELETE')
 export const COURSE_ADD = createActionLabels('OPP_COURSE_ADD')
 export const COURSE_DEL = createActionLabels('OPP_COURSE_DEL')
 export const COURSE_UPDATE = createActionLabels('OPP_COURSE_UPDATE')
@@ -18,10 +19,29 @@ export const COURSE_SET = createActionLabels('OPP_COURSE_SET')
 export const COURSE_ADD_PRE = createActionLabels('OPP_COURSE_ADD_PRE')
 export const COURSE_DEL_PRE = createActionLabels('OPP_COURSE_DEL_PRE')
 
+
+export const SET = 'OPP_SET'
+export const FILL_DATA = 'OPP_FILL_DATA'
+
 export function getTypes(type) {
   return (dispatch, getState) => {
     const request = oService.getTypes()
     return handleRequest(dispatch, getState, GET_TYPES, request)
+  }
+}
+
+
+export function fillData(data) {
+  return { 
+    type: FILL_DATA,
+    payload: data,
+  }
+}
+
+export function set(id, options) {
+  return {
+    type: SET,
+    payload: { id },
   }
 }
 
@@ -133,3 +153,16 @@ export function courseSet(course) {
   }
 }
 
+export function deletex(id, options) {
+  return (dispatch, getState) => {
+    const { account, institution } = getState()
+    oService.setSession(account.session)
+    const request = oService.deletex(id)
+    return handleRequestEmptyO(dispatch, DELETE, request,
+      {}, 
+      {
+        ...options,
+        id,
+      })
+  }
+}

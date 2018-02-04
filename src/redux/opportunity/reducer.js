@@ -12,6 +12,21 @@ const initialState = {
 
 export default function opportunityReducer(state = initialState, action) {
   switch (action.type) {
+    case actions.SET: {
+      const { id } = action.payload
+      const opp = id != null ? state.list.find(o => o.id === id) : null
+      return {
+        ...state,
+        current: opp,
+      }
+    }
+    case actions.FILL_DATA: {
+      return {
+        ...state,
+        ...action.payload,
+      }
+    }
+
     case actions.GET_TYPES.start: {
       return {
         ...state,
@@ -43,9 +58,11 @@ export default function opportunityReducer(state = initialState, action) {
     }
 
     case actions.CREATE.success: {
+      const { inList, opportunity } = action.payload
       return {
         ...state,
-        current: action.payload.opportunity,
+        current: opportunity,
+        list: inList ? state.list.concat([opportunity]) : state.list,
         loading: false,
       }
     }
@@ -199,6 +216,37 @@ export default function opportunityReducer(state = initialState, action) {
       return {
         ...state,
         currentCourse: action.payload,
+      }
+    }
+
+    case actions.DELETE.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.DELETE.success: {
+      const { id, inList } = action.payload
+      if (inList) {
+        return {
+          ...state,
+          loading: false,
+          list: state.list.filter(l => l.id !== id),
+        }
+      } else {
+        return {
+          ...state,
+          current: null,
+          loading: false,
+        }
+      }
+    }
+
+    case actions.DELETE.failed: {
+      return {
+        ...state,
+        loading: false,
       }
     }
   }

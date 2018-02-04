@@ -1,6 +1,7 @@
 import { push } from 'react-router-redux'
 import { InstitutionService, OpportunityService } from '../../services'
 import { handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { fillData as oppFillData } from '../opportunity/actions'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
@@ -12,9 +13,15 @@ export const UPDATE = createActionLabels('INST_UPDATE')
 export const DELETE = createActionLabels('INST_DELETE')
 export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
 export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
+export const UNSET = 'INST_UNSET'
 
 const iService = new InstitutionService()
-const oService = new OpportunityService()
+
+export function unset() {
+  return {
+    type: UNSET,
+  }
+}
 
 export function getTypes() {
   return (dispatch, getState) => {
@@ -118,6 +125,10 @@ export function findById(id, refresh = false) {
       }
     },
     (payload) => {
+      dispatch(oppFillData({
+        list: payload.institution.opportunities,
+      }))
+
       if (refresh) 
         dispatch(push(`/institution/${payload.id}/edit`))
     })
@@ -136,41 +147,6 @@ export function findAll() {
         single: true,
       }
     })
-  }
-}
-
-export function addOpportunity(opp = null, data) {
-  return (dispatch, getState) => {
-    const { account, institution } = getState()
-    var request = null
-    if (opp) {
-      oService.setSession(account.session)
-      request = oService.update({
-        ...data, id: opp.id
-      })
-    } else {
-      iService.setSession(account.session)
-      request = iService.addOpportunity(institution.current.id,data)
-    }
-    return handleRequest(dispatch, getState, ADD_OPPORTUNITY, request,
-      data => {
-        return {
-          opp: data,
-          isNewInstance: !opp,
-        }
-      })
-  }
-}
-
-export function removeOpportunity(opp) {
-  return (dispatch, getState) => {
-    const { account, institution } = getState()
-    
-    iService.setSession(account.session)
-    const request = iService.remOpportunity(institution.current.id, opp.id)
-
-    return handleRequestEmpty(dispatch, getState, REM_OPPORTUNITY, request,
-      { id: opp.id })
   }
 }
 

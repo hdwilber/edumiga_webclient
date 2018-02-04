@@ -24,11 +24,11 @@ class OppForm extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.opportunity) {
+    if (nextProps.opportunity !== undefined) {
       this.setState({
         ...format(OppTemplate, nextProps.opportunity),
       })
-    } 
+    }
   }
 
   handleInputChange(e, props) {
