@@ -32,13 +32,16 @@ const FormOverview = (props) => {
     <Form>
       <Form.Group>
         <Form.Input value={data.code} name="code" onChange={onInputChange} 
-          label="Code" type="text" width={2}
+          label="Code" type="text" width={3}
         />
         <Form.Input value={data.name} name="name" onChange={onInputChange} 
           label="Name" type="text"
         />
         <Form.Input value={data.duration} name="duration" onChange={onInputChange} 
           label="Duration" type="text" width={2}
+        />
+        <Form.Input value={data.level} name="level" onChange={onInputChange} 
+          label="Level" type="text" width={2}
         />
       </Form.Group>
 

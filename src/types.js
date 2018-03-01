@@ -204,6 +204,10 @@ export const Course = {
   code: {
     type: Types.string
   },
+  level: {
+    type: Types.number,
+    default: 1,
+  },
   description: {
     type: Types.string
   },

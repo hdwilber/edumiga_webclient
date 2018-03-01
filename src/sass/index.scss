@@ -1,0 +1,30 @@
+.student-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  float: right;
+  width: 50%;
+  height: 300px;
+
+  i.student.icon {
+    font-size: 25em;
+    line-height: 1em;
+    text-align: right;
+    color: #dedede;
+  }
+}
+
+.ui.header.main-title {
+  font-size: 5em;
+}
+
+.header.sub.secondary-title {
+  font-size: 4em;
+}
+
+.finder {
+  margin-top: 5em;
+  width: 100%;
+  background-color: #efefef;
+  padding: 2em;
+}

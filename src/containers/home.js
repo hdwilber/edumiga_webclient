@@ -1,43 +1,54 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Login from '../components/account/login'
-import { Grid, Header } from 'semantic-ui-react'
+import { Icon, Grid, Header } from 'semantic-ui-react'
+
+import Finder from '../components/finder'
 
 import * as accountActions from '../redux/account/actions'
 import * as institutionActions from '../redux/institution/actions'
 
-const Home = (props) => {
+class Home extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleFinder = this.handleFinder.bind(this)
+  }
 
-  function handleLogin(data) {
+  handleLogin(data) {
     console.log(data)
-    const { accountLogin } = props
+    const { accountLogin } = this.props
     accountLogin(data)
   }
 
-  function handleRegister(data) {
+  handleRegister(data) {
     console.log(data)
-    const { accountCreate } = props
+    const { accountCreate } = this.props
     accountCreate(data)
   }
 
-  const { account } = props
+  handleFinder(e, {url}) {
+    this.props.history.push(url)
+  }
 
-  return (
-    <Grid container centered>
-      <Grid.Column width={10}>
-        <Header size="huge" content="Login"/>
-      </Grid.Column>
-      <Grid.Column width={10}>
-        {(account && !account.session) && (
-        <Login loading={account.loading} 
-          onLogin={handleLogin}
-          onRegister={handleRegister}
-        />
-        )}
-      </Grid.Column>
-    </Grid>
+  render() {
+    return (
+      <Grid container centered>
+        <Grid.Column width={16}>
+          <Header className="main-title" content="Start to Grow!"/>
+          <Header.Subheader className="secondary-title" content="Find Your School!"/>
+          
+          <div className="student-icon" >
+            <Icon name="student" style={{width: '100%', height: '100%'}}/>
+          </div>
 
-  )
+          <div className="finder">
+            <Finder onSearch={this.handleFinder} />
+          </div>
+        </Grid.Column>
+      </Grid>
+
+    )
+  }
 }
 
 export default connect((state) => ({

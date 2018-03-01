@@ -4,6 +4,7 @@ import { Redirect } from 'react-router'
 import { withRouter } from 'react-router-dom'
 import Navbar from '../components/navbar'
 import * as accountActions from '../redux/account/actions'
+import '../sass/index.scss'
 
 class Edumiga extends Component {
   constructor(props) {

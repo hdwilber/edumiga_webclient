@@ -37,7 +37,9 @@ class Navbar extends React.Component {
     return (
       <Menu>
         <Menu.Item>
-          <Image src={logo} width="100" />
+          <Link to="/">
+            <Image src={logo} width="100" />
+          </Link>
         </Menu.Item>
         <Menu.Item as={Dropdown} item index={Items.INSTITUTION} active={activeItem === Items.INSTITUTION} onClick={this.handleItemClick}
           text="Institutions"
