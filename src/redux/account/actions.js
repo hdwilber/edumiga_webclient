@@ -18,10 +18,15 @@ export const RECONFIRM = createActionLabels('RECONFIRM')
 const aService = new AccountService()
 const iService = new IdentityService()
 
-export function create(data) {
+export function create(data, options = {}) {
   return (dispatch, getState) => {
     const request = aService.create(data)
-    return handleRequest(dispatch, getState, CREATE, request)
+    return handleRequest(dispatch, getState, CREATE, request, 
+      null,
+      (payload) => {
+        if (options && options.modal)
+          dispatch(ModalActions.hide(options.modal.name))
+      })
   }
 }
 

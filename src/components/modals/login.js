@@ -9,6 +9,7 @@ class LoginModal extends React.Component {
   constructor(props) {
     super(props)
     this.handleLogin = this.handleLogin.bind(this)
+    this.handleRegister = this.handleRegister.bind(this)
   }
 
 
@@ -20,6 +21,11 @@ class LoginModal extends React.Component {
     login(data, { modal: { name } } )
   }
 
+  handleRegister(data) {
+    const { name, createAccount } = this.props
+    createAccount (data, { modal: { name } })
+  }
+
   render() {
     const { visible, onClose }  = this.props
     return (
@@ -29,7 +35,9 @@ class LoginModal extends React.Component {
         <Modal.Header>Enter your credentials</Modal.Header>
         <Modal.Content>
           <Modal.Description>
-            <Login onLogin={this.handleLogin} />
+            <Login onLogin={this.handleLogin} 
+              onRegister={this.handleRegister}
+            />
           </Modal.Description>
         </Modal.Content>
       </Modal>
@@ -40,4 +48,5 @@ class LoginModal extends React.Component {
 export default connect (state => ({ 
 }), dispatch => ({
   login: (data, options) => dispatch (AccountActions.login(data, options)),
+  createAccount: (data, options) => dispatch (AccountActions.create(data, options)),
 })) (LoginModal)
