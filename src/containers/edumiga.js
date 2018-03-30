@@ -4,14 +4,22 @@ import { Redirect } from 'react-router'
 import { withRouter } from 'react-router-dom'
 import Navbar from '../components/navbar'
 import * as accountActions from '../redux/account/actions'
+import * as ModalActions from '../redux/modal/actions'
 import '../sass/index.scss'
+
+import { Grid } from 'semantic-ui-react'
+
+import LoginModal from '../components/modals/login'
+
+const LOGIN_MODAL_NAME = 'login-modal'
 
 class Edumiga extends Component {
   constructor(props) {
     super(props)
-    
     this.handleLogout = this.handleLogout.bind(this)
     this.checkAuthorization = this.checkAuthorization.bind(this)
+    this.handleToggleLogin = this.handleToggleLogin.bind(this)
+    this.handleLoginClose = this.handleLoginClose.bind(this)
   }
 
   componentDidMount() {
@@ -42,21 +50,45 @@ class Edumiga extends Component {
     return true
   }
 
+  handleToggleLogin() {
+    const { showModal } = this.props
+    showModal(LOGIN_MODAL_NAME)
+  }
+
+  handleLoginClose() {
+    hideModal(LOGIN_MODAL_NAME)
+  }
+
   render() {
-    const { account } = this.props
+    const { account, modal } = this.props
     return (
       <div>
         <Navbar account={account}
+          onClickLogin={this.handleToggleLogin}
           onLogout={this.handleLogout}
         />
         { this.checkAuthorization() ? (this.props.children): (<Redirect to="/"/>)}
-      </div>)
+
+
+        { modal && (
+          <LoginModal 
+            visible={ModalActions.checkIfVisible(modal.visibleModals, LOGIN_MODAL_NAME)}
+            name={LOGIN_MODAL_NAME}
+            onClose={this.handleLoginClose}
+          />
+        )}
+      </div>
+    )
   }
 }
 
 export default connect((state) => ({
   account: state.account,
+  modal: state.modal,
 }), (dispatch => ({
   sessionRestore: () => dispatch(accountActions.sessionRestore()),
   logout: () => dispatch(accountActions.logout()),
+  login: (data) => dispatch(accountActions.login(data)),
+  showModal: (name) => dispatch(ModalActions.show(name)),
+  hideModal: (name) => dispatch(ModalActions.hide(name)),
   }))) (withRouter(Edumiga))

@@ -14,34 +14,15 @@ const Items = {
 }
 
 class Navbar extends React.Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      activeItem: Items.UNDEFINED
-    }
-
-    this.handleItemClick = this.handleItemClick.bind(this)
-  }
-
-  handleItemClick(e, {index}) {
-    this.setState({
-      activeItem: index,
-    })
-  }
-
   render() {
-    const { activeItem } = this.state
-    const { onLogout, account } = this.props
+    const { onClickLogin, onLogout, account } = this.props
 
     return (
       <Menu>
         <Menu.Item>
-          <Link to="/">
-            <Image src={logo} width="100" />
-          </Link>
+          <Image as={Link} to="/" src={logo} width="100" />
         </Menu.Item>
-        <Menu.Item as={Dropdown} item index={Items.INSTITUTION} active={activeItem === Items.INSTITUTION} onClick={this.handleItemClick}
+        <Menu.Item as={Dropdown} item index={Items.INSTITUTION} 
           text="Institutions"
         >
           <Dropdown.Menu>
@@ -50,7 +31,7 @@ class Navbar extends React.Component {
           </Dropdown.Menu>
         </Menu.Item>
 
-        <Menu.Item index={Items.OPPORTUNITY} active={activeItem === Items.OPPORTUNITY} onClick={this.handleItemClick}>
+        <Menu.Item index={Items.OPPORTUNITY} >
           Opportunities
         </Menu.Item>
 
@@ -59,7 +40,7 @@ class Navbar extends React.Component {
         </Menu.Item>
 
         {(account && account.session) ? <MenuItemUser onLogout={onLogout} account={account}/> : (
-          <Menu.Item position="right">
+          <Menu.Item onClick={ (e) => onClickLogin() } position="right">
             <Button><Icon name="sign in" /> Login</Button>
           </Menu.Item>
         )}

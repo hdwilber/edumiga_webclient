@@ -5,6 +5,7 @@ import institutionReducer from './institution/reducer'
 import opportunityReducer from './opportunity/reducer'
 import constantReducer from './constants/reducer'
 import courseReducer from './course/reducer'
+import modalReducer from './modal/reducer'
 
 export default combineReducers({
   router: routerReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
   opp: opportunityReducer,
   constant: constantReducer,
   course: courseReducer,
+  modal: modalReducer,
 })

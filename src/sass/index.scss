@@ -28,3 +28,7 @@
   background-color: #efefef;
   padding: 2em;
 }
+
+.ui.page.modals.transition.visible {
+    display: flex !important;
+}

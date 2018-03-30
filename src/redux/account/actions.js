@@ -3,6 +3,8 @@ import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
 import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
+import * as ModalActions from '../modal/actions'
+
 export const CREATE = createActionLabels('ACCOUNT_CREATE')
 export const LOGIN = createActionLabels('SESSION_LOGIN')
 export const LOGOUT = createActionLabels('SESSION_LOGOUT')
@@ -32,7 +34,7 @@ export function updateIdentity(data) {
   }
 }
 
-export function login(data) {
+export function login(data, options = {}) {
   return (dispatch, getState) => {
     const request = aService.login(data)
     return handleRequest(dispatch, getState, LOGIN, request,
@@ -41,6 +43,9 @@ export function login(data) {
         aService.storeSessionLocal(payload)
         dispatch(findById(payload.accountId))
         dispatch(push('/institutions'))
+        if (options && options.modal)
+          dispatch(ModalActions.hide(options.modal.name))
+
       })
   }
 }

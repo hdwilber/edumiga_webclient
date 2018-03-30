@@ -12,6 +12,7 @@ const initialState = {
   error: null,
 }
 
+
 export default function accountReducer(state = initialState, action) {
   switch (action.type) {
     case actions.CREATE.start: {
