@@ -56,6 +56,7 @@ class Edumiga extends Component {
   }
 
   handleLoginClose() {
+    const { hideModal } = this.props
     hideModal(LOGIN_MODAL_NAME)
   }
 
