@@ -1,62 +1,51 @@
 import React from 'react'
 import { Form, Button } from 'semantic-ui-react'
+import { FinalForm, FinalField } from '../utils/forms'
 
 class Login extends React.Component {
 
   constructor(props) {
     super(props)
 
-    this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleClick = this.handleClick.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
-
-    this.state = {
-      email: '',
-      password: '',
-    }
   }
 
-  handleInputChange(e, props) {
-    this.setState({
-      [props.name]: props.value,
-    })
+  handleRegister(values) {
+    const { onRegister } = this.props
   }
 
-  handleClick() {
+  handleSubmit(values) {
     const { onLogin } = this.props
     onLogin({
-      email: this.state.email,
-      password: this.state.password,
-    })
-  }
-  
-  handleRegister() {
-    const { onRegister } = this.props
-    onRegister({
-      email: this.state.email,
-      password: this.state.password,
+      ...values
     })
   }
 
   render() {
-    const { loading } = this.props
+    const { error, loading } = this.props
 
     return (
-      <Form>
-        <Form.Input name="email" onChange={this.handleInputChange} label="Email" type="email"/>
-        <Form.Input name="password" onChange={this.handleInputChange} label="Password" type="password"/>
-
-        <Button loading={loading} disabled={loading} 
-          default
-          onClick={this.handleClick}
-        >Login</Button>
-
-        <Button default
-          onClick={this.handleRegister}
-        >
-          Register
-        </Button>
-      </Form>
+      <FinalForm 
+        onSubmit={this.handleSubmit}
+        submitLabel="Login"
+        loading={false}
+        error={error}
+        errorMessage="Bad credentials"
+      >
+        <FinalField 
+          label="Email" 
+          name="email" type="email" 
+          placeHolder="Email"
+          validations={[]}
+        />
+        <FinalField 
+          label="Password" 
+          name="password" 
+          type="password" 
+          placeHolder="Password"
+        />
+      </FinalForm>
     )
   }
 }

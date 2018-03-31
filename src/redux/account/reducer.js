@@ -45,10 +45,11 @@ export default function accountReducer(state = initialState, action) {
     }
 
     case actions.LOGIN.failed: {
+      const { error } = action.payload
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error,
       }
     }
     case actions.LOGIN.success: {
@@ -78,7 +79,6 @@ export default function accountReducer(state = initialState, action) {
         loading: false,
         session: null,
         identity: null,
-        error: action.payload,
       }
     }
 
