@@ -1,7 +1,7 @@
 import { AccountService } from '../../services'
 import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
-import { createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { createActionLabels, handleRequest, handleRequestO, handleRequestEmpty } from '../utils'
 
 import * as ModalActions from '../modal/actions'
 
@@ -42,16 +42,17 @@ export function updateIdentity(data) {
 export function login(data, options = {}) {
   return (dispatch, getState) => {
     const request = aService.login(data)
-    return handleRequest(dispatch, getState, LOGIN, request,
-      null,
-      (payload) => {
-        aService.storeSessionLocal(payload)
-        dispatch(findById(payload.accountId))
-        dispatch(push('/institutions'))
-        if (options && options.modal)
-          dispatch(ModalActions.hide(options.modal.name))
-
-      })
+    return handleRequestO(dispatch, LOGIN, request,
+      {
+        postThen: (payload) => {
+          aService.storeSessionLocal(payload)
+          dispatch(findById(payload.accountId))
+          dispatch(push('/institutions'))
+          if (options && options.modal)
+            dispatch(ModalActions.hide(options.modal.name))
+        }
+      }
+    )
   }
 }
 

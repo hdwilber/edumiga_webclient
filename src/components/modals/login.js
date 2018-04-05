@@ -27,7 +27,7 @@ class LoginModal extends React.Component {
   }
 
   render() {
-    const { visible, onClose }  = this.props
+    const { account, visible, onClose }  = this.props
     return (
       <Modal open={visible} size="tiny"
         onClose={onClose}
@@ -37,6 +37,7 @@ class LoginModal extends React.Component {
           <Modal.Description>
             <Login onLogin={this.handleLogin} 
               onRegister={this.handleRegister}
+              error={account && account.error}
             />
           </Modal.Description>
         </Modal.Content>
@@ -46,6 +47,7 @@ class LoginModal extends React.Component {
 }
 
 export default connect (state => ({ 
+  account: state.account
 }), dispatch => ({
   login: (data, options) => dispatch (AccountActions.login(data, options)),
   createAccount: (data, options) => dispatch (AccountActions.create(data, options)),
