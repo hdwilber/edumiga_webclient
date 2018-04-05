@@ -1,6 +1,7 @@
 import React from 'react'
-import { Image, Modal } from 'semantic-ui-react'
+import { Button, Image, Modal } from 'semantic-ui-react'
 import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
 
 import Login from '../../components/account/login'
 import * as AccountActions from '../../redux/account/actions'
@@ -22,12 +23,12 @@ class LoginModal extends React.Component {
   }
 
   handleRegister(data) {
-    const { name, createAccount } = this.props
-    createAccount (data, { modal: { name } })
+    const { createAccount }  = this.props
+    createAccount(data)
   }
 
   render() {
-    const { account, visible, onClose }  = this.props
+    const { account, visible, onClose, history }  = this.props
     return (
       <Modal open={visible} size="tiny"
         onClose={onClose}
@@ -51,4 +52,4 @@ export default connect (state => ({
 }), dispatch => ({
   login: (data, options) => dispatch (AccountActions.login(data, options)),
   createAccount: (data, options) => dispatch (AccountActions.create(data, options)),
-})) (LoginModal)
+})) (withRouter( LoginModal))

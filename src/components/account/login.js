@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link, withRouter } from 'react-router-dom'
 import { Form, Button } from 'semantic-ui-react'
 import { FinalForm, FinalField } from '../utils/forms'
 
@@ -13,17 +14,18 @@ class Login extends React.Component {
 
   handleRegister(values) {
     const { onRegister } = this.props
-  }
-
-  handleSubmit(values) {
-    const { onLogin } = this.props
-    onLogin({
+    onRegister({
       ...values
     })
   }
 
+  handleSubmit(values) {
+    const { onLogin } = this.props
+    onLogin(values)
+  }
+
   render() {
-    const { error, loading } = this.props
+    const { error, loading, extraActions } = this.props
 
     return (
       <FinalForm 
@@ -32,6 +34,20 @@ class Login extends React.Component {
         loading={false}
         error={error}
         errorMessage="Bad credentials"
+        extraButtons={
+          (values) => {
+            return (
+              <Button 
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.handleRegister(values)
+                }}
+              >
+                Register
+              </Button>
+            )
+          }
+        }
       >
         <FinalField 
           label="Email" 
@@ -50,4 +66,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login
+export default withRouter(Login)

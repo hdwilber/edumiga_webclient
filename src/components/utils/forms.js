@@ -45,9 +45,9 @@ const CustomFinalField = (props) => {
 }
 
 const CustomFinalForm = (props) => {
-  const { error, onSubmit, submitLabel, errorMessage, loading } = props
+  const { error, onSubmit, submitLabel, errorMessage, loading, extraButtons } = props
   function renderForm(formProps) {
-    const { handleSubmit, pristine, validate } = formProps
+    const { handleSubmit, pristine, validate, values } = formProps
     return ( 
       <Form onSubmit={handleSubmit}
       >
@@ -62,10 +62,12 @@ const CustomFinalForm = (props) => {
 
         <Button loading={loading}
           default
-          onClick={handleSubmit}
+          type="submit"
         >
           {submitLabel}
         </Button>
+
+        { extraButtons(values) }
 
       </Form>
     )
