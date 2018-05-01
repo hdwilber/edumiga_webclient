@@ -52,14 +52,11 @@ class InstList extends React.Component {
     const { account, institution } = this.props
     if (institution) {
       return (
-        <Grid>
-          <Header size="huge">Institutions</Header>
+        <Grid columns={16}>
           <Grid.Row>
-            <Grid.Column width={4}>
-              <SideMenu />
-            </Grid.Column>
-            <Grid.Column width={12}>
-              <Card.Group>
+            <Grid.Column width={16}>
+              <Header size="huge">Institutions</Header>
+              <Card.Group stackable itemsPerRow={4}>
                 {(institution.list) &&(
                   institution.list.map((i,idx) => {
                     return (
@@ -72,7 +69,7 @@ class InstList extends React.Component {
                 )}
               </Card.Group>
             </Grid.Column>
-            </Grid.Row>
+          </Grid.Row>
         </Grid>
       )
     } else {

@@ -3,8 +3,8 @@ import { Button, Image, Modal } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 
-import Login from '../../components/account/login'
-import * as AccountActions from '../../redux/account/actions'
+import Login from '../../../components/account/login'
+import * as AccountActions from '../../../redux/account/actions'
 
 class LoginModal extends React.Component {
   constructor(props) {

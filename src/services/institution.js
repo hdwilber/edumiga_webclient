@@ -77,7 +77,6 @@ class Institution extends Service {
           }
         }
       ],
-
       ...filter,
     }
     return this.createRequest('GET', `?filter=${JSON.stringify(defaultFilter)}`, null, false)

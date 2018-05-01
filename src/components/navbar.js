@@ -18,7 +18,7 @@ class Navbar extends React.Component {
     const { onClickLogin, onLogout, account } = this.props
 
     return (
-      <Menu>
+      <Menu fluid>
         <Menu.Item>
           <Image as={Link} to="/" src={logo} width="100" />
         </Menu.Item>
@@ -35,39 +35,53 @@ class Navbar extends React.Component {
           Opportunities
         </Menu.Item>
 
-        <Menu.Item position="right">
-          <Image avatar circular src={account.identity && account.identity.photo ? buildImageUrl(account.identity.photo.url): null } />
-        </Menu.Item>
-
-        {(account && account.session) ? <MenuItemUser onLogout={onLogout} account={account}/> : (
-          <Menu.Item onClick={ (e) => onClickLogin() } position="right">
-            <Button><Icon name="sign in" /> Login</Button>
-          </Menu.Item>
-        )}
+        <MenuItemUser onClickLogin={onClickLogin} onLogout={onLogout} account={account}/> 
       </Menu>
     )
   }
 }
 
 const MenuItemUser = (props) => {
-  const { account: { current, identity }, onLogout } = props
+  const { account: { current, identity }, onLogout, onClickLogin } = props
+
+
+  function renderTrigger() {
+    return (
+      <span>
+        { (identity && identity.photo) ? <Image avatar src={buildImageUrl(identity.photo.url)}/> : <Icon name="user circle"/> }
+        { (identity && identity.displayName === '') ? (current || current.email): (identity.displayName) }
+      </span>
+    )
+
+  }
+
   if (identity) {
     return (
-      <Dropdown item 
-        text={
-          (identity && identity.displayName === '') ? (current || current.email): (identity.displayName)}
+      <Menu.Menu
         position="right"
       >
-        <Dropdown.Menu>
-          <Dropdown.Item as={Link} to="/account/identity" icon='edit' text='Edit Profile' />
-          <Dropdown.Item as={Link} to="/institutions?owned=me" icon='list' text='My Institutions' />
-          <Dropdown.Item icon='settings' text='Account Settings' />
-          <Dropdown.Item icon='sign out' text='Logout' onClick={(e) => onLogout()}/>
-        </Dropdown.Menu>
-      </Dropdown>
+      <Dropdown item
+        trigger={renderTrigger()}
+        labeled 
+      >
+          <Dropdown.Menu>
+            <Dropdown.Item as={Link} to="/account/identity" icon='edit' text='Edit Profile' />
+            <Dropdown.Item as={Link} to="/institutions?owned=me" icon='list' text='My Institutions' />
+            <Dropdown.Item icon='settings' text='Account Settings' />
+            <Dropdown.Item icon='sign out' text='Logout' onClick={(e) => onLogout()}/>
+          </Dropdown.Menu>
+        </Dropdown>
+      </Menu.Menu>
     )
   } else {
-    return <Menu.Item>Loading...</Menu.Item>
+    return (
+      <Menu.Item
+        position="right"
+        onClick={onClickLogin}
+      >
+        <Button><Icon name="sign in" /> Login</Button>
+      </Menu.Item>
+    )
   }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Image, Grid, Segment, Header } from 'semantic-ui-react'
+import { Image, Grid, Segment, Header, Icon } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 
 import LocationMap from '../../components/location/map'
@@ -54,14 +54,17 @@ class View extends React.Component {
           </Grid.Column>
           <Grid.Column width={6}>
             <Segment>
-              <Image src={buildImageUrl(inst.logo.url)} />
+              { inst.logo 
+                ? <Image src={buildImageUrl(inst.logo.url)} />
+                : <Icon name="building"/>
+              }
             </Segment>
             <Segment>
               <Header size="normal">Location</Header>
               <LocationMap
                 name="location"
                 onCenterChange={this.handleInputChange}
-                data={inst.location.point ? inst.location : this.state.currentLocation}
+                data={(inst.location && inst.location.point) ? inst.location : this.state.currentLocation}
               />
             </Segment>
 

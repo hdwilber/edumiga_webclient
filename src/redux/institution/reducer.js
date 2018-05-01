@@ -3,6 +3,7 @@ import * as actions from './actions'
 const initialState = {
   current: null,
   currentOpp: null,
+  count: 0,
   list: null,
   loading: false,
   error: null,
@@ -197,10 +198,12 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.FIND_ALL.success: {
+      const { result: { list, count } } = action.payload
       return {
         ...state,
         current: null,
-        list: action.payload.list,
+        list,
+        count,
         loading: false,
       }
     }

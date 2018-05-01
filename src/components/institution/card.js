@@ -23,19 +23,25 @@ const InstCard = (props) => {
     return (
       <Card>
         <Card.Content>
-          <Image size="tiny" floated="right" wrapped={true} inline={true} src={institution.logo ? buildImageUrl(institution.logo.url): 'none' }/>
+          <div>
+            { institution.logo 
+            ? (<Image size="tiny" 
+              floated="right" 
+              inline={true} src={buildImageUrl(institution.logo.url)}/>)
+              : <Icon name="building" />
+            }
+          </div>
+
           <p><b>{institution.type}</b></p>
           <Card.Meta>
             {institution.prename}
+            {institution.levels && institution.levels.map((l, index) => <Label key={index}>{l}</Label>)}
           </Card.Meta>
           <Card.Header as={Link} to={`/institution/${institution.id}/edit`}>
             {institution.name}
           </Card.Header>
           <Card.Description>
             {institution.description}
-            <p>
-            {institution.levels && institution.levels.map(l => <Label>{l}</Label>)}
-            </p>
           </Card.Description>
         </Card.Content>
         <Card.Content extra>

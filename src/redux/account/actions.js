@@ -1,15 +1,16 @@
 import { AccountService } from '../../services'
 import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
-import { createActionLabels, handleRequest, handleRequestO, handleRequestEmpty } from '../utils'
+import { createActionTypesObject, dispatchRequestActions, createActionLabels, handleRequest, handleRequestO, handleRequestEmpty } from '../utils'
 
 import * as ModalActions from '../modal/actions'
 
-export const CREATE = createActionLabels('ACCOUNT_CREATE')
-export const LOGIN = createActionLabels('SESSION_LOGIN')
+export const CREATE = createActionTypesObject('ACCOUNT_CREATE')
+export const LOGIN = createActionTypesObject('SESSION_LOGIN')
+export const FIND = createActionTypesObject('ACCOUNT_FIND')
+
 export const LOGOUT = createActionLabels('SESSION_LOGOUT')
 export const RESTORE = createActionLabels('SESSION_RESTORE')
-export const FIND = createActionLabels('ACCOUNT_FIND')
 export const IDENTITY_UPDATE = createActionLabels('IDENTITY_UPDATE')
 export const UPLOAD_PHOTO = createActionLabels('IDENTITY_UPLOAD_PHOTO')
 export const CONFIRM = createActionLabels('CONFIRM')
@@ -21,12 +22,15 @@ const iService = new IdentityService()
 export function create(data, options = {}) {
   return (dispatch, getState) => {
     const request = aService.create(data)
-    return handleRequest(dispatch, getState, CREATE, request, 
-      null,
-      (payload) => {
-        if (options && options.modal)
-          dispatch(ModalActions.hide(options.modal.name))
-      })
+    return dispatchRequestActions(dispatch, CREATE, request, 
+      {
+        postThen: (result) => {
+          if (options && options.modal)
+            dispatch(ModalActions.hide(options.modal.name))
+        }
+      }, 
+      options
+    )
   }
 }
 
@@ -42,16 +46,17 @@ export function updateIdentity(data) {
 export function login(data, options = {}) {
   return (dispatch, getState) => {
     const request = aService.login(data)
-    return handleRequestO(dispatch, LOGIN, request,
+    return dispatchRequestActions(dispatch, LOGIN, request,
       {
-        postThen: (payload) => {
-          aService.storeSessionLocal(payload)
-          dispatch(findById(payload.accountId))
+        postThen: (result) => {
+          aService.storeSessionLocal(result)
+          dispatch(findById(result.accountId))
           dispatch(push('/institutions'))
           if (options && options.modal)
             dispatch(ModalActions.hide(options.modal.name))
         }
-      }
+      }, 
+      options
     )
   }
 }
@@ -59,16 +64,18 @@ export function login(data, options = {}) {
 export function confirm(uid, token) {
   return (dispatch, getState) => {
     const request = aService.confirm(uid, token)
-    return handleRequestEmpty(dispatch, getState, CONFIRM, request, null,
-      (payload) => {
-        setTimeout(() => {
-          dispatch(push('/'))
-        }, 1500)
-      },
-      (error) => {
-        setTimeout(() => {
-          dispatch(push('/'))
-        }, 1500)
+    return dispatchRequestActions(dispatch, CONFIRM, request,
+      {
+        postThen: (payload) => {
+          setTimeout(() => {
+            dispatch(push('/'))
+          }, 1500)
+        },
+        postCatch: (error) => {
+          setTimeout(() => {
+            dispatch(push('/'))
+          }, 1500)
+        }
       }
     )
   }
@@ -79,7 +86,7 @@ export function reConfirm() {
     const { account: { session } } = this.props
     aService.setSession(session)
     const request = aService.reConfirm()
-    return handleRequestEmpty(dispatch, getState, CONFIRM, request)
+    return dispatchRequestActions(dispatch, CONFIRM, request)
   }
 }
 
@@ -97,7 +104,7 @@ export function findById(id) {
     const { account } = getState()
     aService.setSession(account.session)
     const request = aService.get(id)
-    return handleRequest(dispatch, getState, FIND, request)
+    return dispatchRequestActions(dispatch, FIND, request)
   }
 }
 

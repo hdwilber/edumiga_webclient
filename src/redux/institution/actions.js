@@ -1,6 +1,6 @@
 import { push } from 'react-router-redux'
 import { InstitutionService } from '../../services'
-import { handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest } from '../utils'
+import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest } from '../utils'
 import { fillData as oppFillData } from '../opportunity/actions'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
@@ -35,11 +35,11 @@ export function findAllOwned(options) {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.getAllOwned()
-    return handleRequestO(dispatch, FIND_ALL, request,
+    return dispatchRequestActions(dispatch, FIND_ALL, request,
       {
         format: function(data) {
           return {
-            list: data,
+            ...data,
             single: true,
           }
         }
@@ -140,13 +140,16 @@ export function findAll() {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.getAll()
-    return handleRequest(dispatch, getState, FIND_ALL, request, 
-    (data) => {
-      return {
-        list: data,
-        single: true,
+    return dispatchRequestActions(dispatch, FIND_ALL, request, 
+      {
+        format: (data) => {
+          return {
+            ...data,
+            single: true,
+          }
+        }
       }
-    })
+    )
   }
 }
 

@@ -53,12 +53,12 @@ export default function accountReducer(state = initialState, action) {
       }
     }
     case actions.LOGIN.success: {
-      const session = action.payload
+      const { result } = action.payload
       return {
         ...state,
         loading: false,
-        session: session,
-        id: session.accountId,
+        session: result,
+        id: result.accountId,
       }
     }
 
@@ -105,22 +105,24 @@ export default function accountReducer(state = initialState, action) {
     }
 
     case actions.FIND.failed: {
+      const { error } = action.payload
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error,
       }
     }
     case actions.FIND.success: {
-      const account = action.payload
-      const identities = account.identities || []
-      delete account.identities
+      console.log(action.payload)
+      const { result } = action.payload
+      const identities = result.identities || []
+      delete result.identities
 
       return {
         ...state,
         loading: false,
         identity: identities[0],
-        current: account,
+        current: result,
         identities,
       }
     }

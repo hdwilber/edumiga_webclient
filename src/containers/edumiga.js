@@ -9,7 +9,7 @@ import '../sass/index.scss'
 
 import { Grid } from 'semantic-ui-react'
 
-import LoginModal from '../components/modals/login'
+import LoginModal from '../containers/account/modals/login'
 
 const LOGIN_MODAL_NAME = 'login-modal'
 
@@ -40,7 +40,7 @@ class Edumiga extends Component {
       } else if (!query.owned) {
         return true 
       }
-    } else if (pathname.indexOf('institution/list') > -1) {
+    } else if (pathname.indexOf('institutions') > -1) {
       if (query.owned) {
         if (!session) {
           return false
@@ -63,7 +63,7 @@ class Edumiga extends Component {
   render() {
     const { account, modal } = this.props
     return (
-      <div>
+      <React.Fragment>
         <Navbar account={account}
           onClickLogin={this.handleToggleLogin}
           onLogout={this.handleLogout}
@@ -78,7 +78,7 @@ class Edumiga extends Component {
             onClose={this.handleLoginClose}
           />
         )}
-      </div>
+      </React.Fragment>
     )
   }
 }

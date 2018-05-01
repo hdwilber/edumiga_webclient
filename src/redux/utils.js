@@ -1,5 +1,52 @@
 const { REACT_APP_API_BASEURL } = process.env
 
+export function createActionTypesObject(base) {
+  return {
+    start: base,
+    success: `${base}_SUCCESS`,
+    failed: `${base}_FAILED`,
+  }
+}
+
+export function dispatchRequestActions(dispatch, action, request, functions = {}, options = {}) {
+  request.then(response => {
+    if (response.ok) {
+      return response.json ? response.json(): Promise.resolve({})
+    }
+    return Promise.reject(new Error('Request failed'))
+  })
+  .then(data => {
+    const result = functions.format ? functions.format(data): data
+
+    dispatch({
+      type: action.success,
+      payload: {
+        result,
+        options,
+      }
+    })
+
+    if (functions.postThen) functions.postThen(result, options)
+  })
+  .catch(error => {
+    dispatch({
+      type: action.failed,
+      payload: {
+        error,
+        options,
+      }
+    })
+
+    if (functions.postCatch) functions.postCatch(error, options)
+  })
+  return dispatch({
+    type: action.start,
+    payload: {
+      options,
+    }
+  })
+}
+
 export function handleRequestEmpty(dispatch, getState, action, request, data, postThen = null, postCatch = null) {
   request.then (response => {
     if (response.ok) {
