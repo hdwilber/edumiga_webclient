@@ -65,10 +65,10 @@ class CourseCreate extends React.Component {
     if (courses) {
       const courseList =this.convertCourseList(this.state.prerequisites, course, courses)
       return (
-        <Modal size="small" open={visible} >
+        <Modal closeOnDocumentClick onClose={this.handleClickCancel} size="small" open={visible} >
           <Modal.Header>Enter a new Course</Modal.Header>
-          <Modal.Content image>
-            <Grid container>
+          <Modal.Content>
+            <Grid container stackable>
               <Grid.Column width={16}>
                 <Segment>
                   <FormOverview onInputChange={this.handleInputChange}

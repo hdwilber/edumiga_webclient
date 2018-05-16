@@ -167,7 +167,7 @@ class Edit extends React.Component {
     if (opp && course && opp.current && opp.constants) {
       const instOwner = opp.current.institution
       return (
-        <Grid container>
+        <Grid container stackable>
           <Grid.Column width={16}>
             <Header size="huge">Opportunity</Header>
           </Grid.Column>

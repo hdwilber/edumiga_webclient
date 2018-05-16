@@ -49,8 +49,6 @@ const InstCard = (props) => {
             <Icon name='list' />
             {institution.opportunities && institution.opportunities.length} Opportunities
           </a>
-          { session && session.accountId === institution.accountId && renderOwnerActions(props)}
-
         </Card.Content>
       </Card>
     )

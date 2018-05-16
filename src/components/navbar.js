@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, Button, Dropdown, Image, Menu } from 'semantic-ui-react'
+import { Icon, Input, Button, Dropdown, Image, Menu } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../redux/utils'
 
@@ -14,8 +14,14 @@ const Items = {
 }
 
 class Navbar extends React.Component {
+
   render() {
     const { onClickLogin, onLogout, account } = this.props
+    const searchOptions = [
+      {key: 'institutions', text: 'Institutions', value: 'institutions',},
+      {key: 'opportunities', text: 'Opportunities', value: 'opportunities',},
+      {key: 'courses', text: 'Courses', value: 'courses'},
+    ]
 
     return (
       <Menu fluid>
@@ -23,16 +29,34 @@ class Navbar extends React.Component {
           <Image as={Link} to="/" src={logo} width="100" />
         </Menu.Item>
         <Menu.Item as={Dropdown} item index={Items.INSTITUTION} 
-          text="Institutions"
+          text="Quick Catalog"
         >
+
           <Dropdown.Menu>
-            <Dropdown.Item as={Link} to="/institution/create"><Icon name="edit"/>Create</Dropdown.Item>
-            <Dropdown.Item as={Link} to="/institutions"><Icon name="list"/>List</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/institutions"><Icon name="edit"/>Institutions</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/opportunities"><Icon name="edit"/>Opportunities</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/courses"><Icon name="edit"/>Courses</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/institutions"><Icon name="list"/>Technology</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/institutions"><Icon name="list"/>Health and Medical Sciences</Dropdown.Item>
           </Dropdown.Menu>
         </Menu.Item>
 
-        <Menu.Item index={Items.OPPORTUNITY} >
-          Opportunities
+        <Menu.Item index={Items.OPPORTUNITY} fluid style={{borderRight: 'none', flexGrow: 1}}>
+          <Input placeholder='Search to...'
+            label={<Dropdown defaultValue='.com' defaultValue="institutions" labelPosition="right" options={searchOptions}
+            />
+            }
+            action={<Button icon="search" />}
+          />
+
+        </Menu.Item>
+
+        <Menu.Item as={Dropdown} item
+          text="Quick Menu"
+        >
+          <Dropdown.Menu>
+            <Dropdown.Item as={Link} to="/institution/create"><Icon name="edit"/>Create Institution</Dropdown.Item>
+          </Dropdown.Menu>
         </Menu.Item>
 
         <MenuItemUser onClickLogin={onClickLogin} onLogout={onLogout} account={account}/> 
@@ -59,6 +83,7 @@ const MenuItemUser = (props) => {
     return (
       <Menu.Menu
         position="right"
+ 
       >
       <Dropdown item
         trigger={renderTrigger()}

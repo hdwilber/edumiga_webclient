@@ -40,7 +40,7 @@ const FormIdentity = (props) => {
         <Form.Input value={data.displayName} name="displayName" onChange={onInputChange} 
           label="Display name" type="text"
         />
-        <Form.Group width="equals">
+        <Form.Group widths="equal">
           <Form.Input value={data.title} name="title" onChange={onInputChange} 
             label="Title" type="text"
           />
@@ -53,7 +53,7 @@ const FormIdentity = (props) => {
           />
         </Form.Group>
 
-        <Form.Group width="equals">
+        <Form.Group widths="equal">
           <Form.Input value={data.occupation} name="occupation" onChange={onInputChange} 
             label="Occupation" type="text"
           />
@@ -65,7 +65,7 @@ const FormIdentity = (props) => {
           />
         </Form.Group>
 
-        <Form.Group width="equals">
+        <Form.Group widths="equal">
           <Form.Field>
             <label>Country</label>
             <Select value={data.country} name="country" 
@@ -87,7 +87,7 @@ const FormIdentity = (props) => {
           />
         </Form.Group>
 
-        <Form.Group grouped>
+        <Form.Group grouped inline>
           <label>Interests</label>
           {categories && categories.map (l => {
             return (

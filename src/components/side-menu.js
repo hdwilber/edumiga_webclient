@@ -53,5 +53,4 @@ class SideMenu extends React.Component {
 }
 
 export default SideMenu
-            //action={<Dropdown button basic floating options={options} defaultValue='page' />}
-            //placeholder='Search institutions...' />
+
