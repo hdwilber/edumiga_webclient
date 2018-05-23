@@ -75,11 +75,43 @@ class Institution extends Service {
           scope: {
             include: ['logo', 'account']
           }
+        },
+        { relation: 'dependencies', 
+          scope: {
+            include: [
+              { relation: 'dependencies',
+                scope: {
+                  include: [
+                    { relation: 'dependencies'},
+                    { relation: 'opportunities'},
+                  ],
+                }
+              },
+              { relation: 'opportunities', },
+            ]
+          }
         }
       ],
       ...filter,
     }
     return this.createRequest('GET', `?filter=${JSON.stringify(defaultFilter)}`, null, false)
+  }
+
+  getAllResumes() {
+    const defaultFilter = {
+      where: {
+        adminLevel: 'main',
+      },
+      include: [
+        {
+          relation: 'logo',
+        },
+        {
+          relation: 'media',
+        },
+      ],
+    }
+    return this.createRequest('GET', `resumes?filter=${JSON.stringify(defaultFilter)}`, null, false)
   }
 
   addOpportunity(id, data) {

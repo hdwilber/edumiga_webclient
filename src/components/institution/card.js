@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Label, Card, Image, Icon } from 'semantic-ui-react'
+import { List, Button, Label, Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
+import nologo from '../../images/nologo.svg'
 
 export const ActionTypes = {
   DELETE: 3,
@@ -20,37 +21,51 @@ function renderOwnerActions (props) {
 const InstCard = (props) => {
   const { session, institution } = props
   if (institution) {
+    const { 
+      logo, type, prename, name, 
+      description, levels, 
+      opportunities,
+      stats } = institution
     return (
       <Card>
         <Card.Content>
-          <div>
-            { institution.logo 
-            ? (<Image size="tiny" 
-              floated="right" 
-              inline={true} src={buildImageUrl(institution.logo.url)}/>)
-              : <Icon name="building" />
-            }
-          </div>
+          <Image 
+            size="tiny" 
+            floated="right" 
+            inline
+            src={logo ? buildImageUrl(logo.url): nologo}
+          />
 
-          <p><b>{institution.type}</b></p>
+          <p><b>{type}</b></p>
           <Card.Meta>
-            {institution.prename}
-            {institution.levels && institution.levels.map((l, index) => <Label key={index}>{l}</Label>)}
+            {prename}
           </Card.Meta>
           <Card.Header as={Link} to={`/institution/${institution.id}/edit`}>
-            {institution.name}
+            {name}
           </Card.Header>
           <Card.Description>
-            {institution.description}
+            <p>
+              {description}
+            </p>
+            <Label.Group>
+              {levels && levels.map((l, index) => <Label key={index} content={l} /> )}
+            </Label.Group>
+
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <a>
-            <Icon name='list' />
-            {institution.opportunities && institution.opportunities.length} Opportunities
-          </a>
-          { session && session.accountId === institution.accountId && renderOwnerActions(props)}
-
+          { stats && (
+            <React.Fragment>
+              <a>
+                <Icon name='building' />
+                {stats.dependencies} Dependencies
+              </a>
+              <a>
+                <Icon name='list' />
+                {stats.opportunities} Opportunities
+              </a>
+            </React.Fragment>
+          )}
         </Card.Content>
       </Card>
     )

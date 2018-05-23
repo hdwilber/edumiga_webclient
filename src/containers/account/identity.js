@@ -70,33 +70,35 @@ class Identity extends React.Component {
     if (account && account.identity) {
       const { photo } = this.state
       return (
-        <Grid container>
-          <Grid.Column width={16}>
-            <Header size="huge">Profile Settings</Header>
-          </Grid.Column>
-          <Grid.Column width={6}>
-            <Segment>
-              <SimpleMediaUploader
-                name="photo" 
-                url={photo.fakeUrl === '' ? photo.url : photo.fakeUrl}
-                onChange={this.handleInputChange}
-                onUpload={this.handleClickUploadPhoto}
-                disabled={false}
-              />
-            </Segment>
-          </Grid.Column>
-          <Grid.Column width={10}>
-            <Segment>
-              <FormIdentity onInputChange={this.handleInputChange}
-                data={this.state}
-                constants={constant && constant.constants}
-              />
-            </Segment>
+        <Grid container stackable>
+          <Grid.Row>
+            <Grid.Column width={16}>
+              <Header size="huge">Profile Settings</Header>
+            </Grid.Column>
+            <Grid.Column width={6}>
+              <Segment>
+                <SimpleMediaUploader
+                  name="photo" 
+                  url={photo.fakeUrl === '' ? photo.url : photo.fakeUrl}
+                  onChange={this.handleInputChange}
+                  onUpload={this.handleClickUploadPhoto}
+                  disabled={false}
+                />
+              </Segment>
+            </Grid.Column>
+            <Grid.Column width={10}>
+              <Segment>
+                <FormIdentity onInputChange={this.handleInputChange}
+                  data={this.state}
+                  constants={constant && constant.constants}
+                />
+              </Segment>
 
-            <Button.Group>
-              <Button primary onClick={this.handleClickSave}>Save</Button>
-            </Button.Group>
-          </Grid.Column>
+              <Button.Group>
+                <Button primary onClick={this.handleClickSave}>Save</Button>
+              </Button.Group>
+            </Grid.Column>
+          </Grid.Row>
         </Grid>
       )
     } else {

@@ -263,7 +263,7 @@ class Create extends React.Component {
 
     if (institution && opp && institution.constants && opp.constants) {
       return (
-        <Grid container>
+        <Grid container stackable>
           <Grid.Column width={16}>
             <Header size="huge">
               {isNew ? "Create a new Institution": this.state.name}

@@ -29,6 +29,13 @@
   padding: 2em;
 }
 
-.ui.page.modals.transition.visible {
-    display: flex !important;
+.visible.transition {
+  display: flex !important;
+  margin-top: unset !important;
+}
+
+.dimmed.dimmable > .ui.visible.dimmer, .ui.active.dimmer {
+  display: -ms-flexbox;
+  display: flex !important;
+  opacity: 1;
 }

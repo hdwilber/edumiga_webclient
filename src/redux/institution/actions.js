@@ -135,11 +135,11 @@ export function findById(id, refresh = false) {
   }
 }
 
-export function findAll() {
+export function findAllResumes() {
   return (dispatch, getState) => {
     const { account } = getState()
     iService.setSession(account.session)
-    const request = iService.getAll()
+    const request = iService.getAllResumes()
     return dispatchRequestActions(dispatch, FIND_ALL, request, 
       {
         format: (data) => {
