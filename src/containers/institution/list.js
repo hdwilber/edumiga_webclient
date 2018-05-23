@@ -16,14 +16,14 @@ class InstList extends React.Component {
   }
 
   componentDidMount() {
-    const { location, institutionFindAll } = this.props
+    const { location, institutionFindAllResumes } = this.props
     const { owned } = location.query
 
     if (owned === 'me') {
       const { institutionFindAllOwned } = this.props
       institutionFindAllOwned()
     } else {
-      institutionFindAll()
+      institutionFindAllResumes()
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -34,8 +34,8 @@ class InstList extends React.Component {
           const { institutionFindAllOwned } = this.props
           institutionFindAllOwned()
         } else {
-          const { institutionFindAll } = this.props
-          institutionFindAll()
+          const { institutionFindAllResumes } = this.props
+          institutionFindAllResumes()
         }
       }
     }
@@ -82,7 +82,7 @@ export default connect((state) => ({
   account: state.account,
   institution: state.institution,
 }), (dispatch) => ({
-  institutionFindAll: (filter) => dispatch(institutionActions.findAll(filter)),
+  institutionFindAllResumes: (filter) => dispatch(institutionActions.findAllResumes(filter)),
   institutionFindAllOwned: (filter) => dispatch(institutionActions.findAllOwned(filter)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
   institutionDelete: (id, opts) => dispatch(institutionActions.deleteI(id, opts)),
