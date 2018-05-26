@@ -91,8 +91,8 @@ class FormOverview extends React.Component {
             <label>Levels</label>
             {levels.map ((l, idx) => {
               return (
-                <Form.Field>
-                  <Checkbox key={idx} label={l.text} value={l.value} name="levels" onChange={this.handleCheckboxChange} checked={!!data.levels.find(v => v === l.value)}/>
+                <Form.Field key={idx} >
+                  <Checkbox label={l.text} value={l.value} name="levels" onChange={this.handleCheckboxChange} checked={!!data.levels.find(v => v === l.value)}/>
                 </Form.Field>
               )
             })}

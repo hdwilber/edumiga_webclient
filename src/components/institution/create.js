@@ -36,6 +36,7 @@ class InstForm extends React.Component {
     if (nextProps.institution) {
       this.setState({
         ...format(InstTemplate, nextProps.institution),
+        isNew: false,
       })
     } 
   }
@@ -48,10 +49,10 @@ class InstForm extends React.Component {
 
   render() {
     const { constants, onCancel, visible } = this.props
-    const { location } = this.state
+    const { isNew, location } = this.state
     return (
       <Modal closeOnDocumentClick onClose={onCancel} size="fullscreen" open={visible} >
-        <Modal.Header>Enter a new Dependency</Modal.Header>
+        <Modal.Header>{ isNew ? 'Enter a new Dependency': 'Edit dependency' }</Modal.Header>
         <Modal.Content>
           <Grid container stackable>
             <Grid.Row>

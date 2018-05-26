@@ -41,9 +41,9 @@ class Navbar extends React.Component {
           </Dropdown.Menu>
         </Menu.Item>
 
-        <Menu.Item index={Items.OPPORTUNITY} fluid style={{borderRight: 'none', flexGrow: 1}}>
+        <Menu.Item index={Items.OPPORTUNITY} style={{borderRight: 'none', flexGrow: 1}}>
           <Input placeholder='Search to...'
-            label={<Dropdown defaultValue='.com' defaultValue="institutions" labelPosition="right" options={searchOptions}
+            label={<Dropdown defaultValue='.com' defaultValue="institutions" options={searchOptions}
             />
             }
             action={<Button icon="search" />}
