@@ -3,11 +3,13 @@ import { Form as FinalForm, Field as FinalField } from 'react-final-form'
 import { Transition, Message, Form, Input, Label, Button } from 'semantic-ui-react'
 
 function validateEmail (value) {
+  /* eslint-disable */
   return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value) ? '': 'Not a valid email'
+  /* eslint-enable */
 }
 
 const CustomFinalField = (props) => {
-  const { required, validations, name, type, label, placeHolder } = props
+  const { name, type, label, placeHolder } = props
     
   function validate(value, values) {
     switch(type) {
@@ -63,6 +65,7 @@ const CustomFinalForm = (props) => {
         <Button loading={loading}
           default
           type="submit"
+          disabled={!pristine}
         >
           {submitLabel}
         </Button>

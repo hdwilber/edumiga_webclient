@@ -22,6 +22,8 @@ import { Actions as DepListActions } from '../../components/institution/list'
 
 import { Institution as InstTemplate, format, formatOutput, } from '../../types'
 
+import withAuthorization, { UserState } from '../../containers/authorization'
+
 class Create extends React.Component {
   constructor(props) {
     super(props)
@@ -364,7 +366,7 @@ class Create extends React.Component {
   }
 }
 
-export default connect((state) => ({
+const ConnectedComponent = connect((state) => ({
   account: state.account,
   institution: state.institution,
   opp: state.opp,
@@ -384,4 +386,6 @@ export default connect((state) => ({
   opportunityDelete: (id, opts) => dispatch(opportunityActions.deletex(id, opts)),
 
 })) (withRouter(Create))
+
+export default withAuthorization(ConnectedComponent, [UserState.ACCOUNT])
 

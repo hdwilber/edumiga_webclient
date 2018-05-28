@@ -7,8 +7,6 @@ import * as accountActions from '../redux/account/actions'
 import * as ModalActions from '../redux/modal/actions'
 import '../sass/index.scss'
 
-import { Grid } from 'semantic-ui-react'
-
 import LoginModal from '../containers/account/modals/login'
 
 const LOGIN_MODAL_NAME = 'login-modal'

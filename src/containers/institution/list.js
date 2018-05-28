@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Grid, Card, Header } from 'semantic-ui-react'
 import { Card as InstitutionCard } from '../../components/institution'
-import SideMenu from '../../components/side-menu'
 
 import { ActionTypes } from '../../components/institution/card'
 

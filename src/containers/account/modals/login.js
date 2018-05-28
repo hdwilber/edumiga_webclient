@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button, Image, Modal } from 'semantic-ui-react'
+import { Modal } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 import Login from '../../../components/account/login'
 import * as AccountActions from '../../../redux/account/actions'
@@ -28,7 +28,7 @@ class LoginModal extends React.Component {
   }
 
   render() {
-    const { account, visible, onClose, history }  = this.props
+    const { account, visible, onClose }  = this.props
     return (
       <Modal open={visible} size="tiny"
         onClose={onClose}

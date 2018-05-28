@@ -1,7 +1,7 @@
 import { AccountService } from '../../services'
 import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
-import { createActionTypesObject, dispatchRequestActions, createActionLabels, handleRequest, handleRequestO, handleRequestEmpty } from '../utils'
+import { createActionTypesObject, dispatchRequestActions, createActionLabels, handleRequest } from '../utils'
 
 import * as ModalActions from '../modal/actions'
 

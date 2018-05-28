@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Login from '../components/account/login'
 import { Icon, Grid, Header } from 'semantic-ui-react'
 
 import Finder from '../components/finder'

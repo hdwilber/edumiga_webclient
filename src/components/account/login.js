@@ -1,6 +1,6 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
-import { Form, Button } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom'
+import { Button } from 'semantic-ui-react'
 import { FinalForm, FinalField } from '../utils/forms'
 
 class Login extends React.Component {
@@ -25,13 +25,13 @@ class Login extends React.Component {
   }
 
   render() {
-    const { error, loading, extraActions } = this.props
+    const { error, loading } = this.props
 
     return (
       <FinalForm 
         onSubmit={this.handleSubmit}
         submitLabel="Login"
-        loading={false}
+        loading={loading}
         error={error}
         errorMessage="Bad credentials"
         extraButtons={

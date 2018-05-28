@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { List, Button, Label, Card, Image, Icon } from 'semantic-ui-react'
+import { Button, Label, Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
 import nologo from '../../images/nologo.svg'
@@ -19,12 +19,11 @@ function renderOwnerActions (props) {
   )
 }
 const InstCard = (props) => {
-  const { session, institution } = props
+  const { institution } = props
   if (institution) {
     const { 
       logo, type, prename, name, 
       description, levels, 
-      opportunities,
       stats } = institution
     return (
       <Card>
