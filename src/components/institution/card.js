@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Button, Label, Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
@@ -19,14 +18,14 @@ function renderOwnerActions (props) {
   )
 }
 const InstCard = (props) => {
-  const { institution } = props
+  const { institution, onClick } = props
   if (institution) {
     const { 
       logo, type, prename, name, 
       description, levels, 
       stats } = institution
     return (
-      <Card>
+      <Card onClick={onClick}>
         <Card.Content>
           <Image 
             size="tiny" 
@@ -39,7 +38,7 @@ const InstCard = (props) => {
           <Card.Meta>
             {prename}
           </Card.Meta>
-          <Card.Header as={Link} to={`/institution/${institution.id}/edit`}>
+          <Card.Header>
             {name}
           </Card.Header>
           <Card.Description>
@@ -54,16 +53,12 @@ const InstCard = (props) => {
         </Card.Content>
         <Card.Content extra>
           { stats && (
-            <React.Fragment>
-              <a>
-                <Icon name='building' />
-                {stats.dependencies} Dependencies
-              </a>
-              <a>
-                <Icon name='list' />
-                {stats.opportunities} Opportunities
-              </a>
-            </React.Fragment>
+            <p>
+              <Icon name='building' />
+              {stats.dependencies} Dependencies
+              <Icon name='list' />
+              {stats.opportunities} Opportunities
+            </p>
           )}
         </Card.Content>
       </Card>

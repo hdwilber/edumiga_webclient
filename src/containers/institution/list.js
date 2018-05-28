@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Grid, Card, Header } from 'semantic-ui-react'
-import { Card as InstitutionCard } from '../../components/institution'
+import { Sidebar, Grid, Card, Header } from 'semantic-ui-react'
+import { Card as InstitutionCard, View as InstitutionView } from '../../components/institution'
 
 import { ActionTypes } from '../../components/institution/card'
 
@@ -12,6 +12,9 @@ class InstList extends React.Component {
   constructor(props) {
     super(props)
     this.handleCardAction = this.handleCardAction.bind(this)
+    this.state = {
+      showDetails: false,
+    }
   }
 
   componentDidMount() {
@@ -24,7 +27,13 @@ class InstList extends React.Component {
     } else {
       institutionFindAllResumes()
     }
+    window.addEventListener('keydown', this.handleKeydown)
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeydown)
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.location && nextProps.location.key) {
       if (nextProps.location.key !== this.props.location.key) {
@@ -47,29 +56,51 @@ class InstList extends React.Component {
     }
   }
 
+  handleCardClick = (event, institution) => {
+    event.preventDefault()
+    const { institutionSet } = this.props
+    institutionSet(institution)
+    this.setState({
+      showDetails: true,
+    })
+  }
+
+  handleKeydown = (e) => {
+    if (!e.defaultPrevented) {
+      switch(e.key) {
+        case 'Escape':
+          this.setState({ showDetails: false })
+        break;
+      }
+    }
+    e.preventDefault()
+  }
+
   render() {
     const { account, institution } = this.props
     if (institution) {
       return (
-        <Grid columns={16}>
-          <Grid.Row>
-            <Grid.Column width={16}>
-              <Header size="huge">Institutions</Header>
-              <Card.Group stackable itemsPerRow={4}>
-                {(institution.list) &&(
-                  institution.list.map((i,idx) => {
-                    return (
-                      <InstitutionCard key={idx} session={account && account.session} 
-                        institution={i} 
-                        onAction={this.handleCardAction}
-                      />
-                    )
-                  })
-                )}
-              </Card.Group>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+        <Sidebar.Pushable as={Grid} columns={16}> 
+          <Sidebar direction="right" width="very wide" visible={this.state.showDetails}>
+            <InstitutionView institution={institution.current} />
+          </Sidebar>
+          <Sidebar.Pusher>
+            <Header size="huge">Institutions</Header>
+            <Card.Group stackable itemsPerRow={4}>
+              {(institution.list) &&(
+                institution.list.map((i,idx) => {
+                  return (
+                    <InstitutionCard key={idx} session={account && account.session} 
+                      institution={i} 
+                      onAction={this.handleCardAction}
+                      onClick={(e) => this.handleCardClick(e, i)}
+                    />
+                  )
+                })
+              )}
+            </Card.Group>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
       )
     } else {
       return <Header size="huge">Loading...</Header>
@@ -85,4 +116,5 @@ export default connect((state) => ({
   institutionFindAllOwned: (filter) => dispatch(institutionActions.findAllOwned(filter)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
   institutionDelete: (id, opts) => dispatch(institutionActions.deleteI(id, opts)),
+  institutionSet: (inst) => dispatch(institutionActions.setCurrent(inst)),
 })) (withRouter(InstList))

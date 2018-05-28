@@ -14,12 +14,20 @@ export const DELETE = createActionLabels('INST_DELETE')
 export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
 export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
 export const UNSET = 'INST_UNSET'
+export const SET_CURRENT = 'INST_SET'
 
 const iService = new InstitutionService()
 
 export function unset() {
   return {
     type: UNSET,
+  }
+}
+
+export function setCurrent(institution) {
+  return {
+    type: SET_CURRENT,
+    payload: institution,
   }
 }
 

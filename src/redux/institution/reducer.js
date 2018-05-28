@@ -12,6 +12,12 @@ const initialState = {
 
 export default function institutionReducer(state = initialState, action) {
   switch (action.type) {
+    case actions.SET_CURRENT: {
+      return {
+        ...state,
+        current: action.payload,
+      }
+    }
     case actions.UNSET: {
       return {
         ...state,
@@ -204,6 +210,7 @@ export default function institutionReducer(state = initialState, action) {
         current: null,
         list,
         count,
+        current: list[0],
         loading: false,
       }
     }
