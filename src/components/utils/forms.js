@@ -65,7 +65,7 @@ const CustomFinalForm = (props) => {
         <Button loading={loading}
           default
           type="submit"
-          disabled={!pristine}
+          disabled={pristine}
         >
           {submitLabel}
         </Button>

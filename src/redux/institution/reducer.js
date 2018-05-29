@@ -181,7 +181,6 @@ export default function institutionReducer(state = initialState, action) {
       return {
         ...state,
         current: action.payload.institution,
-        list: null,
         loading: false,
       }
     }
@@ -210,7 +209,6 @@ export default function institutionReducer(state = initialState, action) {
         current: null,
         list,
         count,
-        current: list[0],
         loading: false,
       }
     }

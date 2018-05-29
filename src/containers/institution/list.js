@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Sidebar, Grid, Card, Header } from 'semantic-ui-react'
+import { Modal, Sidebar, Grid, Card, Header } from 'semantic-ui-react'
 import { Card as InstitutionCard, View as InstitutionView } from '../../components/institution'
 
 import { ActionTypes } from '../../components/institution/card'
@@ -27,12 +27,8 @@ class InstList extends React.Component {
     } else {
       institutionFindAllResumes()
     }
-    window.addEventListener('keydown', this.handleKeydown)
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeydown)
-  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.location && nextProps.location.key) {
@@ -58,33 +54,18 @@ class InstList extends React.Component {
 
   handleCardClick = (event, institution) => {
     event.preventDefault()
-    const { institutionSet } = this.props
-    institutionSet(institution)
+    const { institutionFind } = this.props
+    institutionFind(institution.id)
     this.setState({
       showDetails: true,
     })
-  }
-
-  handleKeydown = (e) => {
-    if (!e.defaultPrevented) {
-      switch(e.key) {
-        case 'Escape':
-          this.setState({ showDetails: false })
-        break;
-      }
-    }
-    e.preventDefault()
   }
 
   render() {
     const { account, institution } = this.props
     if (institution) {
       return (
-        <Sidebar.Pushable as={Grid} columns={16}> 
-          <Sidebar direction="right" width="very wide" visible={this.state.showDetails}>
-            <InstitutionView institution={institution.current} />
-          </Sidebar>
-          <Sidebar.Pusher>
+        <React.Fragment>
             <Header size="huge">Institutions</Header>
             <Card.Group stackable itemsPerRow={4}>
               {(institution.list) &&(
@@ -99,8 +80,13 @@ class InstList extends React.Component {
                 })
               )}
             </Card.Group>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
+          <Modal 
+            onClose={() => this.setState({showDetails: false})}
+            closeOnDocumentClick 
+            open={this.state.showDetails}>
+            <InstitutionView institution={institution.current} />
+          </Modal>
+        </React.Fragment>
       )
     } else {
       return <Header size="huge">Loading...</Header>
@@ -114,6 +100,7 @@ export default connect((state) => ({
 }), (dispatch) => ({
   institutionFindAllResumes: (filter) => dispatch(institutionActions.findAllResumes(filter)),
   institutionFindAllOwned: (filter) => dispatch(institutionActions.findAllOwned(filter)),
+  institutionFind: (id, opts) => dispatch(institutionActions.findById(id, opts)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
   institutionDelete: (id, opts) => dispatch(institutionActions.deleteI(id, opts)),
   institutionSet: (inst) => dispatch(institutionActions.setCurrent(inst)),
