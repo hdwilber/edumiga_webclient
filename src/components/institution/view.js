@@ -5,16 +5,18 @@ import LocationMap from '../../components/location/map'
 import { nologo } from '../../utils/constants'
 
 const View = props => {
-  const { institution, headerComponent, contentComponent} = props
+  const { resume, institution, headerComponent, contentComponent} = props
 
-  if(institution) {
-    console.log('La iew')
-    console.log(institution)
+  if(institution && resume) {
     const { 
-      dependencies, 
-      opportunities, 
       prename, 
       name, description, location, logo } = institution
+
+    const {
+      dependencies,
+      opportunities,
+      locations
+    } = resume
     return (
       <React.Fragment>
         <Modal.Content>
@@ -25,10 +27,17 @@ const View = props => {
               <p>{description}</p>
               <Grid>
                 <Grid.Column width={8}>
-                  <Header size="small">Dependencies: {dependencies.length}</Header>
+                  <Header size="small">Dependencies: 
+                    <ul>
+                      { Object.keys(dependencies).map( name => {
+                        return <li>{name}: {dependencies[name]}</li>
+                        })
+                      }
+                    </ul>
+                  </Header>
                 </Grid.Column>
                 <Grid.Column width={8}>
-                  <Header size="small">Opportunities: {opportunities.length}</Header>
+                  <Header size="small">Opportunities: {opportunities}</Header>
                 </Grid.Column>
               </Grid>
             </Grid.Column>

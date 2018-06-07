@@ -8,6 +8,7 @@ export const CREATE = createActionLabels('INST_CREATE')
 export const LIST = createActionLabels('INST_LIST')
 export const UPLOAD_LOGO = createActionLabels('INST_UPLOAD_LOGO')
 export const FIND = createActionLabels('INST_FIND')
+export const FIND_RESUME = createActionLabels('INST_FIND_RESUME')
 export const FIND_ALL = createActionLabels('INST_FIND_ALL')
 export const UPDATE = createActionLabels('INST_UPDATE')
 export const DELETE = createActionLabels('INST_DELETE')
@@ -117,6 +118,24 @@ export function uploadLogo(id, file) {
     iService.setSession(account.session)
     const request = iService.uploadLogo(id, file)
     return handleRequest(dispatch, getState, UPLOAD_LOGO, request)
+  }
+}
+
+export function findResumeById(id) {
+  return (dispatch, getState) => {
+    const { account } = getState()
+    iService.setSession(account.session)
+    const request = iService.getResume(id)
+
+    return dispatchRequestActions(dispatch, FIND_RESUME, request, 
+      {
+        format: (data) => {
+          return {
+            ...data,
+          }
+        }
+      }
+    )
   }
 }
 

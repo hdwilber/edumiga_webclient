@@ -34,13 +34,14 @@ class LocationViewer extends React.Component {
         </Marker>
       )
     } else {
-      return locations.map(({point, info})=> (
-        <Marker position={point} >
-          <Popup>
-            <span>{info}</span>
-          </Popup>
-        </Marker>
-      )
+      return locations.map(({point, info})=> point 
+        && (
+          <Marker position={point} >
+            <Popup>
+              <span>{info}</span>
+            </Popup>
+          </Marker>
+        )
     }
   }
 

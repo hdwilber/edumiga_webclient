@@ -26,11 +26,11 @@ class View extends React.Component {
   }
 
   componentDidMount() {
-    const { match, institutionFind } = this.props
+    const { match, institutionFindResumeById } = this.props
     const { institutionId } = match.params
 
     if (institutionId) {
-      institutionFind(institutionId)
+      institutionFindResumeById(institutionId)
     } else {
       const { history } = this.props
       history.pop()
@@ -93,5 +93,5 @@ export default connect((state) => ({
   account: state.account,
   institution: state.institution,
 }), (dispatch) => ({
-  institutionFind: (id) => dispatch(institutionActions.findById(id)),
+  institutionFindResumeById: (id) => dispatch(institutionActions.findResumeById(id)),
 })) (withRouter(View))

@@ -8,6 +8,7 @@ const initialState = {
   loading: false,
   error: null,
   constants: null,
+  resume: null,
 }
 
 export default function institutionReducer(state = initialState, action) {
@@ -191,6 +192,29 @@ export default function institutionReducer(state = initialState, action) {
         loading: false,
         current: null,
         list: null,
+      }
+    }
+    case actions.FIND_RESUME.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+
+    case actions.FIND_RESUME.success: {
+      const { result: resume } = action.payload
+      return {
+        ...state,
+        resume,
+        loading: false,
+      }
+    }
+
+    case actions.FIND_RESUME.failed: {
+      return {
+        ...state,
+        loading: false,
+        resume: null,
       }
     }
 

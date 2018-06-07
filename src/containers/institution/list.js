@@ -54,8 +54,9 @@ class InstList extends React.Component {
 
   handleCardClick = (event, institution) => {
     event.preventDefault()
-    const { institutionFind } = this.props
-    institutionFind(institution.id)
+    const { institutionSet, institutionFindResume,  } = this.props
+    institutionSet(institution)
+    institutionFindResume(institution.id)
     this.setState({
       showDetails: true,
     })
@@ -84,7 +85,9 @@ class InstList extends React.Component {
             onClose={() => this.setState({showDetails: false})}
             closeOnDocumentClick 
             open={this.state.showDetails}>
-            <InstitutionView institution={institution.current} />
+            <InstitutionView institution={institution.current}
+              resume={institution.resume}
+            />
           </Modal>
         </React.Fragment>
       )
@@ -101,6 +104,7 @@ export default connect((state) => ({
   institutionFindAllResumes: (filter) => dispatch(institutionActions.findAllResumes(filter)),
   institutionFindAllOwned: (filter) => dispatch(institutionActions.findAllOwned(filter)),
   institutionFind: (id, opts) => dispatch(institutionActions.findById(id, opts)),
+  institutionFindResume: (id, opts) => dispatch(institutionActions.findResumeById(id, opts)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),
   institutionDelete: (id, opts) => dispatch(institutionActions.deleteI(id, opts)),
   institutionSet: (inst) => dispatch(institutionActions.setCurrent(inst)),

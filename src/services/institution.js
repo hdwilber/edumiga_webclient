@@ -21,6 +21,9 @@ class Institution extends Service {
     }
     return this.createRequest('GET',`${id}/?filter=${JSON.stringify(defaultFilter)}`)
   }
+  getResume(id) {
+    return this.createRequest('GET', `${id}/resume`, null, false)
+  }
   update(data) {
     return this.createRequest('PATCH',`${data.id}`, data)
   }
