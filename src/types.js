@@ -97,7 +97,10 @@ export function format (template, from = null) {
       const field = template[name]
       if (field.type === Types.string) {
         ret[name] = field.default || ''
-      } else {
+      } else if (field.type === Types.number) {
+        ret[name] = field.default ? `${field.default}`: ' -- '
+      }
+      else {
         ret[name] = field.default
         if (name === 'dependencies') {
           //console.log(field)
@@ -112,6 +115,8 @@ export function format (template, from = null) {
       const field = template[name]
       if (field.type === Types.string) {
         ret[name] = from[name] || ''
+      } else if (field.type === Types.number) {
+        ret[name] = from[name] ? `${from[name]}`: ''
       } else {
         const odata = from[name]
         if (odata) {
@@ -231,7 +236,7 @@ export const Course = {
     type: Types.array.object,
     default: [],
     format: function(data = [], options = {}) {
-      return data.map((c,idx) => c.value) 
+      return data.map((c,idx) => c.id) 
     }
   }
 }

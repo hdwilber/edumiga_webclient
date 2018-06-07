@@ -65,7 +65,7 @@ class CourseCreate extends React.Component {
     if (courses) {
       const courseList =this.convertCourseList(this.state.prerequisites, course, courses)
       return (
-        <Modal closeOnDocumentClick onClose={this.handleClickCancel} size="small" open={visible} >
+        <Modal onClose={this.handleClickCancel} size="small" open={visible} >
           <Modal.Header>Enter a new Course</Modal.Header>
           <Modal.Content>
             <Grid container stackable>
