@@ -1,0 +1,16 @@
+.edumiga-dropdownimage {
+  .edumiga-dropdownimage-trigger {
+    display: inline-flex;
+    .edumiga-dropdownimage-img {
+      position: absolute !important;
+      width: 2em;
+      height: 2em;
+      left: 0.5em;
+      top: 4px;
+    }
+
+    &.displace-right {
+      padding-left: 3em !important;
+    }
+  }
+}

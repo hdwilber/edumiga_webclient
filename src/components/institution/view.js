@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Grid, Header, Image } from 'semantic-ui-react'
+import { Icon, Label, Modal, Grid, Header, Image } from 'semantic-ui-react'
 import { buildImageUrl } from '../../redux/utils'
 import LocationMap from '../../components/location/map'
 import { nologo } from '../../utils/constants'
@@ -21,6 +21,10 @@ const View = props => {
       <React.Fragment>
         <Modal.Content>
           <Grid container>
+            <Label 
+              corner="left" icon={<Icon name="find"/>} size="massive" 
+              color="red"
+            />
             <Grid.Column width={12}>
               <Header size="tiny">{prename}</Header>
               <Header size="large">{name}</Header>
@@ -30,7 +34,7 @@ const View = props => {
                   <Header size="small">Dependencies: 
                     <ul>
                       { Object.keys(dependencies).map( name => {
-                        return <li>{name}: {dependencies[name]}</li>
+                        return <li key={name}>{name}: {dependencies[name]}</li>
                         })
                       }
                     </ul>

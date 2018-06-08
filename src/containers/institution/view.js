@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Image, Grid, Segment, Header, Icon } from 'semantic-ui-react'
+import { Image, Label, Grid, Segment, Header, Icon } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 
 import LocationMap from '../../components/location/map'

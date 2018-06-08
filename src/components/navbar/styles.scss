@@ -1,0 +1,20 @@
+.edumiga-main-logo {
+  min-width: 250px;
+  text-align: center;
+  display: inline-flex;
+  justify-content: center;
+  flex-direction: column;
+
+  @media(max-width: 767px) {
+    display: block;
+  }
+  & img {
+    max-height: 20px;
+    margin: 0 auto;
+
+    @media(max-width: 767px) {
+      max-height: auto;
+      width: 100%
+    }
+  }
+}
