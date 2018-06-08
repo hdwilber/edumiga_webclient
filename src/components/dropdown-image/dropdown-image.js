@@ -20,7 +20,9 @@ const DropdownImage = ({icon, src, label,children, ...rest}) => {
       trigger={renderTrigger()}
       {...rest}
     >
-      { children }
+      <Dropdown.Menu>
+        { React.Children.map(children, ch => ch)}
+      </Dropdown.Menu>
     </Dropdown>
   )
 }

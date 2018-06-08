@@ -24,22 +24,18 @@ class Navbar extends React.Component {
           <DropdownImage
             icon="book" label={hideOnMobile('Quick Catalog')}
           >
-            <Dropdown.Menu>
               <Dropdown.Item as={Link} to="/institutions"><Icon name="edit"/>Institutions</Dropdown.Item>
               <Dropdown.Item as={Link} to="/opportunities"><Icon name="edit"/>Opportunities</Dropdown.Item>
               <Dropdown.Item as={Link} to="/courses"><Icon name="edit"/>Courses</Dropdown.Item>
               <Dropdown.Item as={Link} to="/institutions"><Icon name="list"/>Technology</Dropdown.Item>
               <Dropdown.Item as={Link} to="/institutions"><Icon name="list"/>Health and Medical Sciences</Dropdown.Item>
-            </Dropdown.Menu>
           </DropdownImage>
 
           <DropdownImage 
             icon="th"
             label={hideOnMobile('Quick Menu')}
           >
-            <Dropdown.Menu>
               <Dropdown.Item as={Link} to="/institution/create"><Icon name="edit"/>Create Institution</Dropdown.Item>
-            </Dropdown.Menu>
           </DropdownImage>
         </div>
         <div className="edumiga-navbar-right">
@@ -66,12 +62,10 @@ const MenuItemUser = (props) => {
         src={imageUrl}
         label={label}
       >
-        <Dropdown.Menu>
           <Dropdown.Item as={Link} to="/account/identity" icon='edit' text="Edit Profile"/>
           <Dropdown.Item as={Link} to="/institutions?owned=me" icon='list' text='My Institutions' />
           <Dropdown.Item icon='settings' text='Account Settings' />
           <Dropdown.Item icon='sign out' text='Logout' onClick={(e) => onLogout()}/>
-        </Dropdown.Menu>
       </DropdownImage>
     )
   } else {
