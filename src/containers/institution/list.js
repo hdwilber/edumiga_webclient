@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Modal, Sidebar, Grid, Card, Header } from 'semantic-ui-react'
-import { Card as InstitutionCard, View as InstitutionView } from '../../components/institution'
+import { Card as InstitutionCard, Resume as InstitutionResume } from '../../components/institution'
 
 import { ActionTypes } from '../../components/institution/card'
 
@@ -63,11 +63,11 @@ class InstList extends React.Component {
   }
 
   render() {
-    const { account, institution } = this.props
+    const { account, institution, size = "huge" } = this.props
     if (institution) {
       return (
         <React.Fragment>
-            <Header size="huge">Institutions</Header>
+            <Header size={size}>Institutions</Header>
             <Card.Group stackable itemsPerRow={4}>
               {(institution.list) &&(
                 institution.list.map((i,idx) => {
@@ -85,7 +85,7 @@ class InstList extends React.Component {
             onClose={() => this.setState({showDetails: false})}
             closeOnDocumentClick 
             open={this.state.showDetails}>
-            <InstitutionView institution={institution.current}
+            <InstitutionResume institution={institution.current}
               resume={institution.resume}
             />
           </Modal>

@@ -11,21 +11,24 @@ export const UserState = {
 class Authorization extends React.Component {
   checkPrivileges() {
     const { privileges, account } = this.props
-    let allow = false
-    for(const p in privileges) {
-      const privilege = privileges[p]
-      if (privilege === UserState.UNAUTHENTICATED) {
-        allow = true
-        break
-      }
-      else if (privilege === UserState.ACCOUNT) {
-        if (account && account.session) {
+    if (Array.isArray(privileges)) {
+      let allow = false
+      for(const p in privileges) {
+        const privilege = privileges[p]
+        if (privilege === UserState.UNAUTHENTICATED) {
           allow = true
           break
         }
+        else if (privilege === UserState.ACCOUNT) {
+          if (account && account.session) {
+            allow = true
+            break
+          }
+        }
       }
+      return allow
     }
-    return allow
+    return privileges === UserState.ACCOUNT ? (account && account.session): true
   }
 
   render() {

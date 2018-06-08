@@ -104,7 +104,7 @@
   "eslintConfig": {
     "extends": "react-app",
     "rules": {
-        "default-case": "off"
+      "default-case": "off"
     }
   }
 }

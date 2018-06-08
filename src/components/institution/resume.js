@@ -1,10 +1,11 @@
 import React from 'react'
 import { Icon, Label, Modal, Grid, Header, Image } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 import { buildImageUrl } from '../../redux/utils'
 import LocationMap from '../../components/location/map'
 import { nologo } from '../../utils/constants'
 
-const View = props => {
+const Resume = props => {
   const { resume, institution, headerComponent, contentComponent} = props
 
   if(institution && resume) {
@@ -22,6 +23,8 @@ const View = props => {
         <Modal.Content>
           <Grid container>
             <Label 
+              as={Link}
+              to={`/institution/${institution.id}`}
               corner="left" icon={<Icon name="find"/>} size="massive" 
               color="red"
             />
@@ -67,4 +70,4 @@ const View = props => {
   return null
 }
 
-export default View
+export default Resume

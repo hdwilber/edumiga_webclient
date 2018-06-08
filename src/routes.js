@@ -19,7 +19,7 @@ function Routes(props) {
         <Route exact path="/account/confirm" component={ AccountConfirm } />
         <Route exact path="/institutions" component={ InstitutionList } />
         <Route exact path="/institution/create" component={ InstitutionEdit } />
-        <Route exact path="/institution/:institutionId/view" component={ InstitutionView } />
+        <Route exact path="/institution/:institutionId" component={ InstitutionView } />
         <Route exact path="/institution/:institutionId/edit" component={ InstitutionEdit } />
         <Route exact path="/institution/:institutionId/opportunity/:opportunityId" component={ OpportunityEdit } />
       </Switch>
