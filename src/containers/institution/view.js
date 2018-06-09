@@ -49,6 +49,27 @@ class View extends React.Component {
     })
   }
 
+  handleInstitutionClick = (institution) => {
+    const { history } = this.props
+    history.push(`/institution/${institution.id}`)
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location) {
+      const { key: next } = nextProps.location
+      const { key } = this.props.location
+
+      if (key !== next) {
+        const { institutionFindResumeById } = this.props
+        const { match } = nextProps
+        const { institutionId } = match.params
+
+        if (institutionId) {
+          institutionFindResumeById(institutionId)
+        }
+      }
+    }
+  }
+
   render() {
     const { institution } = this.props
     if (institution && institution.current) {
@@ -79,6 +100,7 @@ class View extends React.Component {
                 { dependencies && dependencies.slice(0,5).map((dep,idx) => {
                     return (
                       <InstitutionThumb key={dep.id}
+                        onClick={() => this.handleInstitutionClick(dep)}
                         institution={dep} 
                       />
                     )

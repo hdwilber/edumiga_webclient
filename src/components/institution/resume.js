@@ -11,7 +11,7 @@ const Resume = props => {
   if(institution) {
     const { 
       prename, 
-      name, description, location, logo, resume: { dependencies, stats } } = institution
+      name, description, location, logo, resume: { opportunities, dependencies, stats } } = institution
 
     return (
       <React.Fragment>
@@ -29,17 +29,28 @@ const Resume = props => {
               <p>{description}</p>
               <Grid>
                 <Grid.Column width={8}>
-                  <Header size="small">Dependencies(dependencies.length): 
-                    <ul>
-                      { Object.keys(stats.dependencies).map( name => {
-                        return <li key={name}>{name}: {stats.dependencies[name]}</li>
-                        })
-                      }
-                    </ul>
+                  <Header size="small">Dependencies: ({dependencies.length}):
                   </Header>
+                  <ul>
+                    { Object.keys(stats.dependencies).map( name => {
+                      return <li key={name}>{name}: {stats.dependencies[name]}</li>
+                      })
+                    }
+                  </ul>
                 </Grid.Column>
                 <Grid.Column width={8}>
-                  <Header size="small">Opportunities: {stats.opportunities}</Header>
+                  <Header size="small">Opportunities: ({stats.opportunities})</Header>
+                  <ul>
+                    { opportunities.map( opp => {
+                      return (
+                        <li key={opp.id}>{opp.name}
+                          &nbsp;
+                          { opp.degrees.map(deg => `${deg} `)}
+                        </li>
+                      )
+                      })
+                    }
+                  </ul>
                 </Grid.Column>
               </Grid>
             </Grid.Column>
