@@ -8,39 +8,31 @@ export const ActionTypes = {
   DELETE: 3,
 }
 const Thumbnail = (props) => {
-  const { institution, onClick } = props
-  if (institution) {
+  const { opportunity, onClick } = props
+  if (opportunity) {
     const { 
-      logo, type, prename, name, 
-      adminLevel,
-      description, levels, 
-    } = institution
-    const stats = {}
+      logo, type, name, 
+      duration,
+      regime, degrees,
+    } = opportunity
     return (
       <Card onClick={onClick}>
         <Card.Content>
-          <Label size="mini" ribbon content={adminLevel} />
           <Image 
             size="mini" 
             inline
             floated="right"
             src={logo ? buildImageUrl(logo.url): nologo}
           />
-          <Header size="mini">{prename}{name}</Header>
+          <Header size="mini">{name}</Header>
           <Card.Description>
             <p><b>{type}</b></p>
             <Label.Group>
-              {levels && levels.map((l, index) => <Label key={index} content={l} /> )}
+              {degrees && degrees.map(d => <Label key={d} content={d} /> )}
             </Label.Group>
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
-          { stats && (
-            <p>
-              <Icon name='building' />
-              <Icon name='list' />
-            </p>
-          )}
         </Card.Content>
       </Card>
     )
@@ -48,7 +40,7 @@ const Thumbnail = (props) => {
     return (
       <Card>
         <Card.Content>
-          <Card.Header>Loading institution...</Card.Header>
+          <Card.Header>Loading Opportunity...</Card.Header>
         </Card.Content>
       </Card>
     )

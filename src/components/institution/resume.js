@@ -6,18 +6,13 @@ import LocationMap from '../../components/location/map'
 import { nologo } from '../../utils/constants'
 
 const Resume = props => {
-  const { resume, institution, headerComponent, contentComponent} = props
+  const { institution, headerComponent, contentComponent} = props
 
-  if(institution && resume) {
+  if(institution) {
     const { 
       prename, 
-      name, description, location, logo } = institution
+      name, description, location, logo, resume: { dependencies, stats } } = institution
 
-    const {
-      dependencies,
-      opportunities,
-      locations
-    } = resume
     return (
       <React.Fragment>
         <Modal.Content>
@@ -34,17 +29,17 @@ const Resume = props => {
               <p>{description}</p>
               <Grid>
                 <Grid.Column width={8}>
-                  <Header size="small">Dependencies: 
+                  <Header size="small">Dependencies(dependencies.length): 
                     <ul>
-                      { Object.keys(dependencies).map( name => {
-                        return <li key={name}>{name}: {dependencies[name]}</li>
+                      { Object.keys(stats.dependencies).map( name => {
+                        return <li key={name}>{name}: {stats.dependencies[name]}</li>
                         })
                       }
                     </ul>
                   </Header>
                 </Grid.Column>
                 <Grid.Column width={8}>
-                  <Header size="small">Opportunities: {opportunities}</Header>
+                  <Header size="small">Opportunities: {stats.opportunities}</Header>
                 </Grid.Column>
               </Grid>
             </Grid.Column>

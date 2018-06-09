@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { Card, Image, Label, Grid, Segment, Header, Icon } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 import { Thumbnail as InstitutionThumb } from '../../components/institution'
+import OpportunityThumb from '../../components/opportunity/thumbnail'
 
 import LocationMap from '../../components/location/map'
 import { buildImageUrl } from '../../redux/utils'
@@ -31,11 +32,11 @@ class View extends React.Component {
   }
 
   componentDidMount() {
-    const { match, institutionFindById} = this.props
+    const { match, institutionFindResumeById} = this.props
     const { institutionId } = match.params
 
     if (institutionId) {
-      institutionFindById(institutionId)
+      institutionFindResumeById(institutionId)
     } else {
       const { history } = this.props
       history.pop()
@@ -52,7 +53,7 @@ class View extends React.Component {
     const { institution } = this.props
     if (institution && institution.current) {
       const inst = institution.current
-      const { logo, dependencies } = inst
+      const { logo, resume: { dependencies, opportunities, stats } } = inst
       return (
         <Grid container>
           <Grid.Column width={16}>
@@ -75,7 +76,7 @@ class View extends React.Component {
             <Segment>
               <Header size="normal">Dependencies</Header>
               <Card.Group stackable itemsPerRow={5}>
-                { dependencies.slice(0,5).map((dep,idx) => {
+                { dependencies && dependencies.slice(0,5).map((dep,idx) => {
                     return (
                       <InstitutionThumb key={dep.id}
                         institution={dep} 
@@ -87,6 +88,16 @@ class View extends React.Component {
             </Segment>
             <Segment>
               <Header size="normal">Opportunities</Header>
+              <Card.Group stackable itemsPerRow={5}>
+                { opportunities && opportunities.slice(0,5).map((opp,idx) => {
+                    return (
+                      <OpportunityThumb key={opp.name}
+                        opportunity={opp} 
+                      />
+                    )
+                  })
+                }
+              </Card.Group>
             </Segment>
             <Segment>
               <Header size="normal">Location</Header>
@@ -112,7 +123,7 @@ const connectedComponent = connect(
     institution: state.institution,
   }), 
   (dispatch) => ({
-    institutionFindById: (id) => dispatch(institutionActions.findById(id)),
+    institutionFindResumeById: (id) => dispatch(institutionActions.findResumeById(id)),
   })) (withRouter(View))
 
 export default withAuthorization(connectedComponent, UserState.ACCOUNT)

@@ -39,11 +39,11 @@ export function getTypes() {
   }
 }
 
-export function findAllOwned(options) {
+export function findAllOwnedResumes(options) {
   return (dispatch, getState) => {
     const { account } = getState()
     iService.setSession(account.session)
-    const request = iService.getAllOwned()
+    const request = iService.getAllOwnedResumes()
     return dispatchRequestActions(dispatch, FIND_ALL, request,
       {
         format: function(data) {

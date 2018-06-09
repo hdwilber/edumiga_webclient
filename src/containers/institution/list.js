@@ -22,8 +22,8 @@ class InstList extends React.Component {
     const { owned } = location.query
 
     if (owned === 'me') {
-      const { institutionFindAllOwned } = this.props
-      institutionFindAllOwned()
+      const { institutionFindAllOwnedResumes } = this.props
+      institutionFindAllOwnedResumes()
     } else {
       institutionFindAllResumes()
     }
@@ -35,8 +35,8 @@ class InstList extends React.Component {
       if (nextProps.location.key !== this.props.location.key) {
         const { owned } = nextProps.location.query
         if (owned === 'me') {
-          const { institutionFindAllOwned } = this.props
-          institutionFindAllOwned()
+          const { institutionFindAllOwnedResumes } = this.props
+          institutionFindAllOwnedResumes()
         } else {
           const { institutionFindAllResumes } = this.props
           institutionFindAllResumes()
@@ -54,9 +54,8 @@ class InstList extends React.Component {
 
   handleCardClick = (event, institution) => {
     event.preventDefault()
-    const { institutionSet, institutionFindResume,  } = this.props
+    const { institutionSet, } = this.props
     institutionSet(institution)
-    institutionFindResume(institution.id)
     this.setState({
       showDetails: true,
     })
@@ -86,7 +85,6 @@ class InstList extends React.Component {
             closeOnDocumentClick 
             open={this.state.showDetails}>
             <InstitutionResume institution={institution.current}
-              resume={institution.resume}
             />
           </Modal>
         </React.Fragment>
@@ -102,7 +100,7 @@ export default connect((state) => ({
   institution: state.institution,
 }), (dispatch) => ({
   institutionFindAllResumes: (filter) => dispatch(institutionActions.findAllResumes(filter)),
-  institutionFindAllOwned: (filter) => dispatch(institutionActions.findAllOwned(filter)),
+  institutionFindAllOwnedResumes: (options) => dispatch(institutionActions.findAllOwnedResumes(options)),
   institutionFind: (id, opts) => dispatch(institutionActions.findById(id, opts)),
   institutionFindResume: (id, opts) => dispatch(institutionActions.findResumeById(id, opts)),
   institutionUpdate: (data) => dispatch(institutionActions.update(data)),

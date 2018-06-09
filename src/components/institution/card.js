@@ -23,7 +23,7 @@ const InstCard = (props) => {
     const { 
       logo, type, prename, name, 
       description, levels, 
-      stats } = institution
+      resume } = institution
     return (
       <Card onClick={onClick}>
         <Card.Content>
@@ -52,12 +52,12 @@ const InstCard = (props) => {
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
-          { stats && (
+          { resume.stats && (
             <p>
               <Icon name='building' />
-              {stats.dependencies} Dependencies
+              {resume.dependencies.length} Dependencies
               <Icon name='list' />
-              {stats.opportunities} Opportunities
+              {resume.stats.opportunities} Opportunities
             </p>
           )}
         </Card.Content>

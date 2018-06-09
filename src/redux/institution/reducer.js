@@ -202,10 +202,10 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.FIND_RESUME.success: {
-      const { result: resume } = action.payload
+      const { result } = action.payload
       return {
         ...state,
-        resume,
+        current: result,
         loading: false,
       }
     }
