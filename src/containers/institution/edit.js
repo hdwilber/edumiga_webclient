@@ -15,11 +15,11 @@ import InstList from '../../components/institution/list'
 
 import * as institutionActions from '../../redux/institution/actions'
 import * as opportunityActions from '../../redux/opportunity/actions'
+import * as categoryActions from '../../redux/category/actions'
 import { uploadLogo } from '../../redux/opportunity/actions'
 
 import { Actions as OppListActions } from '../../components/opportunity/list'
 import { Actions as DepListActions } from '../../components/institution/list'
-
 import { Institution as InstTemplate, format, formatOutput, } from '../../types'
 
 import withAuthorization, { UserState } from '../../containers/authorization'
@@ -68,7 +68,7 @@ class Create extends React.Component {
   }
 
   componentDidMount() {
-    const { match, institutionFind } = this.props
+    const { match, institutionFind, categoryFindAll } = this.props
     const { institutionId } = match.params
 
     if (institutionId) {
@@ -81,6 +81,7 @@ class Create extends React.Component {
       })
     }
 
+    categoryFindAll()
     this.props.institutionGetTypes()
     this.props.opportunityGetTypes()
   }
@@ -260,10 +261,10 @@ class Create extends React.Component {
   }
 
   render() {
-    const { opp, institution } = this.props
+    const { category, opp, institution } = this.props
     const { isNew, logo, location } = this.state
 
-    if (institution && opp && institution.constants && opp.constants) {
+    if (category && institution && opp && institution.constants && opp.constants) {
       return (
         <Grid container stackable>
           <Grid.Column width={16}>
@@ -311,6 +312,7 @@ class Create extends React.Component {
               <FormOverview onInputChange={this.handleInputChange}
                 data={this.state}
                 constants={institution.constants}
+                categoryList={category.list}
               />
             </Segment>
 
@@ -370,6 +372,7 @@ const ConnectedComponent = connect((state) => ({
   account: state.account,
   institution: state.institution,
   opp: state.opp,
+  category: state.category,
 }), (dispatch) => ({
   institutionCreate: (data, opts) => dispatch(institutionActions.create(data, opts)),
   institutionUploadLogo: (id, file) => dispatch(institutionActions.uploadLogo(id, file)),
@@ -384,6 +387,7 @@ const ConnectedComponent = connect((state) => ({
   opportunityUpdate: (data, opts) => dispatch(opportunityActions.update(data, opts)),
   opportunitySet: (id, opts) => dispatch(opportunityActions.set(id, opts)),
   opportunityDelete: (id, opts) => dispatch(opportunityActions.deletex(id, opts)),
+  categoryFindAll: (opts) => dispatch(categoryActions.findAll(opts)),
 
 })) (withRouter(Create))
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, } from 'semantic-ui-react'
+import { Label, Header, } from 'semantic-ui-react'
 
 const TypesOptions = [
   {
@@ -52,14 +52,14 @@ const Overview = (props) => {
   if (data) {
     const type = TypesOptions.find(a => a.value === data.type)
     const levels = LevelsOptions.filter(l => !!data.levels.find(lf => lf=== l.value))
+    const { address, description, country, state, county } = data
     return (
       <div>
         <Header size="normal">{data.name}</Header>
-        <Header.Subheader>{`${data.country} / ${data.state} / ${data.county}`}</Header.Subheader>
-        <p>Adress:{data.address}</p>
-        <p>{data.description}</p>
-        <Header>{type && type.text}</Header>
-        <Header>{type && type.text}</Header>
+        <Header.Subheader>{`${country} / ${state} / ${county}`}</Header.Subheader>
+        <p>Address:{address}</p>
+        <p>{description}</p>
+        <Label>{type && type.text}</Label>
           
         <label>Levels</label>
         {levels.map (l => {

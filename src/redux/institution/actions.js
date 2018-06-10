@@ -16,6 +16,8 @@ export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
 export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
 export const UNSET = 'INST_UNSET'
 export const SET_CURRENT = 'INST_SET'
+export const ADD_CATEGORY = createActionLabels('INST_ADD_CATEGORY')
+export const DEL_CATEGORY = createActionLabels('INST_DEL_CATEGORY')
 
 const iService = new InstitutionService()
 
@@ -177,6 +179,15 @@ export function findAllResumes() {
         }
       }
     )
+  }
+}
+
+export function addCategory(id, cat) {
+  return (dispatch, getState) => {
+    const { account } = getState
+    iService.setSession(account.session)
+    const request = iService.addCategory(id, cat.id)
+    return dispatchRequestActions(dispatch, ADD_CATEGORY, request)
   }
 }
 

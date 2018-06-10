@@ -21,8 +21,20 @@ class FormOverview extends React.Component {
     }
   }
 
+  prepareCategoryList(list) {
+    if (list) 
+      return list.map( cat => {
+        return {
+          value: cat.id,
+          text: cat.name,
+        }
+      })
+
+    return []
+  }
+
   render() {
-    const { constants, onInputChange, data} = this.props
+    const { categoryList, constants, onInputChange, data} = this.props
     if (data && constants) {
       const { types, levels, countries, adminLevels } = constants
       const selCountry = countries && countries.find(a => a.value === data.country)
@@ -61,6 +73,14 @@ class FormOverview extends React.Component {
           </Form.Group>
 
           <Form.Input value={data.address} name="address" onChange={onInputChange} label="Address" type="text"/>
+
+          <Form.Field>
+            <label>Categories</label>
+            <Select value={data.state} name="categories" 
+              onChange={onInputChange} 
+              options={this.prepareCategoryList(categoryList)}
+            />
+          </Form.Field>
 
           <Form.Field>
             <label>Description</label>
