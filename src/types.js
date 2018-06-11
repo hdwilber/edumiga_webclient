@@ -87,6 +87,11 @@ export const Institution = {
     notSendable: true,
     type: Types.array.object,
     default: [],
+  },
+  categories: {
+    notSendable: true,
+    type: Types.array.object,
+    default: []
   }
 }
 

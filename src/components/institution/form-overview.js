@@ -76,9 +76,10 @@ class FormOverview extends React.Component {
 
           <Form.Field>
             <label>Categories</label>
-            <Select value={data.state} name="categories" 
+            <Select value={data.categories} name="categories"
               onChange={onInputChange} 
               options={this.prepareCategoryList(categoryList)}
+              multiple
             />
           </Form.Field>
 
