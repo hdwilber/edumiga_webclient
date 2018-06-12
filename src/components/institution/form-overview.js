@@ -1,5 +1,6 @@
 import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
+import TreeView from '../dropdown-treeview/dropdown-treeview'
 
 class FormOverview extends React.Component {
   constructor(props) {
@@ -21,15 +22,27 @@ class FormOverview extends React.Component {
     }
   }
 
+  prepareNode(node) {
+    //const children = node.children.map(n => prepareNode(n)
+    return {
+      data: {
+        value: node.id,
+        text: node.name,
+      },
+      children: node.children.map(n => this.prepareNode(n)),
+      visible: true,
+      collapsed: true,
+      selectable: true,
+    }
+  }
   prepareCategoryList(list) {
-    if (list) 
-      return list.map( cat => {
-        return {
-          value: cat.id,
-          text: cat.name,
-        }
+    if (list) {
+      const newList = list.map( cat => {
+        return this.prepareNode(cat)
       })
-
+      console.log(newList)
+      return newList
+    }
     return []
   }
 
@@ -76,9 +89,15 @@ class FormOverview extends React.Component {
 
           <Form.Field>
             <label>Categories</label>
+            <TreeView value={data.categories} name="categories"
+              nodes={this.prepareCategoryList(categoryList)}
+              multiple
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Categories</label>
             <Select value={data.categories} name="categories"
               onChange={onInputChange} 
-              options={this.prepareCategoryList(categoryList)}
               multiple
             />
           </Form.Field>
