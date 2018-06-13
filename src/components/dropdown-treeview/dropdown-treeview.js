@@ -1,8 +1,9 @@
 import React from 'react'
-import { Input, Button, Label } from 'semantic-ui-react'
+import { Icon, Input, Button, Label } from 'semantic-ui-react'
 import './styles.scss'
 
-class Node extends React.PureComponent {
+
+class Node extends React.Component {
   constructor(props) {
     super(props)
     this.handleToggleCollapse = this.handleToggleCollapse.bind(this)
@@ -17,6 +18,12 @@ class Node extends React.PureComponent {
     this.setState({
       collapsed: !this.state.collapsed,
     })
+  }
+
+  handleClick(e) {
+    const { onClick } = this.props
+    const result = onClick(e)
+    console.log(result)
   }
 
   render() {
@@ -35,16 +42,19 @@ class Node extends React.PureComponent {
     return (
       <div className="edumiga-treeview-node">
         { (children && children.length > 0) && (
-          <Button color="orange" size="mini" onClick={this.handleToggleCollapse}>
-            {collapsed ? '+': '-'}
-          </Button>
+          <Button icon={collapsed ? 'plus': 'minus'}
+            basic
+            size="mini" 
+            compact
+            onClick={this.handleToggleCollapse}
+          />
         )}
         <Label
-          onClick={selectable && (() => onClick(data))}
+          onClick={selectable && (() => this.handleClick(data))}
         >
           {data.text}
         </Label>
-        {!collapsed && children && children.map(child => <Node {...child} onClick={onClick} />)}
+        {!collapsed && children && children.map(child => <Node key={child.data.value} {...child} onClick={onClick} />)}
       </div>
     )
   }
@@ -55,37 +65,90 @@ class Treeview extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selections: [] 
+      selections: [],
+      searchText: '',
+      results: [],
     }
   }
   componentDidMount() {
     console.log(this.props.nodes)
   }
   handleClick = (e) => {
-    this.setState({
-      selections: this.state.selections.concat([e]),
-    })
-    
+    const { selections } = this.state
+    if (!(selections.find(sel => e.value === sel.value))) {
+      this.setState({
+        selections: this.state.selections.concat([e]),
+      })
+    }
   }
 
   handleToggleCollapse = (node) => {
     node.collapsed = !node.collapsed
-    this.forceUpdate()
+  }
+
+  filterCategoryList = (value) => {
+    const { nodes } = this.props
+
+    const results = []
+    function searchList(list, text) {
+      list.forEach(l => {
+        if (l.data.text.search(text)) {
+          results.push({
+            data: l.data,
+            children: [],
+          })
+        }
+        searchList(l.children, text)
+      })
+    }
+
+    if (value) {
+      searchList(nodes, value)
+      console.log(results)
+    }
+
+    console.log(results)
+    this.setState({
+      results, 
+    })
+  }
+
+
+  handleChange = (e, {value}) => {
+    this.setState({
+      searchText: value,
+    })
+    this.filterCategoryList(value)
+  }
+
+  handleRemove = ({value}) => {
+    this.setState({
+      selections: this.state.selections.filter(sel => sel.value !== value),
+    })
   }
 
   render() {
     const { nodes } = this.props
-    const { selections } = this.state
+    const { results, selections, searchText, } = this.state
     return (
       <div className="edumiga-treeview-container">
-        <Input>
-          { selections.map(sel => <Label icon="close">{sel.text}</Label>)}
-        </Input>
-        { nodes.map(node => <Node 
-          {...node}
-          onClick={this.handleClick}
-          onToggleCollapse={this.handleToggleCollapse}
-        />)
+        <div className="edumiga-treeview-list">
+          { selections.map(sel => <Label>{sel.text}<Icon onClick={() => this.handleRemove(sel)} name="delete" /></Label>)}
+          <Input value={searchText} onChange={this.handleChange} />
+        </div>
+        { results.length > 0
+          ? results.map(node => <Node 
+              {...node}
+              key={node.id}
+              onClick={this.handleClick}
+              onToggleCollapse={this.handleToggleCollapse}
+            />)
+          : nodes.map(node => <Node 
+              {...node}
+              key={node.id}
+              onClick={this.handleClick}
+              onToggleCollapse={this.handleToggleCollapse}
+            />)
         }
       </div>
     )
