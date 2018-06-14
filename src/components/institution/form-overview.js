@@ -22,14 +22,15 @@ class FormOverview extends React.Component {
     }
   }
 
-  prepareNode(node) {
+  prepareNode(node, main = true) {
     //const children = node.children.map(n => prepareNode(n)
     return {
       data: {
         value: node.id,
         text: node.name,
       },
-      children: node.children.map(n => this.prepareNode(n)),
+      main,
+      children: node.children.map(n => this.prepareNode(n, false)),
       visible: true,
       collapsed: true,
       selectable: true,
@@ -40,7 +41,6 @@ class FormOverview extends React.Component {
       const newList = list.map( cat => {
         return this.prepareNode(cat)
       })
-      console.log(newList)
       return newList
     }
     return []
@@ -91,14 +91,7 @@ class FormOverview extends React.Component {
             <label>Categories</label>
             <TreeView value={data.categories} name="categories"
               nodes={this.prepareCategoryList(categoryList)}
-              multiple
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Categories</label>
-            <Select value={data.categories} name="categories"
-              onChange={onInputChange} 
-              multiple
+              onChange={onInputChange}
             />
           </Form.Field>
 

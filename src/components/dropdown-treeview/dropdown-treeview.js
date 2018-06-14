@@ -30,21 +30,21 @@ class Node extends React.Component {
     const {
       data,
       onClick,
-      selectable,
       children,
+      main,
     } = this.props
 
     const {
       collapsed,
       visible,
+      selectable,
     } = this.state
 
     return (
-      <div className="edumiga-treeview-node">
+      <div className={`edumiga-treeview-node ${main ? 'main-node' :''}`}>
         { (children && children.length > 0) && (
           <Button icon={collapsed ? 'plus': 'minus'}
-            basic
-            size="mini" 
+            size="tiny" 
             compact
             onClick={this.handleToggleCollapse}
           />
@@ -75,9 +75,12 @@ class Treeview extends React.Component {
   }
   handleClick = (e) => {
     const { selections } = this.state
+    const { onChange } = this.props
     if (!(selections.find(sel => e.value === sel.value))) {
       this.setState({
         selections: this.state.selections.concat([e]),
+      }, () => {
+        onChange && onChange(e, { value: this.state.selections} )
       })
     }
   }
@@ -89,27 +92,28 @@ class Treeview extends React.Component {
   filterCategoryList = (value) => {
     const { nodes } = this.props
 
-    const results = []
-    function searchList(list, text) {
-      list.forEach(l => {
-        if (l.data.text.search(text)) {
+    let results = []
+    function searchList(nodes, text) {
+      const regex = new RegExp(text, 'i')
+      nodes.forEach(node => {
+        if (node.data.text.search(regex) > -1) {
           results.push({
-            data: l.data,
+            id: node.id,
+            data: node.data,
             children: [],
           })
         }
-        searchList(l.children, text)
+        searchList(node.children, text)
       })
     }
 
     if (value) {
       searchList(nodes, value)
-      console.log(results)
     }
 
     console.log(results)
     this.setState({
-      results, 
+      results,
     })
   }
 
@@ -121,9 +125,19 @@ class Treeview extends React.Component {
     this.filterCategoryList(value)
   }
 
-  handleRemove = ({value}) => {
+  handleRemove = (e, {value}) => {
+    const { onChange } = this.props
     this.setState({
       selections: this.state.selections.filter(sel => sel.value !== value),
+    }, () => {
+      onChange && onChange(e, this.state.selections)
+    })
+  }
+
+  handleClearSearchText = () => {
+    this.setState({
+      searchText: '',
+      results: [],
     })
   }
 
@@ -132,24 +146,34 @@ class Treeview extends React.Component {
     const { results, selections, searchText, } = this.state
     return (
       <div className="edumiga-treeview-container">
-        <div className="edumiga-treeview-list">
-          { selections.map(sel => <Label>{sel.text}<Icon onClick={() => this.handleRemove(sel)} name="delete" /></Label>)}
-          <Input value={searchText} onChange={this.handleChange} />
+        <div className="edumiga-treeview-selections">
+          { selections.map(sel => <Label>{sel.text}<Icon onClick={(e) => this.handleRemove(e, sel)} name="delete" /></Label>)}
+
         </div>
-        { results.length > 0
-          ? results.map(node => <Node 
-              {...node}
-              key={node.id}
-              onClick={this.handleClick}
-              onToggleCollapse={this.handleToggleCollapse}
-            />)
-          : nodes.map(node => <Node 
-              {...node}
-              key={node.id}
-              onClick={this.handleClick}
-              onToggleCollapse={this.handleToggleCollapse}
-            />)
-        }
+        <Input 
+          placeHolder="Enter key to find categories"
+          value={searchText} onChange={this.handleChange}
+          action={searchText ?
+            { icon: "cancel",  onClick: this.handleClearSearchText }
+            : null
+          }
+        />
+        <div className="edumiga-treeview-nodes">
+          { results.length > 0
+            ? results.map(node => <Node 
+                {...node}
+                key={node.id}
+                onClick={this.handleClick}
+                onToggleCollapse={this.handleToggleCollapse}
+              />)
+            : nodes.map(node => <Node 
+                {...node}
+                key={node.id}
+                onClick={this.handleClick}
+                onToggleCollapse={this.handleToggleCollapse}
+              />)
+          }
+        </div>
       </div>
     )
   }
