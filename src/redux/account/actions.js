@@ -2,7 +2,7 @@ import { AccountService } from '../../services'
 import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
 import { createActionTypesObject, dispatchRequestActions, createActionLabels, handleRequest } from '../utils'
-
+import store from '../configureStore'
 import * as ModalActions from '../modal/actions'
 
 export const CREATE = createActionTypesObject('ACCOUNT_CREATE')

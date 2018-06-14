@@ -23,6 +23,7 @@ class Edumiga extends Component {
   componentDidMount() {
     const { sessionRestore } = this.props
     sessionRestore()
+    this.apiServices = createServices(store)
   }
 
   handleLogout() {

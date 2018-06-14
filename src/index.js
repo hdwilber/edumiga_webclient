@@ -10,6 +10,7 @@ import Routes from './routes'
 import registerServiceWorker from './registerServiceWorker';
 import "semantic-ui-css/semantic.min.css"
 
+
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter basename={process.env.PUBLIC_URL} history={history}>
