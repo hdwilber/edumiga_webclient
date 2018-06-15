@@ -3,25 +3,31 @@ import InstitutionService from './institution'
 import OpportunityService  from './opportunity'
 import CourseService from './course'
 import CategoryService from './category'
+import Service from './service'
 
-function createServices(store) {
-  const session = store.account.session
-
+export function createServices() {
   const services = {
     account: new AccountService(),
     institution: new InstitutionService(),
     opportunity: new OpportunityService(),
-    course: new ourseService(),
+    course: new CourseService(),
     category: new CategoryService(),
   }
-
-  store.subscribe(() => {
-    const state = store.getState()
-    const { session: next } = state.account
-    if (session != next ) {
+  return {
+    services,
+    setSession: function(session) {
       Object.keys(services).forEach(name => {
-        services.[name] && services[name].setSession(current)
+        services[name] && services[name].setSession(session)
       })
     }
-  })
+  }
+
 }
+
+export { AccountService }
+export { InstitutionService}
+export { OpportunityService}
+export { CourseService}
+export { CategoryService}
+export { Service }
+

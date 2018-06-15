@@ -6,6 +6,7 @@ import Navbar from '../components/navbar'
 import * as accountActions from '../redux/account/actions'
 import * as ModalActions from '../redux/modal/actions'
 import '../sass/index.scss'
+import { createServices }  from '../services'
 
 import LoginModal from '../containers/account/modals/login'
 
@@ -18,12 +19,24 @@ class Edumiga extends Component {
     this.checkAuthorization = this.checkAuthorization.bind(this)
     this.handleToggleLogin = this.handleToggleLogin.bind(this)
     this.handleLoginClose = this.handleLoginClose.bind(this)
+    this.apiServices = createServices()
   }
 
   componentDidMount() {
-    const { sessionRestore } = this.props
+    const { store, sessionRestore } = this.props
     sessionRestore()
-    this.apiServices = createServices(store)
+    //console.log(this.props)
+    this.props.calculate({data: 
+      { email: 'dev@edumiga.com', password: 'asdf'}
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { account } = nextProps
+    if (account.session) {
+      console.log(account.session)
+      this.apiServices.setSession(account.session)
+    }
   }
 
   handleLogout() {
@@ -91,4 +104,5 @@ export default connect((state) => ({
   login: (data) => dispatch(accountActions.login(data)),
   showModal: (name) => dispatch(ModalActions.show(name)),
   hideModal: (name) => dispatch(ModalActions.hide(name)),
+  calculate: (data, ops) => dispatch(accountActions.calculate(data, ops))
   }))) (withRouter(Edumiga))

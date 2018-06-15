@@ -15,9 +15,81 @@ export const IDENTITY_UPDATE = createActionLabels('IDENTITY_UPDATE')
 export const UPLOAD_PHOTO = createActionLabels('IDENTITY_UPLOAD_PHOTO')
 export const CONFIRM = createActionLabels('CONFIRM')
 export const RECONFIRM = createActionLabels('RECONFIRM')
+export const CALCULATE = createActionLabels('CALCULATE')
 
 const aService = new AccountService()
 const iService = new IdentityService()
+
+
+function _calculate({ service, data, options }) {
+  return {
+    name: CALCULATE,
+    request: service.login(data),
+    postThen: (dispatch, result, options) => {
+      if (options && options.modal)
+        dispatch(ModalActions.hide(options.modal.name))
+    },
+    options,
+  }
+}
+
+function withService(action, service = aService) {
+  return (args) => {
+    return (dispatch, getState) => {
+
+      const { session } = getState().account
+      if( args.service ) {
+        args.service.setSession(session)
+      }
+      const actionInfo = action({ service, ...args })
+      return processAction(dispatch, actionInfo)
+    }
+  }
+}
+
+function processAction (dispatch, info) {
+  const { name, request, format, postThen, postCatch, options } = info
+
+  request.then(response => {
+    if (response.ok) {
+      return response.json ? response.json(): Promise.resolve({})
+    }
+    return Promise.reject({error: 'Not everything was ok'})
+  })
+  .then(data => {
+    const result = format ? format(data): data
+    dispatch({
+      type: name.success,
+      payload: {
+        result,
+        options,
+      }
+    })
+    if (postThen) postThen(dispatch, result, options)
+  })
+  .catch(error => {
+    console.log(error)
+    dispatch({
+      type: name.failed,
+      payload: {
+        error,
+        options,
+      }
+    })
+
+    if (postCatch) postCatch(dispatch, error, options)
+  })
+
+  return dispatch({
+    type: name.start,
+    payload: {
+      options,
+    }
+  })
+}
+
+export const calculate = withService(_calculate)
+
 
 export function create(data, options = {}) {
   return (dispatch, getState) => {

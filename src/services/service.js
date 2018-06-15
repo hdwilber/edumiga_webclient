@@ -5,8 +5,6 @@ const { REACT_APP_API_SERVER_NAME, REACT_APP_API_BASEURL } = process.env
 class Service {
   constructor(base) {
     this.baseName = base
-    console.log('HEre we areogin gto create a sever')
-    console.log(store)
   }
 
   createHeaders(useAuth = true) {
