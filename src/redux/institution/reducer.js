@@ -59,9 +59,7 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.UPDATE.success: {
-      const { isDependency, institution, single } = action.payload
-      console.log('UPDATE')
-      console.log(action.payload)
+      const { isDependency, institution } = action.payload
       if(isDependency) {
         const list = state.current.dependencies.map(d => (d.id === institution.id) ? institution: d)
         return {

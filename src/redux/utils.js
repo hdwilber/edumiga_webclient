@@ -1,5 +1,58 @@
 const { REACT_APP_API_BASEURL } = process.env
 
+export function withService(action, service) {
+  return (...args) => {
+    return function(dispatch, getState) {
+      const { session } = getState().account
+      if( args.service ) {
+        args.service.setSession(session)
+      }
+      const actionInfo = action(service, ...args)
+      return processAction(dispatch, actionInfo)
+    }
+  }
+}
+
+export function processAction (dispatch, info) {
+  const { name, request, format, postThen, postCatch, options } = info
+
+  request.then(response => {
+    if (response.ok) {
+      return response.json ? response.json(): Promise.resolve({})
+    }
+    return Promise.reject({error: 'Not everything was ok'})
+  })
+  .then(data => {
+    const result = format ? format(data): data
+    dispatch({
+      type: name.success,
+      payload: {
+        result,
+        options,
+      }
+    })
+    if (postThen) postThen(dispatch, result, options)
+  })
+  .catch(error => {
+    dispatch({
+      type: name.failed,
+      payload: {
+        error,
+        options,
+      }
+    })
+
+    if (postCatch) postCatch(dispatch, error, options)
+  })
+
+  return dispatch({
+    type: name.start,
+    payload: {
+      options,
+    }
+  })
+}
+
 export function createActionTypesObject(base) {
   return {
     start: base,

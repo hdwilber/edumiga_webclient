@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Button, Label, Card, Image, Icon } from 'semantic-ui-react'
+import { Header, Label, Card, Image } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
 import nologo from '../../images/nologo.svg'
@@ -12,8 +12,7 @@ const Thumbnail = (props) => {
   if (opportunity) {
     const { 
       logo, type, name, 
-      duration,
-      regime, degrees,
+      degrees,
     } = opportunity
     return (
       <Card onClick={onClick}>
@@ -24,7 +23,7 @@ const Thumbnail = (props) => {
             floated="right"
             src={logo ? buildImageUrl(logo.url): nologo}
           />
-          <Header size="mini">{name}</Header>
+          <Header size="tiny">{name}</Header>
           <Card.Description>
             <p><b>{type}</b></p>
             <Label.Group>

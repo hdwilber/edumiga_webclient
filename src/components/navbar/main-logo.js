@@ -1,6 +1,5 @@
 import React from 'react'
 import { Image } from 'semantic-ui-react'
-import { DeviceTypes } from '../responsive'
 import { Link } from 'react-router-dom'
 
 import './styles.scss'

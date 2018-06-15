@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Modal, Sidebar, Grid, Card, Header } from 'semantic-ui-react'
+import { Modal, Card, Header } from 'semantic-ui-react'
 import { Card as InstitutionCard, Resume as InstitutionResume } from '../../components/institution'
 
 import { ActionTypes } from '../../components/institution/card'

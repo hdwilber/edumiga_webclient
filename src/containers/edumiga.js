@@ -23,18 +23,14 @@ class Edumiga extends Component {
   }
 
   componentDidMount() {
-    const { store, sessionRestore } = this.props
+    const { sessionRestore } = this.props
     sessionRestore()
-    //console.log(this.props)
-    this.props.calculate({data: 
-      { email: 'dev@edumiga.com', password: 'asdf'}
-    })
+    this.props.calculate({ email: 'dev@edumiga.com', password: 'asdf'})
   }
 
   componentWillReceiveProps(nextProps) {
     const { account } = nextProps
     if (account.session) {
-      console.log(account.session)
       this.apiServices.setSession(account.session)
     }
   }

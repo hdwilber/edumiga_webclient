@@ -7,9 +7,7 @@ import store, { history } from './redux/configureStore'
 import { Edumiga } from './containers';
 import Routes from './routes'
 
-import registerServiceWorker from './registerServiceWorker';
 import "semantic-ui-css/semantic.min.css"
-
 
 ReactDOM.render(
   <Provider store={store}>
@@ -21,6 +19,4 @@ ReactDOM.render(
   </Provider>,
 
   document.getElementById('root'))
-
-registerServiceWorker();
 

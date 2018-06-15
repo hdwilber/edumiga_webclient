@@ -36,7 +36,6 @@ class Node extends React.Component {
 
     const {
       collapsed,
-      visible,
       selectable,
     } = this.state
 

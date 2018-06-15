@@ -55,7 +55,7 @@ const Overview = (props) => {
     const { address, description, country, state, county } = data
     return (
       <div>
-        <Header size="normal">{data.name}</Header>
+        <Header size="medium">{data.name}</Header>
         <Header.Subheader>{`${country} / ${state} / ${county}`}</Header.Subheader>
         <p>Address:{address}</p>
         <p>{description}</p>

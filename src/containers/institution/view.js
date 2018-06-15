@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Card, Image, Label, Grid, Segment, Header, Icon } from 'semantic-ui-react'
+import { Card, Image, Grid, Segment, Header } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 import { Thumbnail as InstitutionThumb } from '../../components/institution'
 import OpportunityThumb from '../../components/opportunity/thumbnail'
@@ -74,7 +74,7 @@ class View extends React.Component {
     const { institution } = this.props
     if (institution && institution.current) {
       const inst = institution.current
-      const { logo, resume: { dependencies, opportunities, stats } } = inst
+      const { logo, resume: { dependencies, opportunities } } = inst
       return (
         <Grid container>
           <Grid.Column width={16}>
@@ -89,13 +89,13 @@ class View extends React.Component {
 
           <Grid.Column width={10}>
             <Segment>
-              <Header size="normal">Overview</Header>
+              <Header size="medium">Overview</Header>
               <Overview data={inst} />
             </Segment>
           </Grid.Column>
           <Grid.Column width={16}>
             <Segment>
-              <Header size="normal">Dependencies</Header>
+              <Header size="medium">Dependencies</Header>
               <Card.Group stackable itemsPerRow={5}>
                 { dependencies && dependencies.slice(0,5).map((dep,idx) => {
                     return (
@@ -109,7 +109,7 @@ class View extends React.Component {
               </Card.Group>
             </Segment>
             <Segment>
-              <Header size="normal">Opportunities</Header>
+              <Header size="medium">Opportunities</Header>
               <Card.Group stackable itemsPerRow={5}>
                 { opportunities && opportunities.slice(0,5).map((opp,idx) => {
                     return (
@@ -122,7 +122,7 @@ class View extends React.Component {
               </Card.Group>
             </Segment>
             <Segment>
-              <Header size="normal">Location</Header>
+              <Header size="medium">Location</Header>
               <LocationMap
                 name="location"
                 onCenterChange={this.handleInputChange}

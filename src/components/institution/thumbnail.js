@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Button, Label, Card, Image, Icon } from 'semantic-ui-react'
+import { Header, Label, Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
 import nologo from '../../images/nologo.svg'
@@ -13,7 +13,7 @@ const Thumbnail = (props) => {
     const { 
       logo, type, prename, name, 
       adminLevel,
-      description, levels, 
+      levels, 
     } = institution
     const stats = {}
     return (
@@ -26,7 +26,7 @@ const Thumbnail = (props) => {
             floated="right"
             src={logo ? buildImageUrl(logo.url): nologo}
           />
-          <Header size="mini">{prename}{name}</Header>
+          <Header size="tiny">{prename}{name}</Header>
           <Card.Description>
             <p><b>{type}</b></p>
             <Label.Group>

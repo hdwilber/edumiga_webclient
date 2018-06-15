@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Responsive, Icon, Input, Button, Dropdown, Image, Menu } from 'semantic-ui-react'
+import { Responsive, Icon, Button, Dropdown } from 'semantic-ui-react'
 import MainLogo from '../components/navbar/main-logo'
 import './styles.scss'
 
@@ -11,11 +11,6 @@ class Navbar extends React.Component {
 
   render() {
     const { onClickLogin, onLogout, account } = this.props
-    const searchOptions = [
-      {key: 'institutions', text: 'Institutions', value: 'institutions',},
-      {key: 'opportunities', text: 'Opportunities', value: 'opportunities',},
-      {key: 'courses', text: 'Courses', value: 'courses'},
-    ]
 
     return (
       <div className="ui menu edumiga-navbar">

@@ -6,7 +6,7 @@ import LocationMap from '../../components/location/map'
 import { nologo } from '../../utils/constants'
 
 const Resume = props => {
-  const { institution, headerComponent, contentComponent} = props
+  const { institution } = props
 
   if(institution) {
     const { 

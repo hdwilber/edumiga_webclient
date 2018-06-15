@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu, Icon, Image, Button, Dropdown } from 'semantic-ui-react'
+import { Icon, Image, Dropdown } from 'semantic-ui-react'
 import './styles.scss'
 
 const DropdownImage = ({icon, src, label,children, ...rest}) => {

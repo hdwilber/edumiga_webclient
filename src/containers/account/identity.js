@@ -51,7 +51,6 @@ class Identity extends React.Component {
   }
 
   handleInputChange(e, props) {
-    console.log(props)
     this.setState({
       [props.name]: props.value,
     })

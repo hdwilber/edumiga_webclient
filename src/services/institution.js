@@ -81,7 +81,7 @@ class Institution extends Service {
   getAllResumes(owned = false) {
     let filter = {}
     if (owned) {
-      const filter = {
+      filter = {
         where: {
           parentId: {
             exists: false,

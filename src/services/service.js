@@ -1,5 +1,3 @@
-import store from '../redux/configureStore'
-
 const { REACT_APP_API_SERVER_NAME, REACT_APP_API_BASEURL } = process.env
 
 class Service {

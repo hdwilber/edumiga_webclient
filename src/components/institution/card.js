@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Label, Card, Image, Icon } from 'semantic-ui-react'
+import { Label, Card, Image, Icon } from 'semantic-ui-react'
 
 import { buildImageUrl } from '../../redux/utils'
 import nologo from '../../images/nologo.svg'
@@ -8,15 +8,6 @@ export const ActionTypes = {
   DELETE: 3,
 }
 
-function renderOwnerActions (props) {
-  const { institution, onAction } = props
-  return (
-    <div>
-      <Button icon='delete' onClick={(e) => onAction(ActionTypes.DELETE, institution)}>
-      </Button> 
-    </div>
-  )
-}
 const InstCard = (props) => {
   const { institution, onClick } = props
   if (institution) {

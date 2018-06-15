@@ -1,24 +1,6 @@
 import React from 'react'
 import { Select, TextArea, Form } from 'semantic-ui-react'
 
-const DurationUnitsTypes = [
-  {
-    key: 1,
-    text: 'Minutes',
-    value: 'minutes',
-  },
-  {
-    key: 2,
-    text: 'Hour',
-    value: 'hour',
-  },
-  {
-    key: 3,
-    text: 'Special',
-    value: 'special',
-  },
-]
-
 const FormOverview = (props) => {
   const { onInputChange, data } = props
 
