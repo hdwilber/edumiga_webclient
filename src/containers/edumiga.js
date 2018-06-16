@@ -25,7 +25,6 @@ class Edumiga extends Component {
   componentDidMount() {
     const { sessionRestore } = this.props
     sessionRestore()
-    this.props.calculate({ email: 'dev@edumiga.com', password: 'asdf'})
   }
 
   componentWillReceiveProps(nextProps) {
@@ -100,5 +99,4 @@ export default connect((state) => ({
   login: (data) => dispatch(accountActions.login(data)),
   showModal: (name) => dispatch(ModalActions.show(name)),
   hideModal: (name) => dispatch(ModalActions.hide(name)),
-  calculate: (data, ops) => dispatch(accountActions.calculate(data, ops))
   }))) (withRouter(Edumiga))

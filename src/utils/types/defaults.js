@@ -42,10 +42,10 @@ export function setDefault(type) {
 }
 
 
-export function parseImage (data) {
+export function parseImage ({url}) {
   return {
     file: null,
-    url: data ? (buildImageUrl(data.url)): '',
+    url: url && (buildImageUrl(url)),
     fakeUrl: '',
   }
 }

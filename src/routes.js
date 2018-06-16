@@ -7,6 +7,7 @@ import InstitutionView from './containers/institution/view'
 import OpportunityEdit from './containers/opportunity/edit'
 import AccountIdentity from './containers/account/identity'
 import AccountConfirm from './containers/account/confirm'
+import InstitutionEditor from './containers/institution/editor'
 
 import { history } from './redux/configureStore'
 
@@ -21,6 +22,7 @@ function Routes(props) {
         <Route exact path="/institution/create" component={ InstitutionEdit } />
         <Route exact path="/institution/:institutionId" component={ InstitutionView } />
         <Route exact path="/institution/:institutionId/edit" component={ InstitutionEdit } />
+        <Route exact path="/institution/:institutionId/editor" component={ InstitutionEditor } />
         <Route exact path="/institution/:institutionId/opportunity/:opportunityId" component={ OpportunityEdit } />
       </Switch>
     </Router>

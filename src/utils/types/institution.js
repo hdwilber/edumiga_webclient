@@ -1,5 +1,4 @@
 import { Types, defaultSpec } from './defaults'
-import { buildImageUrl } from './../../redux/utils'
 
 const Specs = {
   id: Types.string,
