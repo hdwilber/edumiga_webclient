@@ -1,6 +1,10 @@
 import { push } from 'react-router-redux'
 import { InstitutionService } from '../../services'
-import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest } from '../utils'
+import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest,
+  withService,
+
+} from '../utils'
+import { Institution, saveData } from '../../utils/types'
 import { fillData as oppFillData } from '../opportunity/actions'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
@@ -18,6 +22,8 @@ export const UNSET = 'INST_UNSET'
 export const SET_CURRENT = 'INST_SET'
 export const ADD_CATEGORY = createActionLabels('INST_ADD_CATEGORY')
 export const DEL_CATEGORY = createActionLabels('INST_DEL_CATEGORY')
+
+export const FULL_SAVING = createActionLabels('INST_FULL_SAVING')
 
 const iService = new InstitutionService()
 
