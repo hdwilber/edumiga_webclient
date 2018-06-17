@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Label } from 'semantic-ui-react'
 import './styles.scss'
 
-class Node extends React.Component {
+class Node extends React.PureComponent {
   constructor(props) {
     super(props)
     this.handleToggleCollapse = this.handleToggleCollapse.bind(this)

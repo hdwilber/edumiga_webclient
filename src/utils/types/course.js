@@ -17,11 +17,13 @@ const Specs = {
   optional: Types.boolean,
   type: Types.string,
   prerequisites: {
-    type: Types.array.object,
-    parse: function (data = [], options = {}) {
+    type: [Types.object],
+    parse: function (data = []) {
       return data.map(c => c.id)
     },
-    save: function () {},
+    build: (value, data, { courses } ) => {
+      return value.map(val => courses.find(c => c.id === val))
+    },
   }
 }
 

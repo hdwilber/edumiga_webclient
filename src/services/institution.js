@@ -32,6 +32,10 @@ class Institution extends Service {
     return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
 
+
+  getAllOwned() {
+    return this.createRequest('GET', `owned`)
+  }
   getAllOwnedResumes() {
     return this.createRequest('GET', `owned`)
   }

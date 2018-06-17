@@ -3,20 +3,13 @@ import { Icon, Input, Label } from 'semantic-ui-react'
 import Node from './treeview-node'
 import './styles.scss'
 
-class InputTreeview extends React.Component {
+class InputTreeview extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
       searchText: '',
       results: [],
     }
-  }
-
-  handleClick = (e) => {
-    const { value, onChange, name } = this.props
-    const exists = value.find(sel => e.value === sel.value)
-    const newValue = exists ? value: value.concat([e])
-    onChange(e, { name, value: newValue })
   }
 
   handleToggleCollapse = (node) => {
@@ -50,6 +43,24 @@ class InputTreeview extends React.Component {
     })
   }
 
+  handleClick = (e) => {
+    const { multiple, value, onChange, name } = this.props
+    const single = {
+      value: e.value,
+      text: e.text,
+      ref: e.ref,
+    }
+    if (multiple) {
+      const exists = value.find(sel => e.value === sel.value)
+      const newValue = exists 
+        ? value.map(val => (val.value === single.value) ? single: val)
+        : value.concat([e])
+      onChange(e, { name, value: newValue })
+    } else {
+      onChange(e, { name, value: single })
+    }
+  }
+
 
   handleChange = (e, {value}) => {
     this.setState({
@@ -59,9 +70,13 @@ class InputTreeview extends React.Component {
   }
 
   handleRemove = (e, node) => {
-    const { value, onChange, name } = this.props
-    const newValue = value.filter(sel => sel.value !== node.value)
-    onChange(e, { name, value: newValue })
+    const { multiple, value, onChange, name } = this.props
+    if (multiple) {
+      const newValue = value.filter(sel => sel.value !== node.value)
+      onChange(e, { name, value: newValue })
+    } else {
+      onChange(e, { name, value: null})
+    }
   }
 
   handleClearSearchText = () => {
@@ -71,11 +86,21 @@ class InputTreeview extends React.Component {
     })
   }
 
-  renderValues() {
+  renderMultipleValues() {
+    const { value = [] } = this.props
+    return value.map(sel => <Label key={sel.value}>{sel.text}<Icon onClick={(e) => this.handleRemove(e, sel)} name="delete" /></Label>)
+  }
+
+  renderValue() {
     const { value } = this.props
+    return value && (<Label>{value.text}<Icon onClick={(e) => this.handleRemove(e, value)} name="delete" /></Label>)
+  }
+
+  renderValues() {
+    const { multiple, value } = this.props
     return (
       <div className="edumiga-treeview-selections">
-        {value.map(sel => <Label key={sel.value}>{sel.text}<Icon onClick={(e) => this.handleRemove(e, sel)} name="delete" /></Label>)}
+        { multiple ? this.renderMultipleValues(): this.renderValue() }
       </div>
     )
   }

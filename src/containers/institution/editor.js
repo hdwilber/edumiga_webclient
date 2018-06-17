@@ -10,7 +10,7 @@ import FormGeneral from '../../components/institution/form-general'
 
 import * as institutionActions from '../../redux/institution/actions'
 import * as categoryActions from '../../redux/category/actions'
-import { parseData, saveData, Institution } from '../../utils/types'
+import { parseData, buildData, Institution } from '../../utils/types'
 
 import InstList from '../../components/institution/list'
 import OppList from '../../components/opportunity/list'
@@ -20,7 +20,7 @@ import { Actions } from '../../utils/constants'
 import withAuthorization, { UserState } from '../../containers/authorization'
 import InstitutionFastEditor from './fast-editor'
 
-class Editor extends React.Component {
+class Editor extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {

@@ -7,7 +7,7 @@ export const Types = {
   },
   number: {
     id: 2,
-    default: false,
+    default: 0,
   },
   string: {
     id: 3,
@@ -32,6 +32,19 @@ export const Types = {
   date: {
     id: 20,
     default: new Date(Date.now()),
+  },
+
+  Course: {
+    id: 100,
+    default: null
+  },
+  Institution: {
+    id: 101,
+    default: null
+  },
+  Opportunity: {
+    id: 102,
+    default: null
   }
 }
 

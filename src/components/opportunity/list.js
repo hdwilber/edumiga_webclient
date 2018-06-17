@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Table } from 'semantic-ui-react'
+import { Actions as ActionsTable } from '../../utils/constants'
 
 export const Actions = {
   EDIT: 1,
@@ -29,8 +30,11 @@ const List = (props) => {
               <Table.Cell>{i.duration}</Table.Cell>
               <Table.Cell>{i.draft ? 'Draft': 'Published'}</Table.Cell>
               <Table.Cell>
-                <Button onClick={(e) => {e.stopPropagation(); onClickAction(Actions.EDIT, i)}}>Edit</Button>
-                <Button onClick={(e) => {e.stopPropagation(); onClickAction(Actions.REMOVE, i)}}>Remove</Button>
+                <Button.Group>
+                  <Button onClick={(e) => {e.stopPropagation(); onClickAction(ActionsTable.fastEdit, i)}}>Edit</Button>
+                  <Button onClick={(e) => {e.stopPropagation(); onClickAction(ActionsTable.fullEdit, i)}}>Edit</Button>
+                  <Button onClick={(e) => {e.stopPropagation(); onClickAction(ActionsTable.delete, i)}}>Remove</Button>
+                </Button.Group>
               </Table.Cell>
             </Table.Row>
           )))

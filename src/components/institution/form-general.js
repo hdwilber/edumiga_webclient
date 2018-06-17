@@ -2,7 +2,7 @@ import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
 import InputTreeview from '../input-treeview/input-treeview'
 
-class FormGeneral extends React.Component {
+class FormGeneral extends React.PureComponent {
 
   handleCheckboxChange = (e, props) => {
     const { onChange } = this.props

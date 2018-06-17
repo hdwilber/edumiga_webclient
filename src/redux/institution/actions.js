@@ -4,7 +4,7 @@ import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActi
   withService,
 
 } from '../utils'
-import { Institution, saveData } from '../../utils/types'
+import { Institution, buildData } from '../../utils/types'
 import { fillData as oppFillData } from '../opportunity/actions'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
@@ -44,6 +44,18 @@ export function getTypes() {
   return (dispatch, getState) => {
     const request = iService.getTypes()
     return handleRequest(dispatch, getState, GET_TYPES, request)
+  }
+}
+
+export function findAllOwned(options) {
+  return (dispatch, getState) => {
+    const { account } = getState()
+    iService.setSession(account.session)
+    const request = iService.getAllOwned()
+    return dispatchRequestActions(dispatch, FIND_ALL, request,
+      {
+      },
+      options)
   }
 }
 

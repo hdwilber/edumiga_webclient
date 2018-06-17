@@ -2,10 +2,10 @@ import React from 'react'
 import { Image, Form } from 'semantic-ui-react'
 import { nologo } from '../../utils/constants'
 
-const InputImage = (props) => {
-  const { name, value: { url, fakeUrl}, onChange } = props
-
-  function handleFileChange(e) {
+class InputImage extends React.PureComponent {
+  
+  handleFileChange = (e) => {
+    const { name, onChange } = this.props
     const files = e.target.files
     onChange(e, {
       name,
@@ -15,15 +15,19 @@ const InputImage = (props) => {
       }
     })
   }
-  const imgSrc = fakeUrl || url
-  return (
-    <Form>
-      <Form.Input name={name} onChange={handleFileChange} 
-        type="file"
-      />
-      <Image src={imgSrc ? imgSrc: nologo} />
-    </Form>
-  )
+
+  render() {
+    const { name, value: { url, fakeUrl}, onChange } = this.props
+    const imgSrc = fakeUrl || url
+    return (
+      <Form>
+        <Form.Input name={name} onChange={this.handleFileChange} 
+          type="file"
+        />
+        <Image src={imgSrc ? imgSrc: nologo} />
+      </Form>
+    )
+  }
 }
 
 export default InputImage

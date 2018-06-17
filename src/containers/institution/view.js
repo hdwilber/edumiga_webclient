@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { Card, Image, Grid, Segment, Header } from 'semantic-ui-react'
+import { withRouter, Link } from 'react-router-dom'
+import { Button, Card, Image, Grid, Segment, Header } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 import { Thumbnail as InstitutionThumb } from '../../components/institution'
 import OpportunityThumb from '../../components/opportunity/thumbnail'
@@ -78,7 +78,10 @@ class View extends React.Component {
       return (
         <Grid container>
           <Grid.Column width={16}>
-            <Header size="huge">{inst.name}</Header>
+            <Header size="huge">
+              {inst.name}
+              <Button as={Link} to={`/institution/${inst.id}/editor`}>Editor</Button>
+            </Header>
           </Grid.Column>
           <Grid.Column width={6}>
             <Segment>

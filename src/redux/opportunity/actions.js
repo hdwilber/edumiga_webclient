@@ -1,7 +1,10 @@
 import { OpportunityService, CourseService } from '../../services'
-import { handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+import { 
+  dispatchRequestActions,
+  handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
 import { fillData as courseFillData } from '../course/actions'
+import { Opportunity, parseData, saveData } from '../../utils/types'
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -20,10 +23,19 @@ export const COURSE_UPDATE = createActionLabels('OPP_COURSE_UPDATE')
 export const COURSE_SET = createActionLabels('OPP_COURSE_SET')
 export const COURSE_ADD_PRE = createActionLabels('OPP_COURSE_ADD_PRE')
 export const COURSE_DEL_PRE = createActionLabels('OPP_COURSE_DEL_PRE')
+export const SAVE = createActionLabels('SAVE')
 
 
 export const SET = 'OPP_SET'
 export const FILL_DATA = 'OPP_FILL_DATA'
+
+export function save(data, options) {
+  return (dispatch, getState) => {
+    const result = saveData(Opportunity, data, options)
+    const request = oService.update(result.savable)
+    return dispatchRequestActions(dispatch, SAVE, request)
+  }
+}
 
 export function getTypes(type) {
   return (dispatch, getState) => {

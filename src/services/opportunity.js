@@ -27,7 +27,14 @@ class Opportunity extends Service {
         {
           relation: 'courses',
           scope: {
-            include: ['prerequisites']
+            include: [
+              {
+                relation: 'prerequisites',
+                scope: {
+                  fields: ['id'],
+                }
+              }
+            ],
           }
         }
       ],

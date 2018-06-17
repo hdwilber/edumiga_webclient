@@ -3,9 +3,9 @@ import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
 import FormGeneral from '../../components/institution/form-general'
 import InputLocation from '../../components/location/input-location'
 
-import { parseData, saveData, Institution } from '../../utils/types'
+import { parseData, buildData, Institution } from '../../utils/types'
 
-class FastEditor extends React.Component {
+class FastEditor extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state ={
@@ -21,8 +21,6 @@ class FastEditor extends React.Component {
       this.setState({
         ...parseData(Institution, institution),
         isNew: !institution,
-      }, () => {
-        window.scroll(window.top)
       })
     }
   }

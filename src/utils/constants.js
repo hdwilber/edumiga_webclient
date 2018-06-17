@@ -1,8 +1,10 @@
 export { default as nologo } from '../images/nologo.svg'
 
 export const Actions = {
-  edit: 1,
-  fastEdit: 1,
-  fullEdit: 2,
-  delete: 3,
+  delete: 1,
+  save: 2,
+  edit: 3,
+  fastEdit: 4,
+  fullEdit: 5,
+  cancel: 6,
 }

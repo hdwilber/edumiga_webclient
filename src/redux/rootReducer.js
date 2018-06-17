@@ -12,6 +12,7 @@ export default combineReducers({
   router: routerReducer,
   account: accountReducer,
   institution: institutionReducer,
+  opportunity: opportunityReducer,
   opp: opportunityReducer,
   constant: constantReducer,
   course: courseReducer,
