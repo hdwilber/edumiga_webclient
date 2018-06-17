@@ -1,6 +1,7 @@
 import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
 import InputTreeview from '../input-treeview/input-treeview'
+import InputLocation from '../location/input-location'
 
 class FormGeneral extends React.PureComponent {
 
@@ -63,7 +64,7 @@ class FormGeneral extends React.PureComponent {
     const { onChange, 
       value: { 
         description, categories, adminLevel, 
-        type, address, prename, name, 
+        type, location, address, prename, name, 
         country, state, county,
         published,
       },
@@ -72,10 +73,10 @@ class FormGeneral extends React.PureComponent {
     return (
       <Form>
         <Form.Group widths="equal">
-          <Form.Input value={prename} name="prename" onChange={onChange} 
+          <Form.Input value={prename} name="prename" onChange={onChange}
             label="Pre name" type="text"
           />
-          <Form.Input value={name} name="name" onChange={onChange} 
+          <Form.Input value={name} name="name" onChange={onChange}
             label="Name" type="text"
           />
         </Form.Group>
@@ -104,8 +105,18 @@ class FormGeneral extends React.PureComponent {
         <Form.Input value={address} name="address" onChange={onChange} label="Address" type="text"/>
 
         <Form.Field>
+          <label>Location</label>
+          <InputLocation
+            name="location"
+            onChange={onChange}
+            value={location}
+          />
+        </Form.Field>
+
+        <Form.Field>
           <label>Categories</label>
           <InputTreeview 
+            multiple
             value={categories} 
             name="categories"
             nodes={this.formatCategories(constants.categories || [])}

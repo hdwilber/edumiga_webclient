@@ -6,6 +6,7 @@ import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActi
 } from '../utils'
 import { Institution, buildData } from '../../utils/types'
 import { fillData as oppFillData } from '../opportunity/actions'
+import { saveData } from '../../utils/types'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
@@ -24,8 +25,18 @@ export const ADD_CATEGORY = createActionLabels('INST_ADD_CATEGORY')
 export const DEL_CATEGORY = createActionLabels('INST_DEL_CATEGORY')
 
 export const FULL_SAVING = createActionLabels('INST_FULL_SAVING')
+export const SAVE = createActionLabels('INST_SAVE')
 
 const iService = new InstitutionService()
+
+
+export function save(data, options) {
+  const result = saveData(Institution, data, options)
+  console.log(result)
+  return {
+    type: SAVE.success
+  }
+}
 
 export function unset() {
   return {

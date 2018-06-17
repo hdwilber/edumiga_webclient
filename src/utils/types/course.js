@@ -11,13 +11,13 @@ const Specs = {
   description: Types.string,
   duration: Types.number,
   published: {
-    type: Types.boolean,
+    type: Types.bool,
     default: true,
   },
-  optional: Types.boolean,
+  optional: Types.bool,
   type: Types.string,
   prerequisites: {
-    type: [Types.object],
+    type: [Types.Prerequisite],
     parse: function (data = []) {
       return data.map(c => c.id)
     },

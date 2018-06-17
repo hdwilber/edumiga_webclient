@@ -15,8 +15,8 @@ const Specs = {
   state: Types.string,
   county: Types.string,
   address: Types.string,
-  phones: Types.array.string,
-  interests: Types.array.string,
+  phones: [Types.string],
+  interests: [Types.string],
   location: {
     type: Types.object,
     default: {

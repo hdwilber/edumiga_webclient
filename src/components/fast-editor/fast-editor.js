@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
-import FormGeneral from '../../components/institution/form-general'
-import InputLocation from '../../components/location/input-location'
+import FormGeneral from '../components/institution/form-general'
+import InputLocation from '../components/location/input-location'
 
 import { parseData, buildData, Institution } from '../../utils/types'
 import { Actions } from '../../utils/constants'
@@ -9,19 +9,21 @@ import { Actions } from '../../utils/constants'
 class FastEditor extends React.PureComponent {
   constructor(props) {
     super(props)
+    const { specs, value } = props
     this.state ={
-      ...parseData(Institution, props.institution),
-      isNew: !props.institution,
+      ...parseData(specs, value),
+      isNew: !props.value,
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { institution } = nextProps
+    const { value } = nextProps
 
-    if (typeof institution !== 'undefined') {
+    if (typeof value !== 'undefined') {
+      const { specs } = this.props
       this.setState({
-        ...parseData(Institution, institution),
-        isNew: !institution,
+        ...parseData(specs, value),
+        isNew: !value,
       })
     }
   }
@@ -37,18 +39,18 @@ class FastEditor extends React.PureComponent {
     return (
         <Modal.Header>{ isNew ? 'Create': 'Edit' }</Modal.Header>
     )
-
   }
+
   handleClickSave = () => {
-    const { institution, dependencies, onAction } = this.props
+    const { specs, value, onAction } = this.props
     onAction(Actions.save, {
-      ref: institution,
-      dependency: buildData(Institution, this.state, { dependencies }),
+      ref: value,
+      value: buildData(specs, this.state),
       isNew: this.state.isNew,
     })
   }
   render() {
-    const { location, logo, dependencies, opportunities } = this.state
+    const { location } = this.state
     const { visible, 
       processing,
       onCancel,
@@ -56,15 +58,12 @@ class FastEditor extends React.PureComponent {
     } = this.props
 
     return (
-      <Modal closeOnDimmerClick={false} 
-        closeOnDocumentClick={false} 
-        onClose={onCancel} size="fullscreen" open={visible}
-      >
+      <Modal onClose={onCancel} size="fullscreen" open={visible} >
         { this.renderHeader() }
         <Modal.Content>
           <Grid container stackable>
             <Grid.Row>
-              <Grid.Column width={16}>
+              <Grid.Column width={11}>
                 <Segment>
                   <Header size="medium">Overview</Header>
                   <FormGeneral 

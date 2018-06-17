@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Table } from 'semantic-ui-react'
-import { Actions as TableActions } from '../../utils/constants'
+import { Actions as Action } from '../../utils/constants'
 
 export const Actions = {
   EDIT: 1,
@@ -32,9 +32,9 @@ export class List extends React.PureComponent {
                 <Table.Cell>{i.adminLevel}</Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <Button icon="external" compact onClick={(e) => {e.stopPropagation(); onClickAction(TableActions.fullEdit, i)}} />
-                    <Button icon="edit" compact onClick={(e) => {e.stopPropagation(); onClickAction(TableActions.fastEdit, i)}} />
-                    <Button icon="remove" compact onClick={(e) => {e.stopPropagation(); onClickAction(TableActions.delete, i)}} />
+                    <Button icon="external" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.fullEdit, i)}} />
+                    <Button icon="edit" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.fastEdit, i)}} />
+                    <Button icon="remove" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.delete, i)}} />
                   </Button.Group>
                 </Table.Cell>
               </Table.Row>

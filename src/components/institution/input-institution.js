@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Button } from 'semantic-ui-react'
 import InputTreeview from '../input-treeview/input-treeview'
 
@@ -38,7 +39,7 @@ class InputInstitution extends React.PureComponent {
   renderContent() {
     const { value } = this.props
     if(value) {
-      return (<p>{value.text}</p>)
+      return (<Link to={`/institution/${value.value}/editor`}>{value.text}</Link>)
     }
     return (
       <p>

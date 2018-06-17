@@ -1,7 +1,7 @@
 import { buildImageUrl } from './../../redux/utils'
 
 export const Types = {
-  boolean: {
+  bool: {
     id: 1,
     default: false,
   },
@@ -17,41 +17,31 @@ export const Types = {
     id: 4,
     default: null,
   },
-  array: {
-    number: {
-      id: 10,
-    },
-    string: {
-      id: 11,
-    },
-    object: {
-      id: 12,
-    },
-    default: [],
-  },
   date: {
     id: 20,
     default: new Date(Date.now()),
   },
 
-  Course: {
+  Institution: {
     id: 100,
     default: null
   },
-  Institution: {
-    id: 101,
+  Opportunity: {
+    id: 200,
     default: null
   },
-  Opportunity: {
-    id: 102,
+  Course: {
+    id: 300,
+    default: null
+  },
+  Prerequisite: {
+    id: 350,
     default: null
   }
 }
 
-const isTypeArray = id => (id >= Types.array.number.id && id <= Types.array.object.id)
-
 export function setDefault(type) {
-  return isTypeArray(type.id) ? [] : type.default
+  return (type instanceof Array) ? [] : type.default
 }
 
 

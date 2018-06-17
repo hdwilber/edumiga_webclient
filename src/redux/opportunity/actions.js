@@ -33,6 +33,17 @@ export function save(data, options) {
   return (dispatch, getState) => {
     const result = saveData(Opportunity, data, options)
     const request = oService.update(result.savable)
+    result.onHold.forEach(a => {
+      switch(a.name) {
+        case 'logo':
+          const { value, spec } = a
+          if (value.file) {
+            dispatch(uploadLogo(result.savable.id, value.file))
+          }
+          break;
+      }
+    })
+
     return dispatchRequestActions(dispatch, SAVE, request)
   }
 }

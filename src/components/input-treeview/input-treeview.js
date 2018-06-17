@@ -2,8 +2,9 @@ import React from 'react'
 import { Icon, Input, Label } from 'semantic-ui-react'
 import Node from './treeview-node'
 import './styles.scss'
+import _ from 'lodash'
 
-class InputTreeview extends React.PureComponent {
+class InputTreeview extends React.Component {
   constructor(props) {
     super(props)
     this.state = {

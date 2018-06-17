@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Button, Grid, Header, Segment } from 'semantic-ui-react'
+import { Icon, Button, Grid, Header, Segment } from 'semantic-ui-react'
 
 import InputImage from '../../components/media/input-image'
 import InputLocation from '../../components/location/input-location'
 
 import FormGeneral from '../../components/institution/form-general'
+import InputInstitution from '../../components/institution/input-institution'
 
 import * as institutionActions from '../../redux/institution/actions'
 import * as categoryActions from '../../redux/category/actions'
@@ -73,7 +74,8 @@ class Editor extends React.PureComponent {
   }
 
   handleSave = (event) => {
-    console.log(this.state)
+    const { save } = this.props
+    save(this.state, { })
   }
 
   handleDepActions = (action, dependency) => {
@@ -95,12 +97,38 @@ class Editor extends React.PureComponent {
     }
   }
 
+  handleOppActions = (action, opportunity) => {
+    switch(action) {
+      case Actions.fullEdit:
+        const { history } = this.props
+        history.push(`/opportunity/${opportunity.id}/editor`)
+        break
+      default: 
+    }
+  }
+
+  renderActionButtons() {
+    const { isNew } = this.state
+    return (
+      <Button.Group floated="right" size='medium'>
+        <Button 
+          primary
+          onClick={this.handleSave}
+        >
+          <Icon name={isNew ? 'plus': 'save'} />{ isNew ? 'Create': 'Save' }
+        </Button>
+        <Button secondary><Icon name="remove" />Delete</Button>
+      </Button.Group>
+    )
+  }
+
   renderHeader() {
     const { isNew, name } = this.state
     return (
       <Grid.Column width={16}>
         <Header size="huge">
           {isNew ? "Create a new Institution": name}
+          { this.renderActionButtons() }
         </Header>
       </Grid.Column>
     )
@@ -120,6 +148,26 @@ class Editor extends React.PureComponent {
     )
   }
 
+  
+  actionInstFastEditor = (action, { ref, dependency, isNew}) => {
+    switch(action) {
+      case Actions.save: 
+        const { dependencies } = this.state
+        const newList = isNew
+          ? dependencies.concat([dependency])
+          : dependencies.map(d => (d === ref) ? ({ ...d, ...dependency }): d)
+
+        this.setState({
+          dependencies: newList,
+          showInstFastEditor: false,
+          instFastEditor: {
+            course: null,
+          }
+        })
+        break;
+    }
+  }
+
   closeInstFastEditor = () => {
     this.setState({
       showInstFastEditor: false,
@@ -129,13 +177,28 @@ class Editor extends React.PureComponent {
     })
   }
 
+  handleAddDependency = () => {
+    this.setState({
+      showInstFastEditor: true,
+      instFastEditor: {
+        institution: null,
+      }
+    })
+  }
+
   render() {
-    const { location, logo, dependencies, opportunities } = this.state
-    const { constants, processing } = this.props
+    const { location, logo, head, dependencies, opportunities } = this.state
+    const { institutions, constants, processing } = this.props
     return (
       <Grid container stackable>
         { this.renderHeader() }
         <Grid.Column width={6}>
+          <Segment>
+            <InputInstitution name="head" value={head}
+              institutions={institutions}
+              onChange={this.handleInputChange}
+            />
+          </Segment>
           <Segment>
             <Header size="medium">Logo Profile</Header>
             <InputImage
@@ -144,25 +207,9 @@ class Editor extends React.PureComponent {
               value={logo}
             />
           </Segment>
-          <Segment>
-            <Header size="medium">Location</Header>
-            <InputLocation
-              name="location"
-              onChange={this.handleInputChange}
-              value={location}
-            />
-          </Segment>
         </Grid.Column>
         <Grid.Column width={10}>
           { this.renderFormGeneral() }
-          <Button
-            loading={processing}
-            disabled={processing}
-            default
-            onClick={this.handleSave}
-          >
-            Save
-          </Button>
         </Grid.Column>
 
         <Grid.Column width={8}>
@@ -180,7 +227,7 @@ class Editor extends React.PureComponent {
             <OppList 
               items={opportunities} 
               onSelectRow={e => console.log(e)}
-              onClickAction={(e) => console.log('click action: %o', e)}
+              onClickAction={this.handleOppActions}
             />
           </Segment>
         </Grid.Column>
@@ -188,6 +235,7 @@ class Editor extends React.PureComponent {
           visible={this.state.showInstFastEditor} 
           {...this.state.instFastEditor}
           constants={constants}
+          onAction={this.actionInstFastEditor}
           onCancel={this.closeInstFastEditor}
         />
       </Grid>
@@ -196,11 +244,13 @@ class Editor extends React.PureComponent {
 }
 
 function mapStateToProps (state) {
+  const { institution } = state
   return {
-    institution: state.institution.current,
-    processing: state.institution.loading,
+    institution: institution.current,
+    institutions: institution.list,
+    processing: institution.loading,
     constants: {
-      ...state.institution.constants,
+      ...institution.constants,
       categories: state.category.list,
     }
   }
@@ -209,9 +259,11 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   dispatch(categoryActions.findAll())
   dispatch(institutionActions.getTypes())
+  dispatch(institutionActions.findAllOwned())
 
   return {
     find: (id, opts) => dispatch(institutionActions.findById(id, opts)),
+    save: (data, opts) => dispatch(institutionActions.save(data, opts)),
     create: (data, opts) => dispatch(institutionActions.create(data, opts)),
     update: (data, opts) => dispatch(institutionActions.update(data, opts)),
     delete: (data, opts) => dispatch(institutionActions.deleteI(data, opts)),

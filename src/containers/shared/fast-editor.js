@@ -56,15 +56,22 @@ class FastEditor extends React.PureComponent {
     } = this.props
 
     return (
-      <Modal closeOnDimmerClick={false} 
-        closeOnDocumentClick={false} 
-        onClose={onCancel} size="fullscreen" open={visible}
-      >
+      <Modal onClose={onCancel} size="fullscreen" open={visible} >
         { this.renderHeader() }
         <Modal.Content>
           <Grid container stackable>
             <Grid.Row>
-              <Grid.Column width={16}>
+              <Grid.Column width={5}>
+                <Segment>
+                  <Header size="medium">Location</Header>
+                  <InputLocation
+                    name="location"
+                    onChange={this.handleInputChange}
+                    value={location}
+                  />
+                </Segment>
+              </Grid.Column>
+              <Grid.Column width={11}>
                 <Segment>
                   <Header size="medium">Overview</Header>
                   <FormGeneral 
