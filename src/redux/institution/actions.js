@@ -31,10 +31,21 @@ const iService = new InstitutionService()
 
 
 export function save(data, options) {
-  const result = saveData(Institution, data, options)
-  console.log(result)
-  return {
-    type: SAVE.success
+  return (dispatch, getState) => {
+    const result = saveData(Institution, data, options)
+    const request = iService.update(result.savable)
+    result.onHold.forEach(a => {
+      switch(a.name) {
+        case 'logo':
+          const { value, spec } = a
+          if (value.file) {
+            dispatch(uploadLogo(result.savable.id, value.file))
+          }
+          break;
+      }
+    })
+
+    return dispatchRequestActions(dispatch, SAVE, request)
   }
 }
 

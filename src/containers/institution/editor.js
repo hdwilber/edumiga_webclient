@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Icon, Button, Grid, Header, Segment } from 'semantic-ui-react'
 
 import InputImage from '../../components/media/input-image'
@@ -108,7 +108,8 @@ class Editor extends React.PureComponent {
   }
 
   renderActionButtons() {
-    const { isNew } = this.state
+    const { id, isNew } = this.state
+    
     return (
       <Button.Group floated="right" size='medium'>
         <Button 
@@ -116,6 +117,14 @@ class Editor extends React.PureComponent {
           onClick={this.handleSave}
         >
           <Icon name={isNew ? 'plus': 'save'} />{ isNew ? 'Create': 'Save' }
+        </Button>
+        <Button 
+          as={Link}
+          to={`/institution/${id}`}
+          secondary
+        >
+          <Icon name="eye" />
+          View
         </Button>
         <Button secondary><Icon name="remove" />Delete</Button>
       </Button.Group>

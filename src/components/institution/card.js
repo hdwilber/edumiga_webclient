@@ -14,7 +14,7 @@ const InstCard = (props) => {
     const { 
       logo, type, prename, name, 
       description, levels, 
-      resume } = institution
+      resume = {}} = institution
     return (
       <Card onClick={onClick}>
         <Card.Content>

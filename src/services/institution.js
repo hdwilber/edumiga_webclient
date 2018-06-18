@@ -93,6 +93,9 @@ class Institution extends Service {
           adminLevel: 'main',
           accountId: this.session && this.session.accountId,
         },
+        includes: [
+          'logo'
+        ]
       }
     }
     return this.createRequest('GET', `resumes?filter=${JSON.stringify(filter)}`, null, false)

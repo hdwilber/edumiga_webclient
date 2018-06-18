@@ -20,13 +20,12 @@ const Thumbnail = (props) => {
       <Card onClick={onClick}>
         <Card.Content>
           <Label size="mini" ribbon content={adminLevel} />
+          <Header size="tiny">{prename}{name}</Header>
           <Image 
             size="mini" 
             inline
-            floated="right"
             src={logo ? buildImageUrl(logo.url): nologo}
           />
-          <Header size="tiny">{prename}{name}</Header>
           <Card.Description>
             <p><b>{type}</b></p>
             <Label.Group>

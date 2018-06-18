@@ -196,6 +196,7 @@ export default function institutionReducer(state = initialState, action) {
       return {
         ...state,
         loading: true,
+        current: null,
       }
     }
 

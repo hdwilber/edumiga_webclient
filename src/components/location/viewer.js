@@ -24,6 +24,7 @@ class LocationViewer extends React.Component {
 
   renderLocations() {
     const { location, locations } = this.props
+
     if (location) {
       const { point, info } = location
       return (
@@ -33,15 +34,19 @@ class LocationViewer extends React.Component {
           </Popup>
         </Marker>
       )
-    } else {
-      return locations.map(({point, info})=> point 
-        && (
-          <Marker position={point} >
+    }
+    if (locations) {
+      return locations.map( ({point, info}) => {
+        console.log(point)
+        console.log(info)
+        return (
+          <Marker key={point.lat} position={point} >
             <Popup>
               <span>{info}</span>
             </Popup>
           </Marker>
         )
+      })
     }
   }
 
@@ -55,11 +60,11 @@ class LocationViewer extends React.Component {
   }
 
   render() {
-    const {  } = this.props
+    const { main } = this.props
     return( 
       <div>
-        <Map onLocationfound={this.handleLocationFound} style={{height: 300}} center={data.point}
-          zoom={data.zoom}
+        <Map onLocationfound={this.handleLocationFound} style={{height: 300}} center={main.point}
+          zoom={main.zoom}
           ref={(e) => this.map = e}
         >
           <TileLayer
@@ -72,3 +77,4 @@ class LocationViewer extends React.Component {
     )
   }
 }
+export default LocationViewer

@@ -13,9 +13,11 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+const Cochabamba = {lat: -17.413977, lng: -66.165321}
+
 const defaultLocation = { 
-  point: { lat: -16.290154, lng: -63.58865 },
-  zoom: 5,
+  point: Cochabamba,
+  zoom: 14,
 }
 
 class InputLocation extends React.PureComponent {

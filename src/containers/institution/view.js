@@ -4,9 +4,10 @@ import { withRouter, Link } from 'react-router-dom'
 import { Button, Card, Image, Grid, Segment, Header } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 import { Thumbnail as InstitutionThumb } from '../../components/institution'
-import OpportunityThumb from '../../components/opportunity/thumbnail'
+import OpportunityThumb from '../../components/opportunity/thumbnail/thumbnail'
 
 import LocationMap from '../../components/location/map'
+import LocationViewer from '../../components/location/viewer'
 import { buildImageUrl } from '../../redux/utils'
 import * as institutionActions from '../../redux/institution/actions'
 import withAuthorization from '../authorization'
@@ -31,16 +32,16 @@ class View extends React.Component {
     }
   }
 
-  componentDidMount() {
-    const { match, institutionFindResumeById} = this.props
+  componentWillMount() {
+    const { match } = this.props
     const { institutionId } = match.params
-
-    if (institutionId) {
-      institutionFindResumeById(institutionId)
-    } else {
+    if (!this.findResume(institutionId)) {
       const { history } = this.props
       history.pop()
     }
+  }
+  componentDidMount() {
+
   }
 
   handleInputChange(e, props) {
@@ -53,28 +54,57 @@ class View extends React.Component {
     const { history } = this.props
     history.push(`/institution/${institution.id}`)
   }
+
+  findResume(id) {
+    if (id) {
+      const { findResume } = this.props
+      findResume(id)
+      return true
+    }
+    return false
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
       const { key: next } = nextProps.location
       const { key } = this.props.location
 
       if (key !== next) {
-        const { institutionFindResumeById } = this.props
+        const { findResume } = this.props
         const { match } = nextProps
         const { institutionId } = match.params
-
-        if (institutionId) {
-          institutionFindResumeById(institutionId)
-        }
+        findResume(institutionId)
       }
     }
   }
 
+  prepareLocations(main, deps = []) {
+    const locations = deps.reduce( (acc, dep) => {
+      if (dep.location) {
+        acc.push({
+          point: dep.location.point,
+          info: `${dep.prename} ${dep.name}`,
+        })
+      }
+      return acc
+    }, [])
+
+    if (main.location) {
+      locations.push({
+        point: main.location.point,
+        info: `${main.prename} ${main.name}`,
+      })
+    }
+
+    return locations
+  }
+
   render() {
-    const { institution } = this.props
-    if (institution && institution.current) {
-      const inst = institution.current
-      const { logo, resume: { dependencies, opportunities } } = inst
+    const { processing, institution: inst } = this.props
+    if (!processing && inst) {
+      const { logo, resume: { dependencies, opportunities } = {} } = inst
+      const locations = this.prepareLocations(inst, dependencies)
+      console.log(locations)
       return (
         <Grid container>
           <Grid.Column width={16}>
@@ -83,14 +113,14 @@ class View extends React.Component {
               <Button as={Link} to={`/institution/${inst.id}/editor`}>Editor</Button>
             </Header>
           </Grid.Column>
-          <Grid.Column width={6}>
+          <Grid.Column width={4}>
             <Segment>
               <Image src={logo ? buildImageUrl(logo.url): nologo} />
             </Segment>
 
           </Grid.Column>
 
-          <Grid.Column width={10}>
+          <Grid.Column width={12}>
             <Segment>
               <Header size="medium">Overview</Header>
               <Overview data={inst} />
@@ -126,10 +156,9 @@ class View extends React.Component {
             </Segment>
             <Segment>
               <Header size="medium">Location</Header>
-              <LocationMap
-                name="location"
-                onCenterChange={this.handleInputChange}
-                data={(inst.location && inst.location.point) ? inst.location : this.state.currentLocation}
+              <LocationViewer
+                locations={locations}
+                main={{...locations[0], zoom: 14}}
               />
             </Segment>
           </Grid.Column>
@@ -142,13 +171,26 @@ class View extends React.Component {
   }
 }
 
-const connectedComponent = connect(
-  (state) => ({
-    account: state.account,
-    institution: state.institution,
-  }), 
-  (dispatch) => ({
-    institutionFindResumeById: (id) => dispatch(institutionActions.findResumeById(id)),
-  })) (withRouter(View))
+function mapStateToProps (state) {
+  const { institution } = state
+  return {
+    institution: institution.current,
+    processing: institution.loading,
+    constants: {
+      ...institution.constants,
+    }
+  }
+}
 
-export default withAuthorization(connectedComponent, UserState.ACCOUNT)
+function mapDispatchToProps (dispatch) {
+  return {
+    findResume: (id) => dispatch(institutionActions.findResumeById(id)),
+  }
+}
+
+const ConnectedComponent = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ) (withRouter(View))
+
+export default withAuthorization(ConnectedComponent, UserState.ACCOUNT)
