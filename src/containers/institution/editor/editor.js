@@ -3,23 +3,24 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Icon, Button, Grid, Header, Segment } from 'semantic-ui-react'
 
-import InputImage from '../../components/media/input-image'
-import InputLocation from '../../components/location/input-location'
+import InputImage from '../../../components/media/input-image'
+import InputLocation from '../../../components/location/input-location'
 
-import FormGeneral from '../../components/institution/form-general'
-import InputInstitution from '../../components/institution/input-institution'
+import FormGeneral from '../../../components/institution/form-general'
+import InputInstitution from '../../../components/institution/input-institution'
 
-import * as institutionActions from '../../redux/institution/actions'
-import * as categoryActions from '../../redux/category/actions'
-import { parseData, buildData, Institution } from '../../utils/types'
+import * as institutionActions from '../../../redux/institution/actions'
+import * as opportunityActions from '../../../redux/opportunity/actions'
+import * as categoryActions from '../../../redux/category/actions'
+import { parseData, buildData, Institution } from '../../../utils/types'
 
-import InstList from '../../components/institution/list'
-import OppList from '../../components/opportunity/list'
+import InstList from '../../../components/institution/list'
+import OppList from '../../../components/opportunity/list'
 
-import { Actions } from '../../utils/constants'
+import { Actions } from '../../../utils/constants'
 
-import withAuthorization, { UserState } from '../../containers/authorization'
-import InstitutionFastEditor from './fast-editor'
+import withAuthorization, { UserState } from '../../authorization'
+import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared/fast-editor'
 
 class Editor extends React.PureComponent {
   constructor(props) {
@@ -27,10 +28,16 @@ class Editor extends React.PureComponent {
     this.state = {
       ...parseData(Institution),
       isNew: true,
+
       showInstFastEditor: false,
       instInstFastEditor: {
-        institution: null,
-      }
+        value: null,
+      },
+
+      showOppFastEditor: false,
+      oppFastEditor: {
+        value: null,
+      },
     }
   }
 
@@ -78,6 +85,24 @@ class Editor extends React.PureComponent {
     save(this.state, { })
   }
 
+  handleOppActions = (action, opportunity) => {
+    switch(action) {
+      case Actions.fastEdit: 
+        this.setState({
+          showOppFastEditor: true,
+          oppFastEditor: {
+            ...this.state.oppFastEditor,
+            value: opportunity,
+          }
+        })
+        break;
+      case Actions.fullEdit:
+        const { history } = this.props
+        history.push(`/opportunity/${opportunity.id}/editor`)
+        break
+      default: 
+    }
+  }
   handleDepActions = (action, dependency) => {
     switch(action) {
       case Actions.fastEdit: 
@@ -85,23 +110,13 @@ class Editor extends React.PureComponent {
           showInstFastEditor: true,
           instFastEditor: {
             ...this.state.instFastEditor,
-            institution: dependency,
+            value: dependency,
           }
         })
         break;
       case Actions.fullEdit:
         const { history } = this.props
         history.push(`/institution/${dependency.id}/editor`)
-        break
-      default: 
-    }
-  }
-
-  handleOppActions = (action, opportunity) => {
-    switch(action) {
-      case Actions.fullEdit:
-        const { history } = this.props
-        history.push(`/opportunity/${opportunity.id}/editor`)
         break
       default: 
     }
@@ -170,18 +185,46 @@ class Editor extends React.PureComponent {
           dependencies: newList,
           showInstFastEditor: false,
           instFastEditor: {
-            course: null,
+            value: null,
           }
         })
         break;
     }
   }
 
+  actionOppFastEditor = (action, { ref, opportunity, isNew}) => {
+    switch(action) {
+      case Actions.save: 
+        const { opportunities } = this.state
+        const newList = isNew
+          ? opportunities.concat([opportunity])
+          : opportunities.map(o => (o === ref) ? ({ ...o, ...opportunity }): o)
+
+        this.setState({
+          opportunities: newList,
+          showOppFastEditor: false,
+          oppFastEditor: {
+            value: null,
+          }
+        })
+        break;
+    }
+  }
+
+  closeOppFastEditor = () => {
+    this.setState({
+      showOppFastEditor: false,
+      oppFastEditor: {
+        value: null,
+      }
+    })
+  }
+
   closeInstFastEditor = () => {
     this.setState({
       showInstFastEditor: false,
       instFastEditor: {
-        institution: null,
+        value: null,
       }
     })
   }
@@ -190,7 +233,16 @@ class Editor extends React.PureComponent {
     this.setState({
       showInstFastEditor: true,
       instFastEditor: {
-        institution: null,
+        value: null,
+      }
+    })
+  }
+
+  handleAddOpportunity = () => {
+    this.setState({
+      showOppFastEditor: true,
+      oppFastEditor: {
+        value: null,
       }
     })
   }
@@ -242,10 +294,17 @@ class Editor extends React.PureComponent {
         </Grid.Column>
         <InstitutionFastEditor 
           visible={this.state.showInstFastEditor} 
-          {...this.state.instFastEditor}
           constants={constants}
           onAction={this.actionInstFastEditor}
           onCancel={this.closeInstFastEditor}
+          {...this.state.instFastEditor}
+        />
+        <OpportunityFastEditor
+          visible={this.state.showOppFastEditor} 
+          constants={constants}
+          onAction={this.actionOpptFastEditor}
+          onCancel={this.closeOppFastEditor}
+          {...this.state.oppFastEditor}
         />
       </Grid>
       )
@@ -253,13 +312,14 @@ class Editor extends React.PureComponent {
 }
 
 function mapStateToProps (state) {
-  const { institution } = state
+  const { institution, opportunity } = state
   return {
     institution: institution.current,
     institutions: institution.list,
     processing: institution.loading,
     constants: {
       ...institution.constants,
+      ...opportunity.constants,
       categories: state.category.list,
     }
   }
@@ -268,6 +328,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   dispatch(categoryActions.findAll())
   dispatch(institutionActions.getTypes())
+  dispatch(opportunityActions.getTypes())
   dispatch(institutionActions.findAllOwned())
 
   return {

@@ -12,7 +12,7 @@ import * as institutionActions from '../../redux/institution/actions'
 import * as opportunityActions from '../../redux/opportunity/actions'
 import * as courseActions from '../../redux/course/actions'
 
-import CourseFastEditor from '../course/fast-editor'
+import { CourseFastEditor } from '../shared/fast-editor'
 import CourseList from '../../components/course/list'
 import { Actions } from '../../utils/constants'
 
@@ -29,7 +29,7 @@ class Editor extends React.PureComponent {
       isNew: true,
       showCourseFastEditor: false,
       courseFastEditor: {
-        course: null,
+        value: null,
       }
     }
   }
@@ -83,7 +83,7 @@ class Editor extends React.PureComponent {
     this.setState({
       showCourseFastEditor: true,
       courseFastEditor: {
-        course: null,
+        value: null,
       }
     })
   }
@@ -109,20 +109,19 @@ class Editor extends React.PureComponent {
     }, () => courseSet(null))
   }
 
-  actionCourseFastEditor = (action, { ref, course, isNew } ) => {
+  actionCourseFastEditor = (action, { ref, value, isNew } ) => {
     switch(action) {
       case Actions.save: 
         const { courses } = this.state
-        console.log(course)
         const newList = isNew
-          ? courses.concat([course])
-          : courses.map(c => (c === ref) ? ({ ...c, ...course }): c)
+          ? courses.concat([value])
+          : courses.map(c => (c === ref) ? ({ ...c, ...value }): c)
 
         this.setState({
           courses: newList,
           showCourseFastEditor: false,
           courseFastEditor: {
-            course: null,
+            value: null,
           }
         })
         break;
@@ -133,7 +132,7 @@ class Editor extends React.PureComponent {
     this.setState({
       showCourseFastEditor: false,
       courseFastEditor: {
-        course: null,
+        value: null,
       }
     })
   }
@@ -144,7 +143,7 @@ class Editor extends React.PureComponent {
         this.setState({
           showCourseFastEditor: true,
           courseFastEditor: {
-            course,
+            value: course,
           }
         })
         break;

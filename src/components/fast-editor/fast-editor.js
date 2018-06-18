@@ -1,8 +1,5 @@
 import React from 'react'
 import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
-import FormGeneral from '../components/institution/form-general'
-import InputLocation from '../components/location/input-location'
-
 import { parseData, buildData, Institution } from '../../utils/types'
 import { Actions } from '../../utils/constants'
 
@@ -50,8 +47,8 @@ class FastEditor extends React.PureComponent {
     })
   }
   render() {
-    const { location } = this.state
     const { visible, 
+      content: Content,
       processing,
       onCancel,
       constants = {},
@@ -66,7 +63,8 @@ class FastEditor extends React.PureComponent {
               <Grid.Column width={11}>
                 <Segment>
                   <Header size="medium">Overview</Header>
-                  <FormGeneral 
+                  
+                  <Content
                     onChange={this.handleInputChange}
                     value={this.state}
                     constants={constants}
