@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
-import { parseData, buildData, Institution } from '../../utils/types'
+import { parseData, buildData } from '../../utils/types'
 import { Actions } from '../../utils/constants'
 
 class FastEditor extends React.PureComponent {

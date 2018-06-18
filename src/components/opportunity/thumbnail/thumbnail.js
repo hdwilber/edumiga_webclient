@@ -12,7 +12,7 @@ const Thumbnail = (props) => {
   const { opportunity, onClick } = props
   if (opportunity) {
     const { 
-      logo, type, name, 
+      logo, name, 
       degrees,
     } = opportunity
     return (

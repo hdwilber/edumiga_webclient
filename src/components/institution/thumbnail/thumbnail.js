@@ -1,16 +1,12 @@
 import React from 'react'
-import { Header, Label, Card, Image, Icon } from 'semantic-ui-react'
-
-import { buildImageUrl } from '../../../redux/utils'
-import nologo from '../../../images/nologo.svg'
+import { Header, Label, Card } from 'semantic-ui-react'
 
 const Thumbnail = (props) => {
   const { institution, onClick } = props
 
   if (institution) {
     const { 
-      logo, type, prename, name, 
-      adminLevel,
+      type, prename, name, 
       levels, 
     } = institution
     return (

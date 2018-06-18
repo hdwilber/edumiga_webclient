@@ -2,7 +2,7 @@ import React from 'react'
 import { Select, TextArea, Form } from 'semantic-ui-react'
 
 const FormGeneral = (props) => {
-  const { onChange, value } = props
+  const { constants, onChange, value } = props
 
   function handleCheckboxChange(e, props) {
     onChange(e, {
@@ -10,9 +10,22 @@ const FormGeneral = (props) => {
       value: props.checked,
     })
   }
-  const { code, name, duration, level, 
+  function convertCourseList(pre, course, courses) {
+    return courses.map((c,idx) => {
+      return {
+        value: c.id,
+        text: c.name,
+        key: idx,
+        disabled: course ? course.id === c.id: false,
+        active: (pre.indexOf(c.id) > -1),
+      }
+    })
+  }
+
+  const { id, code, name, duration, level, 
     description, prerequisites, optional, draft, 
   } = value
+  const courses = convertCourseList(prerequisites, {id, }, constants.courses)
   return (
     <Form>
       <Form.Group>
@@ -41,7 +54,7 @@ const FormGeneral = (props) => {
         <label>Prerequisites</label>
         <Select multiple value={prerequisites || []} name="prerequisites" 
           onChange={onChange} 
-          options={props.courses}
+          options={courses}
         />
       </Form.Field>
       <Form.Group>

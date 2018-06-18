@@ -10,7 +10,6 @@ import InputInstitution from '../../components/institution/input-institution'
 
 import * as institutionActions from '../../redux/institution/actions'
 import * as opportunityActions from '../../redux/opportunity/actions'
-import * as courseActions from '../../redux/course/actions'
 
 import { CourseFastEditor } from '../shared/fast-editor'
 import CourseList from '../../components/course/list'

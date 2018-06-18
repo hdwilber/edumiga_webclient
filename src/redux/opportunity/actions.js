@@ -4,7 +4,7 @@ import {
   handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
 
 import { fillData as courseFillData } from '../course/actions'
-import { Opportunity, parseData, saveData } from '../../utils/types'
+import { Opportunity, saveData } from '../../utils/types'
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -36,7 +36,7 @@ export function save(data, options) {
     result.onHold.forEach(a => {
       switch(a.name) {
         case 'logo':
-          const { value, spec } = a
+          const { value } = a
           if (value.file) {
             dispatch(uploadLogo(result.savable.id, value.file))
           }

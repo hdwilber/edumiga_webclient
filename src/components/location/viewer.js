@@ -28,7 +28,7 @@ class LocationViewer extends React.Component {
     if (location) {
       const { point, info } = location
       return (
-        <Marker position={location.point} >
+        <Marker position={point} >
           <Popup>
             <span>{info}</span>
           </Popup>

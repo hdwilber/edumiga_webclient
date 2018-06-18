@@ -6,7 +6,6 @@ import Overview from '../../components/institution/overview'
 import { Thumbnail as InstitutionThumb } from '../../components/institution'
 import OpportunityThumb from '../../components/opportunity/thumbnail/thumbnail'
 
-import LocationMap from '../../components/location/map'
 import LocationViewer from '../../components/location/viewer'
 import { buildImageUrl } from '../../redux/utils'
 import * as institutionActions from '../../redux/institution/actions'

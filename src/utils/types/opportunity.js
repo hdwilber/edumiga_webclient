@@ -2,12 +2,6 @@ import { Types, defaultSpec } from './defaults'
 import Course from './course'
 import _ from 'lodash'
 
-const Steps = {
-  after: 10,
-  before: 11,
-  any: 12,
-}
-
 const Specs = {
   id: Types.string,
   name: Types.string,

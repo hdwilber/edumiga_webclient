@@ -17,7 +17,7 @@ class InputImage extends React.PureComponent {
   }
 
   render() {
-    const { name, value: { url, fakeUrl}, onChange } = this.props
+    const { name, value: { url, fakeUrl} } = this.props
     const imgSrc = fakeUrl || url
     return (
       <Form>

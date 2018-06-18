@@ -1,11 +1,10 @@
 import React from 'react'
 import { Button, Card, Icon,
-  Label, Modal, Grid, Header,
+  Modal, Grid, Header,
   Image 
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { buildImageUrl } from '../../../redux/utils'
-import LocationMap from '../../../components/location/map'
 import LocationViewer from '../../../components/location/viewer'
 import { nologo } from '../../../utils/constants'
 import OppThumbnail from '../../../components/opportunity/thumbnail/thumbnail'
@@ -18,7 +17,7 @@ const Resume = props => {
   if(institution) {
     const { 
       prename, 
-      name, description, location, logo, resume: { opportunities, dependencies, stats } } = institution
+      name, description, logo, resume: { opportunities, dependencies, stats } } = institution
 
 
     function renderTitle() {

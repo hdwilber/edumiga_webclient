@@ -4,15 +4,13 @@ import { Link, withRouter } from 'react-router-dom'
 import { Icon, Button, Grid, Header, Segment } from 'semantic-ui-react'
 
 import InputImage from '../../../components/media/input-image'
-import InputLocation from '../../../components/location/input-location'
-
 import FormGeneral from '../../../components/institution/form-general'
 import InputInstitution from '../../../components/institution/input-institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
 import * as opportunityActions from '../../../redux/opportunity/actions'
 import * as categoryActions from '../../../redux/category/actions'
-import { parseData, buildData, Institution } from '../../../utils/types'
+import { parseData, Institution } from '../../../utils/types'
 
 import InstList from '../../../components/institution/list'
 import OppList from '../../../components/opportunity/list'
@@ -42,7 +40,7 @@ class Editor extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { match, find } = this.props
+    const { match } = this.props
     const { institutionId } = match.params
     this.findInstitution(institutionId)
   }
@@ -124,16 +122,19 @@ class Editor extends React.PureComponent {
 
   renderActionButtons() {
     const { id, isNew } = this.state
+    const { processing } = this.props
     
     return (
       <Button.Group floated="right" size='medium'>
         <Button 
           primary
+          disabled={processing}
           onClick={this.handleSave}
         >
           <Icon name={isNew ? 'plus': 'save'} />{ isNew ? 'Create': 'Save' }
         </Button>
         <Button 
+          disabled={processing}
           as={Link}
           to={`/institution/${id}`}
           secondary
@@ -248,8 +249,8 @@ class Editor extends React.PureComponent {
   }
 
   render() {
-    const { location, logo, head, dependencies, opportunities } = this.state
-    const { institutions, constants, processing } = this.props
+    const { logo, head, dependencies, opportunities } = this.state
+    const { institutions, constants } = this.props
     return (
       <Grid container stackable>
         { this.renderHeader() }

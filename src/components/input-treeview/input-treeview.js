@@ -2,7 +2,6 @@ import React from 'react'
 import { Icon, Input, Label } from 'semantic-ui-react'
 import Node from './treeview-node'
 import './styles.scss'
-import _ from 'lodash'
 
 class InputTreeview extends React.Component {
   constructor(props) {
@@ -98,7 +97,7 @@ class InputTreeview extends React.Component {
   }
 
   renderValues() {
-    const { multiple, value } = this.props
+    const { multiple } = this.props
     return (
       <div className="edumiga-treeview-selections">
         { multiple ? this.renderMultipleValues(): this.renderValue() }

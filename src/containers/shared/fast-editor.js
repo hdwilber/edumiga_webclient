@@ -13,16 +13,20 @@ export function InstitutionFastEditor (props) { return <FastEditor
   />
 }
 
-export function OpportunityFastEditor (props) { return <FastEditor
+export function OpportunityFastEditor (props) { 
+  return <FastEditor
     specs={Opportunity}
     content={OpportunityForm}
     {...props}
   />
 }
 
-export function CourseFastEditor (props) { return <FastEditor
+export function CourseFastEditor (props) { 
+  const { courses, } = props
+  return <FastEditor
     specs={Course}
     content={CourseForm}
+    constants={{ courses, }}
     {...props}
   />
 }

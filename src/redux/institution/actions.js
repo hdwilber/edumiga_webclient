@@ -1,10 +1,8 @@
 import { push } from 'react-router-redux'
 import { InstitutionService } from '../../services'
 import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest,
-  withService,
-
 } from '../utils'
-import { Institution, buildData } from '../../utils/types'
+import { Institution } from '../../utils/types'
 import { fillData as oppFillData } from '../opportunity/actions'
 import { saveData } from '../../utils/types'
 
@@ -37,7 +35,7 @@ export function save(data, options) {
     result.onHold.forEach(a => {
       switch(a.name) {
         case 'logo':
-          const { value, spec } = a
+          const { value } = a
           if (value.file) {
             dispatch(uploadLogo(result.savable.id, value.file))
           }
