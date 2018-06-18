@@ -1,1 +1,2 @@
-export default from 'input-treeview'
+export { default } from './input-treeview'
+

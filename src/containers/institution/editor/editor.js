@@ -3,22 +3,24 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Icon, Button, Grid, Header, Segment } from 'semantic-ui-react'
 
-import InputImage from '../../../components/media/input-image'
-import FormGeneral from '../../../components/institution/form-general'
-import InputInstitution from '../../../components/institution/input-institution'
+import { InputImage } from '../../../components/media'
+import { 
+  FormGeneral,
+  Input as InputInstitution 
+} from '../../../components/institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
 import * as opportunityActions from '../../../redux/opportunity/actions'
 import * as categoryActions from '../../../redux/category/actions'
 import { parseData, Institution } from '../../../utils/types'
 
-import InstList from '../../../components/institution/list'
-import OppList from '../../../components/opportunity/list'
+import { List as InstList } from '../../../components/institution'
+import { List as OppList } from '../../../components/opportunity'
 
 import { Actions } from '../../../utils/constants'
 
 import withAuthorization, { UserState } from '../../authorization'
-import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared/fast-editor'
+import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared'
 
 class Editor extends React.PureComponent {
   constructor(props) {

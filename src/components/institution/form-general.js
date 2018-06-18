@@ -1,7 +1,8 @@
 import React from 'react'
 import { Select, Checkbox, TextArea, Form } from 'semantic-ui-react'
-import InputTreeview from '../input-treeview/input-treeview'
-import InputLocation from '../location/input-location'
+
+import InputTreeview from '../input-treeview'
+import { InputLocation } from '../location'
 
 class FormGeneral extends React.PureComponent {
 

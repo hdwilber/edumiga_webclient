@@ -1,1 +1,1 @@
-export default from 'resume'
+export { default } from './resume'

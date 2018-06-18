@@ -6,8 +6,8 @@ import { List as InstitutionList } from './containers/institution'
 import InstitutionView from './containers/institution/view'
 import AccountIdentity from './containers/account/identity'
 import AccountConfirm from './containers/account/confirm'
-import { Editor as InstitutionEditor } from './containers/institution/editor'
-import OpportunityEditor from './containers/opportunity/editor'
+import { Editor as InstitutionEditor } from './containers/institution'
+import { Editor as OpportunityEditor } from './containers/opportunity'
 
 import { history } from './redux/configureStore'
 

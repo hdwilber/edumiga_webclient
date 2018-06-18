@@ -5,10 +5,10 @@ import { Button, Card, Icon,
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { buildImageUrl } from '../../../redux/utils'
-import LocationViewer from '../../../components/location/viewer'
+import { Viewer as LocationViewer } from '../../../components/location'
 import { nologo } from '../../../utils/constants'
-import OppThumbnail from '../../../components/opportunity/thumbnail/thumbnail'
-import InstThumbnail from '../thumbnail/thumbnail'
+import OppThumbnail from '../../../components/opportunity/thumbnail'
+import InstThumbnail from '../thumbnail'
 import './styles.scss'
 
 const Resume = props => {

@@ -3,20 +3,20 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Icon, Grid, Button, Segment, Header } from 'semantic-ui-react'
 
-import InputImage from '../../components/media/input-image'
+import { InputImage } from '../../../components/media'
 
-import FormGeneral from '../../components/opportunity/form-general'
-import InputInstitution from '../../components/institution/input-institution'
+import { FormGeneral } from '../../../components/opportunity'
+import { Input as InputInstitution } from '../../../components/institution'
 
-import * as institutionActions from '../../redux/institution/actions'
-import * as opportunityActions from '../../redux/opportunity/actions'
+import * as institutionActions from '../../../redux/institution/actions'
+import * as opportunityActions from '../../../redux/opportunity/actions'
 
-import { CourseFastEditor } from '../shared/fast-editor'
-import CourseList from '../../components/course/list'
-import { Actions } from '../../utils/constants'
+import { CourseFastEditor } from '../../shared'
+import CourseList from '../../../components/course/list'
+import { Actions } from '../../../utils/constants'
 
-import { Opportunity, parseData } from '../../utils/types'
-import withAuthorization, { UserState } from '../../containers/authorization'
+import { Opportunity, parseData } from '../../../utils/types'
+import withAuthorization, { UserState } from '../../../containers/authorization'
 
 class Editor extends React.PureComponent {
   constructor(props) {
