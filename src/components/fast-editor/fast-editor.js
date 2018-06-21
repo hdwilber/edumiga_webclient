@@ -39,10 +39,10 @@ class FastEditor extends React.PureComponent {
   }
 
   handleClickSave = () => {
-    const { specs, value, onAction } = this.props
+    const { specs, value, onAction, constants } = this.props
     onAction(Actions.save, {
       ref: value,
-      value: buildData(specs, this.state),
+      value: buildData(specs, this.state, constants),
       isNew: this.state.isNew,
     })
   }
@@ -55,35 +55,29 @@ class FastEditor extends React.PureComponent {
     } = this.props
 
     return (
-      <Modal onClose={onCancel} size="fullscreen" open={visible} >
+      <Modal onClose={onCancel} open={visible} >
         { this.renderHeader() }
         <Modal.Content>
-          <Grid container stackable>
-            <Grid.Row>
-              <Grid.Column width={11}>
-                <Segment>
-                  <Header size="medium">Overview</Header>
-                  
-                  <Content
-                    onChange={this.handleInputChange}
-                    value={this.state}
-                    constants={constants}
-                  />
+          <Segment>
+            <Header size="medium">Overview</Header>
+            
+            <Content
+              onChange={this.handleInputChange}
+              value={this.state}
+              constants={constants}
+            />
 
-                  <Button.Group>
-                    <Button default 
-                      onClick={this.handleClickSave} 
-                      loading={processing}
-                      disabled={processing}
-                    >
-                      Add
-                    </Button>
-                    <Button secondary onClick={onCancel} >Cancel</Button>
-                  </Button.Group>
-                </Segment>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
+            <Button.Group>
+              <Button default 
+                onClick={this.handleClickSave} 
+                loading={processing}
+                disabled={processing}
+              >
+                Add
+              </Button>
+              <Button secondary onClick={onCancel} >Cancel</Button>
+            </Button.Group>
+          </Segment>
         </Modal.Content>
       </Modal>
     )

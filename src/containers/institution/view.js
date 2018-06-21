@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Link } from 'react-router-dom'
-import { Button, Card, Image, Grid, Segment, Header } from 'semantic-ui-react'
+import { Icon, Button, Card, Image, Grid, Segment, Header } from 'semantic-ui-react'
 import Overview from '../../components/institution/overview'
 import { Thumbnail as InstitutionThumb } from '../../components/institution'
 import OpportunityThumb from '../../components/opportunity/thumbnail/thumbnail'
@@ -98,6 +98,23 @@ class View extends React.Component {
     return locations
   }
 
+  renderActionButtons() {
+    const { institution: { id } } = this.props
+    const targetLink = `/institution/${id}/editor`
+    return (
+      <Button.Group floated="right" size='medium'>
+        <Button 
+          as={Link}
+          to={targetLink}
+          primary
+        >
+          <Icon name="eye" />
+          Editor
+        </Button>
+      </Button.Group>
+    )
+  }
+
   render() {
     const { processing, institution: inst } = this.props
     if (!processing && inst) {
@@ -109,7 +126,7 @@ class View extends React.Component {
           <Grid.Column width={16}>
             <Header size="huge">
               {inst.name}
-              <Button as={Link} to={`/institution/${inst.id}/editor`}>Editor</Button>
+              {this.renderActionButtons()}
             </Header>
           </Grid.Column>
           <Grid.Column width={4}>
@@ -182,6 +199,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
+
   return {
     findResume: (id) => dispatch(institutionActions.findResumeById(id)),
   }

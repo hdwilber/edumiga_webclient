@@ -33,6 +33,7 @@ const List = (props) => {
                 <Button.Group>
                   <Button 
                     icon="external" compact 
+                    disabled={!i.id}
                     onClick={(e) => {e.stopPropagation(); onClickAction(Action.fullEdit, i)}}
                   />
                   <Button 

@@ -7,4 +7,5 @@ export const Actions = {
   fastEdit: 4,
   fullEdit: 5,
   cancel: 6,
+  view: 7,
 }

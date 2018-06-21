@@ -26,19 +26,23 @@ export class List extends React.PureComponent {
         <Table.Body>
           {
             items && ( 
-            items.map(i => (
-              <Table.Row key={i.id} onClick={() => onSelectRow(i)}>
-                <Table.Cell>{i.name}</Table.Cell>
-                <Table.Cell>{i.adminLevel}</Table.Cell>
-                <Table.Cell>
-                  <Button.Group>
-                    <Button icon="external" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.fullEdit, i)}} />
-                    <Button icon="edit" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.fastEdit, i)}} />
-                    <Button icon="remove" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.delete, i)}} />
-                  </Button.Group>
-                </Table.Cell>
-              </Table.Row>
-            )))
+              items.map(i => {
+                //console.log(i)
+                return (
+                  <Table.Row key={i.id} onClick={() => onSelectRow(i)}>
+                    <Table.Cell>{i.name}</Table.Cell>
+                    <Table.Cell>{i.adminLevel}</Table.Cell>
+                    <Table.Cell>
+                      <Button.Group>
+                        <Button icon="external" disabled={!i.id} compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.fullEdit, i)}} />
+                        <Button icon="edit" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.fastEdit, i)}} />
+                        <Button icon="remove" compact onClick={(e) => {e.stopPropagation(); onClickAction(Action.delete, i)}} />
+                      </Button.Group>
+                    </Table.Cell>
+                  </Table.Row>
+                )
+                }
+            ))
           }
         </Table.Body>
       </Table>

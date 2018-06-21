@@ -11,7 +11,7 @@ export function parseData(specs, data = {}) {
   }, {})
 }
 
-export function buildData(specs, data = {}, options) {
+export function buildData(specs, data = {}, options = {}) {
   return Object.keys(specs).reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec

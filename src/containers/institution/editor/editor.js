@@ -125,6 +125,8 @@ class Editor extends React.PureComponent {
   renderActionButtons() {
     const { id, isNew } = this.state
     const { processing } = this.props
+    const targetLink = `/institution/${id}`
+    const fallbackLink = '/institutions'
     
     return (
       <Button.Group floated="right" size='medium'>
@@ -135,16 +137,23 @@ class Editor extends React.PureComponent {
         >
           <Icon name={isNew ? 'plus': 'save'} />{ isNew ? 'Create': 'Save' }
         </Button>
-        <Button 
-          disabled={processing}
+        { !isNew && (
+          <Button 
+            disabled={processing}
+            as={Link}
+            to={targetLink}
+            secondary
+          >
+            <Icon name="eye" />
+            View
+          </Button>
+        )}
+        <Button secondary
           as={Link}
-          to={`/institution/${id}`}
-          secondary
+          to={fallbackLink}
         >
-          <Icon name="eye" />
-          View
+          <Icon name="remove" />{ isNew ? 'Cancel': 'Delete' }
         </Button>
-        <Button secondary><Icon name="remove" />Delete</Button>
       </Button.Group>
     )
   }
@@ -176,13 +185,13 @@ class Editor extends React.PureComponent {
   }
 
   
-  actionInstFastEditor = (action, { ref, dependency, isNew}) => {
+  actionInstFastEditor = (action, { ref, value, isNew}) => {
     switch(action) {
       case Actions.save: 
         const { dependencies } = this.state
         const newList = isNew
-          ? dependencies.concat([dependency])
-          : dependencies.map(d => (d === ref) ? ({ ...d, ...dependency }): d)
+          ? dependencies.concat([value])
+          : dependencies.map(d => (d === ref) ? ({ ...d, ...value }): d)
 
         this.setState({
           dependencies: newList,
@@ -195,13 +204,13 @@ class Editor extends React.PureComponent {
     }
   }
 
-  actionOppFastEditor = (action, { ref, opportunity, isNew}) => {
+  actionOppFastEditor = (action, { ref, value, isNew}) => {
     switch(action) {
       case Actions.save: 
         const { opportunities } = this.state
         const newList = isNew
-          ? opportunities.concat([opportunity])
-          : opportunities.map(o => (o === ref) ? ({ ...o, ...opportunity }): o)
+          ? opportunities.concat([value])
+          : opportunities.map(o => (o === ref) ? ({ ...o, ...value }): o)
 
         this.setState({
           opportunities: newList,
@@ -305,7 +314,7 @@ class Editor extends React.PureComponent {
         <OpportunityFastEditor
           visible={this.state.showOppFastEditor} 
           constants={constants}
-          onAction={this.actionOpptFastEditor}
+          onAction={this.actionOppFastEditor}
           onCancel={this.closeOppFastEditor}
           {...this.state.oppFastEditor}
         />
