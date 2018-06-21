@@ -37,6 +37,10 @@ export const Types = {
   Prerequisite: {
     id: 350,
     default: null
+  },
+  Logo: {
+    id: 400,
+    default: null,
   }
 }
 
@@ -55,10 +59,22 @@ export function parseImage ({url}) {
 
 export const defaultSpec = {
   image: {
-    type: Types.object,
-    parse: parseImage,
-    build: function (data) {},
-    save: function (data) {},
+    type: Types.Logo,
+    parse: function ({ url, ...rest }) {
+      return {
+        ...rest,
+        url: url && buildImageUrl(url),
+      }
+    },
+    build: function ({file, ...rest}) {
+      return {
+        ...rest,
+        file,
+      }
+    },
+    save: function (value, data, options) {
+      return value.file
+    },
     default: {
       file: null,
       url: '',

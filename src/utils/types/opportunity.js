@@ -19,7 +19,9 @@ const Specs = {
     },
     save: {
       field: 'institutionId',
-      value:  (value, built) => value.value
+      value:  (value, built) => {
+        return value.value
+      }
     }
   },
   regime: Types.string,
@@ -33,31 +35,8 @@ const Specs = {
   courses: {
     type: [Types.Course],
     spec: Course,
-    save: {
-      order: 'after',
-      action: (value, built, data, options) => {
-        const { opportunity } = options
-        if (opportunity) {
-          const { courses } = opportunity
-          //console.log(value)
-          //console.log(courses)
-          const toUpdate = []
-          value.forEach( c => {
-            const inOrigin = courses.find(course => course.id === c.id)
-            if (inOrigin) {
-              const equal = _.isEqual(inOrigin, c)
-              if (!equal) {
-                toUpdate.push(c)
-              }
-            } else {
-              toUpdate.push(c)
-            }
-          })
-          console.log(toUpdate)
-          return toUpdate
-        }
-        return value
-      }
+    save: function (value, data, options) {
+      return value
     }
   }
 }

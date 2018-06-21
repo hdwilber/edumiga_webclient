@@ -5,7 +5,15 @@ export function parseData(specs, data = {}) {
     const spec = specs[name]
     const type = spec.type || spec
     const value = (data && data[name]) || spec.default || setDefault(type)
-    const result = spec.parse ? spec.parse(value): value
+
+    const isArray = type instanceof Array
+
+    let result
+    if (isArray) {
+      result = value.map(val => (spec.parse ? spec.parse(val): val))
+    } else {
+      result = spec.parse ? spec.parse(value): value
+    }
     acc[name] = result
     return acc
   }, {})
@@ -33,8 +41,13 @@ export function saveData(specs, data = {}, options) {
     const result = spec.build ? spec.build(value, data, options): value
 
     const save = spec.save
+
     if (save) {
-      onHold.push({spec, name, value })
+      if (typeof save === 'object') {
+        acc[save.field || name] = save.value(value, result)
+      } else {
+        onHold.push({spec, name, value })
+      }
     } else {
       acc[name] = result
     }

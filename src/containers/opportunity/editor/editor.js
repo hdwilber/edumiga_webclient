@@ -153,7 +153,12 @@ class Editor extends React.PureComponent {
     const { isNew } = this.state
     return (
       <Button.Group floated="right" size='medium'>
-        <Button primary><Icon name={isNew ? 'plus': 'save'} />{ isNew ? 'Create': 'Save' }</Button>
+        <Button 
+          onClick={this.handleSave}
+          primary
+        >
+          <Icon name={isNew ? 'plus': 'save'} />{ isNew ? 'Create': 'Save' }
+        </Button>
         <Button secondary><Icon name="remove" />Delete</Button>
       </Button.Group>
     )
@@ -215,11 +220,6 @@ class Editor extends React.PureComponent {
               onClickAction={this.courseListClickAction}
             />
           </Segment>
-
-          <Button loading={processing} disabled={processing} 
-            default
-            onClick={this.handleSave}
-          >Save</Button>
         </Grid.Column>
         <CourseFastEditor
           onAction={this.actionCourseFastEditor}

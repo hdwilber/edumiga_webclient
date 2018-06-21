@@ -18,11 +18,14 @@ const Specs = {
   type: Types.string,
   prerequisites: {
     type: [Types.Prerequisite],
-    parse: function (data = []) {
-      return data.map(c => c.id)
+    parse: function (value) {
+      return value.id
     },
     build: (value, data, { courses } ) => {
-      return value.map(val => courses.find(c => c.id === val))
+      return courses.find(c => c.id === value)
+    },
+    save: function (value, data, constants) {
+      
     },
   }
 }

@@ -5,6 +5,7 @@ import {
 
 import { fillData as courseFillData } from '../course/actions'
 import { Opportunity, saveData } from '../../utils/types'
+import { Types, ImageSpec } from '../../utils/types/defaults' 
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -33,17 +34,11 @@ export function save(data, options) {
   return (dispatch, getState) => {
     const result = saveData(Opportunity, data, options)
     const request = oService.update(result.savable)
+    console.log('saving')
+    console.log(result.savable)
     result.onHold.forEach(a => {
-      switch(a.name) {
-        case 'logo':
-          const { value } = a
-          if (value.file) {
-            dispatch(uploadLogo(result.savable.id, value.file))
-          }
-          break;
-      }
+      console.log(a)
     })
-
     return dispatchRequestActions(dispatch, SAVE, request)
   }
 }
