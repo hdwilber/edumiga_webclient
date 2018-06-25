@@ -35,9 +35,12 @@ export function save(data, options) {
     const result = saveData(Opportunity, data, options)
     const request = oService.update(result.savable)
     console.log('saving')
-    console.log(result.savable)
-    result.onHold.forEach(a => {
-      console.log(a)
+    console.log(result.toRequest)
+    result.toRequest.forEach(req => {
+      console.log('NAME: %o', req.field)
+      if (req.results) {
+        req.results(oService.uploadLogo.bind(oService))
+      }
     })
     return dispatchRequestActions(dispatch, SAVE, request)
   }

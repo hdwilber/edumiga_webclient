@@ -63,7 +63,9 @@ export const defaultSpec = {
     parse: function ({ url, ...rest }) {
       return {
         ...rest,
+        fakeUrl: '',
         url: url && buildImageUrl(url),
+        file: '',
       }
     },
     build: function ({file, ...rest}) {
@@ -73,7 +75,13 @@ export const defaultSpec = {
       }
     },
     save: function (value, data, options) {
-      return value.file
+      if (value.file) {
+        return (action) => {
+          const { id } = data
+          return action(id, value.file)
+        }
+      }
+      return null
     },
     default: {
       file: null,

@@ -24,10 +24,15 @@ const Specs = {
     build: (value, data, { courses } ) => {
       return courses.find(c => c.id === value)
     },
-    save: function (value, data, constants) {
-      
+    save: (value, data, options) => {
+      console.log(value.id)
+      return (action) => {
+        const { id } = data
+        action(id, value.id, options)
+      }
     },
   }
 }
 
 export default Specs
+

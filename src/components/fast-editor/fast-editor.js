@@ -40,9 +40,10 @@ class FastEditor extends React.PureComponent {
 
   handleClickSave = () => {
     const { specs, value, onAction, constants } = this.props
+    const data = buildData(specs, this.state, constants)
     onAction(Actions.save, {
       ref: value,
-      value: buildData(specs, this.state, constants),
+      value: data,
       isNew: this.state.isNew,
     })
   }

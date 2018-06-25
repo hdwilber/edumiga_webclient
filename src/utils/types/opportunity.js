@@ -35,9 +35,6 @@ const Specs = {
   courses: {
     type: [Types.Course],
     spec: Course,
-    save: function (value, data, options) {
-      return value
-    }
   }
 }
 

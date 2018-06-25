@@ -87,27 +87,6 @@ class Editor extends React.PureComponent {
     })
   }
 
-  handleCourseCreateAction(type, data) {
-    const { courseSet, courseCreate } = this.props
-    if (type === 1) {
-      if (data.id) {
-        const { courseUpdate } = this.props
-        courseUpdate(data, { inList: true })
-
-      } else {
-        delete(data.id)
-        courseCreate({
-          ...data,
-          opportunityId: this.props.opp.current.id,
-        }, { inList: true })
-      }
-    }
-
-    this.setState({
-      showCourseCreateForm: false,
-    }, () => courseSet(null))
-  }
-
   actionCourseFastEditor = (action, { ref, value, isNew } ) => {
     switch(action) {
       case Actions.save: 
@@ -123,6 +102,7 @@ class Editor extends React.PureComponent {
             value: null,
           }
         })
+        
         break;
     }
   }
