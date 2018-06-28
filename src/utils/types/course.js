@@ -1,4 +1,5 @@
 import { Types } from './defaults'
+import * as CourseActions from '../../redux/course/actions'
 
 const Specs = {
   id: Types.string,
@@ -25,10 +26,12 @@ const Specs = {
       return courses.find(c => c.id === value)
     },
     save: (value, data, options) => {
-      console.log(value.id)
-      return (action) => {
-        const { id } = data
-        action(id, value.id, options)
+      const { id } = data
+      if (id) {
+        return (service, options) => ({
+          name: CourseActions.ADD_PRE,
+          request: service.addPrerequisite(id, value.id)
+        })
       }
     },
   }

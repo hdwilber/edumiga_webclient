@@ -1,6 +1,7 @@
 import { Types, defaultSpec } from './defaults'
 import Course from './course'
 import _ from 'lodash'
+import * as OppActions from '../../redux/opportunity/actions'
 
 const Specs = {
   id: Types.string,
@@ -31,7 +32,19 @@ const Specs = {
   },
   type: Types.string,
   degrees: [Types.string],
-  logo: defaultSpec.image,
+  logo: {
+    ...defaultSpec.image,
+    save: function(value, data, options) {
+      if(value.file) {
+        const { id } = data
+        return (service, options) => ({
+          name: OppActions.UPLOAD_LOGO,
+          request: service.uploadLogo(id, value.file),
+          options,
+        })
+      }
+    }
+  },
   courses: {
     type: [Types.Course],
     spec: Course,
