@@ -6,8 +6,8 @@ import Navbar from '../components/navbar'
 import * as accountActions from '../redux/account/actions'
 import * as ModalActions from '../redux/modal/actions'
 import '../sass/index.scss'
-import { createServices }  from '../services'
-
+import ApiServicesContext, { apiServices } from '../services'
+import TypesManagerContext, { typesManager } from './types'
 import LoginModal from '../containers/account/modals/login'
 
 const LOGIN_MODAL_NAME = 'login-modal'
@@ -19,7 +19,6 @@ class Edumiga extends Component {
     this.checkAuthorization = this.checkAuthorization.bind(this)
     this.handleToggleLogin = this.handleToggleLogin.bind(this)
     this.handleLoginClose = this.handleLoginClose.bind(this)
-    this.apiServices = createServices()
   }
 
   componentDidMount() {
@@ -30,7 +29,7 @@ class Edumiga extends Component {
   componentWillReceiveProps(nextProps) {
     const { account } = nextProps
     if (account.session) {
-      this.apiServices.setSession(account.session)
+      apiServices.setSession(account.session)
     }
   }
 
@@ -71,20 +70,25 @@ class Edumiga extends Component {
     const { account, modal } = this.props
     return (
       <React.Fragment>
-        <Navbar account={account}
-          onClickLogin={this.handleToggleLogin}
-          onLogout={this.handleLogout}
-        />
-        { this.checkAuthorization() ? (this.props.children): (<Redirect to="/"/>)}
-
-
-        { modal && (
-          <LoginModal 
-            visible={ModalActions.checkIfVisible(modal.visibleModals, LOGIN_MODAL_NAME)}
-            name={LOGIN_MODAL_NAME}
-            onClose={this.handleLoginClose}
+        <ApiServicesContext.Provider value={apiServices}>
+          <TypesManagerContext.Provider value={typesManager}>
+          <Navbar account={account}
+            onClickLogin={this.handleToggleLogin}
+            onLogout={this.handleLogout}
           />
-        )}
+          { this.checkAuthorization() ? (this.props.children): (<Redirect to="/"/>)}
+
+
+          { modal && (
+            <LoginModal 
+              visible={ModalActions.checkIfVisible(modal.visibleModals, LOGIN_MODAL_NAME)}
+              name={LOGIN_MODAL_NAME}
+              onClose={this.handleLoginClose}
+            />
+          )}
+
+          </TypesManagerContext.Provider>
+        </ApiServicesContext.Provider>
       </React.Fragment>
     )
   }
@@ -93,10 +97,13 @@ class Edumiga extends Component {
 export default connect((state) => ({
   account: state.account,
   modal: state.modal,
-}), (dispatch => ({
-  sessionRestore: () => dispatch(accountActions.sessionRestore()),
-  logout: () => dispatch(accountActions.logout()),
-  login: (data) => dispatch(accountActions.login(data)),
-  showModal: (name) => dispatch(ModalActions.show(name)),
-  hideModal: (name) => dispatch(ModalActions.hide(name)),
-  }))) (withRouter(Edumiga))
+}), (dispatch => {
+  typesManager.setDispatch(dispatch)
+  return {
+    sessionRestore: () => dispatch(accountActions.sessionRestore()),
+    logout: () => dispatch(accountActions.logout()),
+    login: (data) => dispatch(accountActions.login(data)),
+    showModal: (name) => dispatch(ModalActions.show(name)),
+    hideModal: (name) => dispatch(ModalActions.hide(name)),
+  }
+})) (withRouter(Edumiga))

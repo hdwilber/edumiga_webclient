@@ -1,3 +1,4 @@
+import React from 'react'
 import AccountService from './account'
 import InstitutionService from './institution'
 import OpportunityService  from './opportunity'
@@ -5,7 +6,7 @@ import CourseService from './course'
 import CategoryService from './category'
 import Service from './service'
 
-export function createServices() {
+export function createApiServices() {
   const services = {
     account: new AccountService(),
     institution: new InstitutionService(),
@@ -14,16 +15,18 @@ export function createServices() {
     category: new CategoryService(),
   }
   return {
-    services,
+    ...services,
     setSession: function(session) {
       Object.keys(services).forEach(name => {
         services[name] && services[name].setSession(session)
       })
     }
   }
-
 }
 
+export const apiServices = createApiServices()
+
+export default React.createContext(apiServices)
 export { AccountService }
 export { InstitutionService}
 export { OpportunityService}

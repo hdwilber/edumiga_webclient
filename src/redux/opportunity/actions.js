@@ -1,11 +1,14 @@
 import { OpportunityService, CourseService } from '../../services'
 import { 
   dispatchRequestActions,
-  handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty } from '../utils'
+  handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty,
+  processAction,
+} from '../utils'
 
 import { fillData as courseFillData } from '../course/actions'
-import { Opportunity, saveData } from '../../utils/types'
+import { Opportunity, buildData, parseData, saveData } from '../../utils/types'
 import { Types, ImageSpec } from '../../utils/types/defaults' 
+import { setDefault } from '../../utils/types/defaults'
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -29,6 +32,95 @@ export const SAVE = createActionLabels('SAVE')
 
 export const SET = 'OPP_SET'
 export const FILL_DATA = 'OPP_FILL_DATA'
+
+export class TypeActions {
+  constructor(spec, services) {
+    this.spec = spec
+    this.services = services
+
+  }
+
+  format(data) {
+    return parseData(this.spec, data)
+  }
+
+  build(data) {
+    return buildData(this.spec, data)
+  }
+
+  attachMethods() {
+    Object.keys(this).forEach( name => {
+      console.log(typeof this[name])
+      if (typeof this[name] === 'function') {
+        if (name !== 'format' && name !== 'build' && name !== 'attachMethods' && name !== 'dispatchAction') {
+          this[name] = this.dispatchAction(this[name])
+        }
+      }
+    })
+  }
+
+  dispatchAction(func) {
+    return function(...args) {
+      this.dispatch((dispatch, getState) => {
+          const info = func.apply(this, args)
+          return processAction(dispatch, info)
+        }
+      )
+    }
+  }
+}
+
+export class OpportunityActions extends TypeActions {
+  constructor(services) {
+    super(Opportunity, services)
+    this.attachMethods()
+  }
+
+  findOne = function(id, options) {
+    const { opportunity } = this.services
+    const info  = {
+      request: opportunity.get(id),
+      name: FIND,
+    }
+    return info
+  }
+
+  
+  save = function(data, options = {}) {
+    const { opportunity } = this.services
+    const results = saveData(this.spec, data, options)
+
+    const { instance, toRequest } = results
+
+    const isNew = !!instance.id
+    if (isNew) {
+      return {
+        request: opportunity.update(instance),
+        name: UPDATE,
+        options: {
+          isNew,
+          ...options
+        }
+      }
+    }
+    return {
+      request: opportunity.create(instance),
+      name: CREATE,
+      options: {
+        isNew,
+        ...options,
+      }
+    }
+  }
+
+  delete = function(id, options) {
+    const { opportunity } = this.services
+    return {
+      name: DELETE,
+      request: opportunity.deletex(id)
+    }
+  }
+}
 
 export function save(data, options) {
   return (dispatch, getState) => {

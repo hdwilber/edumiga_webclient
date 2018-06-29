@@ -58,11 +58,11 @@ export default function opportunityReducer(state = initialState, action) {
     }
 
     case actions.CREATE.success: {
-      const { inList, opportunity } = action.payload
+      const { inList, result } = action.payload
       return {
         ...state,
-        current: opportunity,
-        list: inList ? state.list.concat([opportunity]) : state.list,
+        current: result,
+        list: inList ? state.list.concat([result]) : state.list,
         loading: false,
       }
     }
@@ -83,11 +83,12 @@ export default function opportunityReducer(state = initialState, action) {
     }
 
     case actions.FIND.success: {
-      const { opportunity } = action.payload
+      const { result } = action.payload
+      console.log(action.payload)
       return {
         ...state,
-        current: opportunity,
-        courses: opportunity.courses.filter(c => !c.draft),
+        current: result,
+        courses: result.courses.filter(c => !c.draft),
         list: null,
         loading: false,
       }

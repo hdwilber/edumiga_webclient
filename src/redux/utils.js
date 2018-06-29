@@ -14,6 +14,10 @@ export function withService(action, service) {
 }
 
 export function processAction (dispatch, info) {
+  if (!info) {
+    console.log('Nothing to do')
+    return null
+  }
   const { name, request, format, postThen, postCatch, options } = info
 
   request.then(response => {
@@ -34,6 +38,7 @@ export function processAction (dispatch, info) {
     if (postThen) postThen(dispatch, result, options)
   })
   .catch(error => {
+    console.log(error)
     dispatch({
       type: name.failed,
       payload: {

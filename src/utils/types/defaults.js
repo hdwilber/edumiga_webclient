@@ -1,4 +1,5 @@
 import { buildImageUrl } from './../../redux/utils'
+import { fakeId } from '../../utils/fake-id'
 
 export const Types = {
   bool: {
@@ -58,6 +59,12 @@ export function parseImage ({url}) {
 }
 
 export const defaultSpec = {
+  id: {
+    type: Types.string,
+    parse: function (value) {
+      return value || fakeId()
+    },
+  },
   image: {
     type: Types.Logo,
     parse: function ({ url, ...rest }) {

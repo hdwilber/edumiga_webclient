@@ -56,45 +56,103 @@ export function buildData(specs, data = {}, options = {}) {
   }, {})
 }
 
-export function saveData(specs, data = {}, options) {
-  const onHold = []
+//export function saveData(specs, data = {}, options) {
+  //const onHold = []
+  //const toRequest = []
+  //const instance = Object.keys(specs).reduce( (acc, name) => {
+    //const spec = specs[name]
+    //const type = spec.type || spec
+    //const value = (data && data[name]) || spec.default || setDefault(type)
+    /*
+     *const result = spec.build ? spec.build(value, data, options): value
+     */
+
+    //const save = spec.save
+
+    //let result 
+    //const isArray = type instanceof Array
+    //if (save) {
+      //if (typeof save === 'object') {
+        //acc[save.field || name] = save.value(value, result)
+      //} else if (typeof save === 'function') {
+        //if (isArray) {
+          //result = value.map(val => (save(val, data, options) : val ))
+        //} else {
+          //result = save(value, data, options)
+        //}
+        //toRequest.push ({
+          //field: name, 
+          //results: result,
+        //})
+      //} else {
+        //acc[name] = value
+      //}
+    //} else {
+      //acc[name] = value
+    //}
+    //return acc
+  //}, {})
+
+  //return {
+    //savable: instance,
+    //onHold,
+    //toRequest,
+  //}
+//}
+export function saveData(specs, data, options) {
   const toRequest = []
+  const isNew = !!data.id
   const instance = Object.keys(specs).reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec
     const value = (data && data[name]) || spec.default || setDefault(type)
-    //const result = spec.build ? spec.build(value, data, options): value
 
-    const save = spec.save
-
-    let result 
     const isArray = type instanceof Array
-    if (save) {
-      if (typeof save === 'object') {
-        acc[save.field || name] = save.value(value, result)
-      } else if (typeof save === 'function') {
-        if (isArray) {
-          result = value.map(val => (save(val, data, options) : val ))
-        } else {
-          result = save(value, data, options)
-        }
-        toRequest.push ({
-          field: name, 
-          results: result,
+    const save = spec.save
+    let partial = null
+
+    if (!isNew && name !== 'id') {
+      if (spec.spec) {
+        toRequest.push({
+          name: name,
+          value: isArray ? value.map(val => saveData(spec.spec, val, options)) : saveData(spec.spec, value, options),
         })
+      }
+      else if (save) {
+        if (isArray) {
+          if (typeof save === 'object') {
+            acc[save.field || name] = save.value(value)
+          } else if (typeof save === 'function') {
+            toRequest.push ({
+              name: name,
+              value: value.map (val => save(val, data, options))
+            })
+          } else {
+            acc[name] = value
+          }
+        }
+        else {
+          if (typeof save === 'object') {
+            acc[save.field || name] = save.value(value)
+          } else if (typeof save === 'function') {
+            toRequest.push({
+              name: name,
+              value: save(value)
+            })
+          } else {
+            acc[name] = value
+          }
+        }
       } else {
         acc[name] = value
       }
-    } else {
-      acc[name] = value
     }
     return acc
   }, {})
 
   return {
-    savable: instance,
-    onHold,
     toRequest,
+    instance,
   }
 }
 

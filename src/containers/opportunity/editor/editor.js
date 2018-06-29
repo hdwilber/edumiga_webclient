@@ -9,7 +9,7 @@ import { FormGeneral } from '../../../components/opportunity'
 import { Input as InputInstitution } from '../../../components/institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
-import * as opportunityActions from '../../../redux/opportunity/actions'
+import OppAction, * as opportunityActions from '../../../redux/opportunity/actions'
 
 import { CourseFastEditor } from '../../shared'
 import CourseList from '../../../components/course/list'
@@ -17,6 +17,9 @@ import { Actions } from '../../../utils/constants'
 
 import { Opportunity, parseData } from '../../../utils/types'
 import withAuthorization, { UserState } from '../../../containers/authorization'
+import withApiService from '../../../containers/withApiService'
+import withTypesManager from '../../withTypesManager'
+
 
 class Editor extends React.PureComponent {
   constructor(props) {
@@ -36,13 +39,16 @@ class Editor extends React.PureComponent {
   findOpportunity(id) {
     if (id) {
       const { find } = this.props
-      find(id)
+      const { typesManager: { opportunity } } = this.props
+      console.log(opportunity)
+      opportunity.findOne(id)
     }
   }
 
   componentDidMount() {
     const { match } = this.props
     const { opportunityId } = match.params
+    console.log(this.props)
 
     this.findOpportunity(opportunityId)
   }
@@ -58,8 +64,14 @@ class Editor extends React.PureComponent {
       }
     }
     if (typeof opportunity !== 'undefined') {
+      if (opportunity && opportunity.id) {
+        const { match } = this.props
+        const { opportunityId } = match.params
+        if (!opportunityId && this.state.isNew)
+          this.props.history.push(`/opportunity/${opportunity.id}/editor`)
+      } 
       this.setState({
-        ...parseData(Opportunity, opportunity),
+        ...this.props.typesManager.opportunity.format(opportunity),
         isNew: !opportunity,
       }, () => {
         window.scroll(window.top)
@@ -68,8 +80,10 @@ class Editor extends React.PureComponent {
   }
 
   handleSave = () => {
-    const { save, opportunity } = this.props
-    save(this.state, { opportunity } )
+    //const { save, opportunity } = this.props
+    //save(this.state, { opportunity } )
+    const { typesManager: { opportunity } } = this.props
+    opportunity.save(this.state)
   }
 
   handleInputChange = (e, props) => {
@@ -228,6 +242,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps(dispatch) {
   dispatch(opportunityActions.getTypes())
   dispatch(institutionActions.findAllOwned())
+
   return {
     save: (data, opts) => dispatch(opportunityActions.save(data, opts)),
     find: (id, opts) => dispatch(opportunityActions.findById(id, opts)),
@@ -240,5 +255,5 @@ function mapDispatchToProps(dispatch) {
 
 const ConnectedOpportunity = connect(mapStateToProps, mapDispatchToProps)(withRouter(Editor))
 
-export default withAuthorization(ConnectedOpportunity, [UserState.ACCOUNT])
+export default withTypesManager(withApiService(withAuthorization(ConnectedOpportunity, [UserState.ACCOUNT])))
 

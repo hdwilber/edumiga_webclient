@@ -4,7 +4,7 @@ import _ from 'lodash'
 import * as OppActions from '../../redux/opportunity/actions'
 
 const Specs = {
-  id: Types.string,
+  id: defaultSpec.id,
   name: Types.string,
   duration: Types.number,
   description: Types.string,
@@ -21,7 +21,7 @@ const Specs = {
     save: {
       field: 'institutionId',
       value:  (value, built) => {
-        return value.value
+        return value ? value.value: null
       }
     }
   },
