@@ -15,7 +15,6 @@ import { CourseFastEditor } from '../../shared'
 import CourseList from '../../../components/course/list'
 import { Actions } from '../../../utils/constants'
 
-import { Opportunity, parseData } from '../../../utils/types'
 import withAuthorization, { UserState } from '../../../containers/authorization'
 import withApiService from '../../../containers/withApiService'
 import withTypesManager from '../../withTypesManager'
@@ -25,8 +24,9 @@ class Editor extends React.PureComponent {
   constructor(props) {
     super(props)
 
+    const { typesManager: { opportunity } } = props
     this.state = {
-      ...parseData(Opportunity),
+      ...opportunity.format(null),
 
       isNew: true,
       showCourseFastEditor: false,
@@ -40,7 +40,6 @@ class Editor extends React.PureComponent {
     if (id) {
       const { find } = this.props
       const { typesManager: { opportunity } } = this.props
-      console.log(opportunity)
       opportunity.findOne(id)
     }
   }
@@ -48,7 +47,6 @@ class Editor extends React.PureComponent {
   componentDidMount() {
     const { match } = this.props
     const { opportunityId } = match.params
-    console.log(this.props)
 
     this.findOpportunity(opportunityId)
   }
@@ -69,7 +67,7 @@ class Editor extends React.PureComponent {
         const { opportunityId } = match.params
         if (!opportunityId && this.state.isNew)
           this.props.history.push(`/opportunity/${opportunity.id}/editor`)
-      } 
+      }
       this.setState({
         ...this.props.typesManager.opportunity.format(opportunity),
         isNew: !opportunity,
@@ -172,6 +170,7 @@ class Editor extends React.PureComponent {
   render() {
     const { logo, institution, courses } = this.state
     const { institutions, constants, processing } = this.props
+    const { showCourseFastEditor, courseFastEditor } = this.state
 
     return (
       <Grid container stackable>
@@ -215,13 +214,15 @@ class Editor extends React.PureComponent {
             />
           </Segment>
         </Grid.Column>
-        <CourseFastEditor
-          onAction={this.actionCourseFastEditor}
-          onCancel={this.closeCourseFastEditor}
-          visible={this.state.showCourseFastEditor}
-          courses={courses}
-          {...this.state.courseFastEditor}
-        />
+        { showCourseFastEditor && (
+          <CourseFastEditor
+            onAction={this.actionCourseFastEditor}
+            onCancel={this.closeCourseFastEditor}
+            visible={this.state.showCourseFastEditor}
+            courses={courses}
+            {...this.state.courseFastEditor}
+          />
+        )}
       </Grid>
     )
   }

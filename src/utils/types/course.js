@@ -1,8 +1,10 @@
-import { Types } from './defaults'
+import { Types, defaultSpec } from './defaults'
 import * as CourseActions from '../../redux/course/actions'
+import { apiServices } from '../../services'
+
 
 const Specs = {
-  id: Types.string,
+  id: defaultSpec.id,
   name: Types.string,
   code: Types.string,
   level: {
@@ -28,12 +30,25 @@ const Specs = {
     save: (value, data, options) => {
       const { id } = data
       if (id) {
-        return (service, options) => ({
+        return () => ({
           name: CourseActions.ADD_PRE,
-          request: service.addPrerequisite(id, value.id)
+          request: apiServices.course.addPrerequisite(id, value.id)
         })
       }
+      return null
     },
+  },
+  _save: function (isNew, instance) {
+    if (isNew) {
+      return (options) => ({
+        name: CourseActions.CREATE,
+        request: apiServices.course.create(instance)
+      })
+    }
+    return (options) => ({
+      name: CourseActions.UPDATE,
+      request: apiServices.course.update(instance)
+    })
   }
 }
 

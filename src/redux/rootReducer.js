@@ -7,6 +7,7 @@ import constantReducer from './constants/reducer'
 import courseReducer from './course/reducer'
 import modalReducer from './modal/reducer'
 import categoryReducer from './category/reducer'
+import saverReducer from './saver/reducer'
 
 export default combineReducers({
   router: routerReducer,
@@ -18,4 +19,5 @@ export default combineReducers({
   course: courseReducer,
   modal: modalReducer,
   category: categoryReducer,
+  saver: saverReducer,
 })

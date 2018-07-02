@@ -1,9 +1,9 @@
 import { setDefault } from './defaults'
 
 export function parseData(specs, data = {}) {
-  //console.log(specs)
-  //console.log(data)
-  return Object.keys(specs).reduce( (acc, name) => {
+  const names = Object.keys(specs).filter(name => name.indexOf('_'))
+  console.log(names)
+  return names.reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec
     const value = (data && data[name]) || spec.default || setDefault(type)
@@ -14,25 +14,22 @@ export function parseData(specs, data = {}) {
     if (isArray) {
       const { spec: subSpec } = spec
       result = subSpec
-        //value.map(val => (spec.parse ? spec.parse(val): val))
         ? value.map(val => parseData(subSpec, val))
         : value.map(val => (spec.parse ? spec.parse(val): val))
     } else {
       const { spec: subSpec } = spec
-        //console.log(spec)
-        //console.log(value)
       result = subSpec
         ? parseData(subSpec, value)
         : spec.parse ? spec.parse(value): value
     }
-    //console.log(result)
     acc[name] = result
     return acc
   }, {})
 }
 
 export function buildData(specs, data = {}, options = {}) {
-  return Object.keys(specs).reduce( (acc, name) => {
+  const names = Object.keys(specs).filter(name => name.indexOf('_'))
+  return names.reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec
     const value = (data && data[name]) || spec.default || setDefault(type)
@@ -56,53 +53,13 @@ export function buildData(specs, data = {}, options = {}) {
   }, {})
 }
 
-//export function saveData(specs, data = {}, options) {
-  //const onHold = []
-  //const toRequest = []
-  //const instance = Object.keys(specs).reduce( (acc, name) => {
-    //const spec = specs[name]
-    //const type = spec.type || spec
-    //const value = (data && data[name]) || spec.default || setDefault(type)
-    /*
-     *const result = spec.build ? spec.build(value, data, options): value
-     */
-
-    //const save = spec.save
-
-    //let result 
-    //const isArray = type instanceof Array
-    //if (save) {
-      //if (typeof save === 'object') {
-        //acc[save.field || name] = save.value(value, result)
-      //} else if (typeof save === 'function') {
-        //if (isArray) {
-          //result = value.map(val => (save(val, data, options) : val ))
-        //} else {
-          //result = save(value, data, options)
-        //}
-        //toRequest.push ({
-          //field: name, 
-          //results: result,
-        //})
-      //} else {
-        //acc[name] = value
-      //}
-    //} else {
-      //acc[name] = value
-    //}
-    //return acc
-  //}, {})
-
-  //return {
-    //savable: instance,
-    //onHold,
-    //toRequest,
-  //}
-//}
 export function saveData(specs, data, options) {
-  const toRequest = []
-  const isNew = !!data.id
-  const instance = Object.keys(specs).reduce( (acc, name) => {
+  const children = []
+  const { saveSpec }  = specs
+  let isNew = false
+  const names = Object.keys(specs).filter(name => name.indexOf('_'))
+
+  const instance = names.reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec
     const value = (data && data[name]) || spec.default || setDefault(type)
@@ -111,9 +68,11 @@ export function saveData(specs, data, options) {
     const save = spec.save
     let partial = null
 
-    if (!isNew && name !== 'id') {
+    if (name === 'id' && value.indexOf('fake') === 0) {
+      isNew = true
+    } else {
       if (spec.spec) {
-        toRequest.push({
+        children.push({
           name: name,
           value: isArray ? value.map(val => saveData(spec.spec, val, options)) : saveData(spec.spec, value, options),
         })
@@ -123,10 +82,13 @@ export function saveData(specs, data, options) {
           if (typeof save === 'object') {
             acc[save.field || name] = save.value(value)
           } else if (typeof save === 'function') {
-            toRequest.push ({
-              name: name,
-              value: value.map (val => save(val, data, options))
-            })
+            const newValue = value.map (val => save(val, data, options))
+            if (newValue.length) {
+              children.push ({
+                name: name,
+                value: newValue,
+              })
+            }
           } else {
             acc[name] = value
           }
@@ -135,10 +97,13 @@ export function saveData(specs, data, options) {
           if (typeof save === 'object') {
             acc[save.field || name] = save.value(value)
           } else if (typeof save === 'function') {
-            toRequest.push({
-              name: name,
-              value: save(value)
-            })
+            const newValue = save(value, data, options)
+            if (newValue) {
+              children.push({
+                name: name,
+                value: newValue,
+              })
+            }
           } else {
             acc[name] = value
           }
@@ -150,9 +115,58 @@ export function saveData(specs, data, options) {
     return acc
   }, {})
 
+  const main = specs._save(isNew, instance)
+
   return {
-    toRequest,
-    instance,
+    children,
+    instance: main,
   }
 }
 
+
+export function doRequests(specs, info, data) {
+  return (dispatch, getState) => {
+    const { instance, children } = info
+    const { name, request } = instance()
+
+    request.then(response => {
+        console.log('something')
+      if (response.ok) {
+        console.log('ok')
+        return response.json()
+      }
+    })
+    .then(data => {
+      console.log('Got resuls')
+      dispatch({
+        type: 'TEST_' +name.success,
+        payload: {
+          result: data,
+        }
+      })
+
+      children.forEach(child => {
+        const { name, value } = child
+        const spec = specs[name]
+        const type = spec.type || spec
+        const isArray = type instanceof Array
+
+        if (isArray) {
+          value.forEach(val => {
+            dispatch(doRequests(spec.spec, val, data))
+          })
+        } else {
+          dispatch(doRequests(spec.spec, value, data))
+        }
+      })
+    })
+    .catch(error => {
+      console.log('error')
+      console.log(error)
+    })
+
+    return {
+      type: 'RUN_REQUESTS'
+    }
+  }
+}

@@ -9,6 +9,7 @@ import '../sass/index.scss'
 import ApiServicesContext, { apiServices } from '../services'
 import TypesManagerContext, { typesManager } from './types'
 import LoginModal from '../containers/account/modals/login'
+import { Saver } from '../containers/saver'
 
 const LOGIN_MODAL_NAME = 'login-modal'
 
@@ -87,6 +88,7 @@ class Edumiga extends Component {
             />
           )}
 
+          <Saver />
           </TypesManagerContext.Provider>
         </ApiServicesContext.Provider>
       </React.Fragment>

@@ -7,6 +7,7 @@ import {
 
 import { fillData as courseFillData } from '../course/actions'
 import { Opportunity, buildData, parseData, saveData } from '../../utils/types'
+import { doRequests } from '../../utils/types/converters'
 import { Types, ImageSpec } from '../../utils/types/defaults' 
 import { setDefault } from '../../utils/types/defaults'
 
@@ -90,27 +91,28 @@ export class OpportunityActions extends TypeActions {
     const { opportunity } = this.services
     const results = saveData(this.spec, data, options)
 
-    const { instance, toRequest } = results
+    this.dispatch(doRequests(this.spec, results, null))
 
-    const isNew = !!instance.id
-    if (isNew) {
-      return {
-        request: opportunity.update(instance),
-        name: UPDATE,
-        options: {
-          isNew,
-          ...options
+    return null
+  }
+
+  saveChildren = function(instance, children, options = {}) {
+    const { opportunity } = this.services
+    const infos = []
+    if (children.length) {
+      children.forEach(child => {
+        switch(child.name) {
+          case 'logo':
+            if (instance.id) {
+              infos.push(instance.value(opportunity.uploadLogo))
+            }
+            break
+          default:
+            break
         }
-      }
+      })
     }
-    return {
-      request: opportunity.create(instance),
-      name: CREATE,
-      options: {
-        isNew,
-        ...options,
-      }
-    }
+    console.log(infos)
   }
 
   delete = function(id, options) {

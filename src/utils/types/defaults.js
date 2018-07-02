@@ -62,6 +62,7 @@ export const defaultSpec = {
   id: {
     type: Types.string,
     parse: function (value) {
+      console.log('Calling this')
       return value || fakeId()
     },
   },
