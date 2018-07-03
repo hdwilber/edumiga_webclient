@@ -38,11 +38,17 @@ const Specs = {
     save: function(value, data, options) {
       if(value.file && data && data.id) {
         const { id } = data
-        return (options) => ({
-          name: OppActions.UPLOAD_LOGO,
-          request: apiServices.opportunity.uploadLogo(id, value.file),
-          options,
-        })
+        return (parent, options) => {
+          const { id } = parent
+          if (id) {
+            return {
+              name: OppActions.UPLOAD_LOGO,
+              request: apiServices.opportunity.uploadLogo(id, value.file),
+              options,
+            }
+          }
+          return null
+        }
       }
     }
   },
@@ -52,12 +58,12 @@ const Specs = {
   },
   _save: function (isNew, instance) {
     if (isNew) {
-      return (options) => ({
+      return (parent, options) => ({
         name: OppActions.CREATE,
         request: apiServices.opportunity.create(instance)
       })
     }
-    return (options) => ({
+    return (parent, options) => ({
       name: OppActions.UPDATE,
       request: apiServices.opportunity.update(instance)
     })

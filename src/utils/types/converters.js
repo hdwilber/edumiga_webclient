@@ -2,7 +2,7 @@ import { setDefault } from './defaults'
 
 export function parseData(specs, data = {}) {
   const names = Object.keys(specs).filter(name => name.indexOf('_'))
-  console.log(names)
+  //console.log(names)
   return names.reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec
@@ -42,13 +42,21 @@ export function buildData(specs, data = {}, options = {}) {
         built && subAcc.push(built)
         return subAcc
       }, [])
-      console.log(result)
+      //console.log(result)
     } else {
       result = spec.build ? spec.build(value, data, options): value
     }
 
     acc[name] = result
 
+    return acc;
+  }, {})
+}
+
+export function removeNotValid(specs, data = {}, options = {}) {
+  const names = Object.keys(specs).filter(name => name.indexOf('_'))
+  return names.reduce( (acc, name) => {
+    acc[name] = data[names]
     return acc;
   }, {})
 }
@@ -127,46 +135,62 @@ export function saveData(specs, data, options) {
 export function doRequests(specs, info, data) {
   return (dispatch, getState) => {
     const { instance, children } = info
-    const { name, request } = instance()
+    //console.log(info)
+    if (instance) {
+      const { name, request } = instance(data)
 
-    request.then(response => {
-        console.log('something')
-      if (response.ok) {
-        console.log('ok')
-        return response.json()
-      }
-    })
-    .then(data => {
-      console.log('Got resuls')
-      dispatch({
-        type: 'TEST_' +name.success,
-        payload: {
-          result: data,
+      request.then(response => {
+        if (response.ok) {
+          //console.log('ok')
+          return response.json()
         }
       })
+      .then(data => {
+        //console.log('Got resuls')
+        dispatch({
+          type: 'TEST_' +name.success,
+          payload: {
+            result: data,
+          }
+        })
+        
+        if (specs) {
+          children.forEach(child => {
+            const { name, value } = child
+            const spec = specs[name]
+            const type = spec.type || spec
+            const isArray = type instanceof Array
 
-      children.forEach(child => {
-        const { name, value } = child
-        const spec = specs[name]
-        const type = spec.type || spec
-        const isArray = type instanceof Array
-
-        if (isArray) {
-          value.forEach(val => {
-            dispatch(doRequests(spec.spec, val, data))
+            if (isArray) {
+              value.forEach(val => {
+                dispatch(doRequests(spec.spec, val, data))
+              })
+            } else {
+              dispatch(doRequests(spec.spec, value, data))
+            }
           })
-        } else {
-          dispatch(doRequests(spec.spec, value, data))
         }
       })
-    })
-    .catch(error => {
-      console.log('error')
-      console.log(error)
-    })
+      .catch(error => {
+        console.log('error')
+        console.log(error)
+      })
 
+      return {
+        type: 'RUN_REQUESTS'
+      }
+    } else {
+      // parent data
+      //console.log('---------------++---')
+      //console.log('Not with Spec')
+      //console.log(info)
+      dispatch(doRequests(null, {
+        instance: info,
+        children: [],
+      }, data))
+    }
     return {
-      type: 'RUN_REQUESTS'
+      type: 'RUN_REQUESTS_ENDED',
     }
   }
 }

@@ -10,6 +10,7 @@ import { Opportunity, buildData, parseData, saveData } from '../../utils/types'
 import { doRequests } from '../../utils/types/converters'
 import { Types, ImageSpec } from '../../utils/types/defaults' 
 import { setDefault } from '../../utils/types/defaults'
+import TypeActions from '../type-actions'
 
 const oService = new OpportunityService()
 const cService = new CourseService()
@@ -33,43 +34,6 @@ export const SAVE = createActionLabels('SAVE')
 
 export const SET = 'OPP_SET'
 export const FILL_DATA = 'OPP_FILL_DATA'
-
-export class TypeActions {
-  constructor(spec, services) {
-    this.spec = spec
-    this.services = services
-
-  }
-
-  format(data) {
-    return parseData(this.spec, data)
-  }
-
-  build(data) {
-    return buildData(this.spec, data)
-  }
-
-  attachMethods() {
-    Object.keys(this).forEach( name => {
-      console.log(typeof this[name])
-      if (typeof this[name] === 'function') {
-        if (name !== 'format' && name !== 'build' && name !== 'attachMethods' && name !== 'dispatchAction') {
-          this[name] = this.dispatchAction(this[name])
-        }
-      }
-    })
-  }
-
-  dispatchAction(func) {
-    return function(...args) {
-      this.dispatch((dispatch, getState) => {
-          const info = func.apply(this, args)
-          return processAction(dispatch, info)
-        }
-      )
-    }
-  }
-}
 
 export class OpportunityActions extends TypeActions {
   constructor(services) {

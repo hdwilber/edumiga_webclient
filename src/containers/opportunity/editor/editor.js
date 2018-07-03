@@ -100,8 +100,10 @@ class Editor extends React.PureComponent {
   }
 
   actionCourseFastEditor = (action, { ref, value, isNew } ) => {
+
     switch(action) {
       case Actions.save: 
+        const { typesManager: { course } } = this.props
         const { courses } = this.state
         const newList = isNew
           ? courses.concat([value])
@@ -139,6 +141,19 @@ class Editor extends React.PureComponent {
         })
         break;
     }
+  }
+
+  renderCoursesActionButtons() {
+    return (
+      <Button.Group floated="right" size='medium'>
+        <Button 
+          onClick={this.handleAddCourse}
+          primary
+        >
+          <Icon name="plus" />Create
+        </Button>
+      </Button.Group>
+    )
   }
 
   renderActionButtons() {
@@ -182,6 +197,7 @@ class Editor extends React.PureComponent {
             <InputInstitution name="institution" value={institution}
               institutions={institutions}
               onChange={this.handleInputChange}
+              unselected="This opportunity does not belong to an institution. Add one"
             />
           </Segment>
           <Segment>
@@ -205,9 +221,7 @@ class Editor extends React.PureComponent {
 
           <Segment>
             <Header size="medium">Courses
-              <Button default onClick={this.handleAddCourse}>
-                Add
-              </Button>
+              {this.renderCoursesActionButtons()}
             </Header>
             <CourseList items={courses}
               onClickAction={this.courseListClickAction}

@@ -1,5 +1,6 @@
 import { buildImageUrl } from './../../redux/utils'
 import { fakeId } from '../../utils/fake-id'
+import { apiServices } from '../../services'
 
 export const Types = {
   bool: {
@@ -81,15 +82,6 @@ export const defaultSpec = {
         ...rest,
         file,
       }
-    },
-    save: function (value, data, options) {
-      if (value.file) {
-        return (action) => {
-          const { id } = data
-          return action(id, value.file)
-        }
-      }
-      return null
     },
     default: {
       file: null,

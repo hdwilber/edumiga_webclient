@@ -37,13 +37,13 @@ class InputInstitution extends React.PureComponent {
   }
 
   renderContent() {
-    const { value } = this.props
+    const { value, unselected, } = this.props
     if(value) {
       return (<Link to={`/institution/${value.value}/editor`}>{value.text}</Link>)
     }
     return (
       <p>
-        This opportunity doesn't have an institution yet.
+        {unselected}
       </p>
     )
   }

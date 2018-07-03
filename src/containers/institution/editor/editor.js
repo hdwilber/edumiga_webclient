@@ -21,6 +21,9 @@ import { Actions } from '../../../utils/constants'
 
 import withAuthorization, { UserState } from '../../authorization'
 import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared'
+import withApiService from '../../../containers/withApiService'
+import withTypesManager from '../../withTypesManager'
+
 
 class Editor extends React.PureComponent {
   constructor(props) {
@@ -82,7 +85,8 @@ class Editor extends React.PureComponent {
 
   handleSave = (event) => {
     const { save } = this.props
-    save(this.state, { })
+    const { typesManager } = this.props
+    typesManager.institution.save(this.state, { })
   }
 
   handleOppActions = (action, opportunity) => {
@@ -270,6 +274,7 @@ class Editor extends React.PureComponent {
             <InputInstitution name="head" value={head}
               institutions={institutions}
               onChange={this.handleInputChange}
+              unselected="This institution doesn't have a head institution"
             />
           </Segment>
           <Segment>
@@ -354,5 +359,5 @@ function mapDispatchToProps (dispatch) {
 
 const ConnectedEditor = connect(mapStateToProps, mapDispatchToProps)(withRouter(Editor))
 
-export default withAuthorization(ConnectedEditor, [UserState.ACCOUNT])
+export default withTypesManager(withApiService(withAuthorization(ConnectedEditor, [UserState.ACCOUNT])))
 

@@ -5,6 +5,8 @@ import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActi
 import { Institution } from '../../utils/types'
 import { fillData as oppFillData } from '../opportunity/actions'
 import { saveData } from '../../utils/types'
+import TypeActions from '../type-actions'
+import { doRequests } from '../../utils/types/converters'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
@@ -27,6 +29,39 @@ export const SAVE = createActionLabels('INST_SAVE')
 
 const iService = new InstitutionService()
 
+export class InstitutionActions extends TypeActions {
+  constructor(services) {
+    super(Institution, services)
+    this.attachMethods()
+  }
+
+  findOne = function(id, options) {
+    const { institution } = this.services
+    const info  = {
+      request: institution.get(id),
+      name: FIND,
+    }
+    return info
+  }
+
+  
+  save = function(data, options = {}) {
+    const { institution } = this.services
+    const results = saveData(this.spec, data, options)
+
+    this.dispatch(doRequests(this.spec, results, null))
+
+    return null
+  }
+
+  delete = function(id, options) {
+    const { opportunity } = this.services
+    return {
+      name: DELETE,
+      request: opportunity.deletex(id)
+    }
+  }
+}
 
 export function save(data, options) {
   return (dispatch, getState) => {

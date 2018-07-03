@@ -16,6 +16,8 @@ class Institution extends Service {
           scope: {
             include: ['logo', 'account']
           }
+        }, {
+          relation: 'categories',
         }],
       ...filter,
     }

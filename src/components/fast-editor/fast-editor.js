@@ -7,8 +7,9 @@ class FastEditor extends React.PureComponent {
   constructor(props) {
     super(props)
     const { specs, value } = props
-    this.state ={
-      ...parseData(specs, value),
+    const newValue = value || parseData(specs, null)
+    this.state = {
+      ...newValue,
       isNew: !props.value,
     }
   }
@@ -18,8 +19,9 @@ class FastEditor extends React.PureComponent {
 
     if (typeof value !== 'undefined') {
       const { specs } = this.props
+      const newValue = value || parseData(specs, null)
       this.setState({
-        ...parseData(specs, value),
+        ...newValue,
         isNew: !value,
       })
     }
@@ -40,7 +42,8 @@ class FastEditor extends React.PureComponent {
 
   handleClickSave = () => {
     const { specs, value, onAction, constants } = this.props
-    const data = buildData(specs, this.state, constants)
+    //const data = buildData(specs, this.state, constants)
+    const data = this.state
     onAction(Actions.save, {
       ref: value,
       value: data,

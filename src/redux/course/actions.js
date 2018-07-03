@@ -2,7 +2,7 @@ import { CourseService } from '../../services'
 import { handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest } from '../utils'
 import { Course } from '../../utils/types'
 
-import { TypeActions } from '../opportunity/actions'
+import { TypeActions } from '../type-actions'
 
 const cService = new CourseService()
 

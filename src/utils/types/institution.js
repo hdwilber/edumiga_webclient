@@ -1,4 +1,6 @@
 import { Types, defaultSpec } from './defaults'
+import * as InstActions from '../../redux/institution/actions'
+import { apiServices } from '../../services'
 
 const Specs = {
   id: Types.string,
@@ -21,7 +23,9 @@ const Specs = {
     },
     save: {
       field: 'parentId',
-      value:  (value, built) => value.value
+      value:  (value, built) => {
+        return value ? value.value: null
+      }
     }
   },
   state: Types.string,
@@ -36,7 +40,25 @@ const Specs = {
       zoom: 10,
     }
   },
-  logo: defaultSpec.image,
+  logo: {
+    ...defaultSpec.image,
+    save: function(value, data, options) {
+      if(value.file && data && data.id) {
+        const { id } = data
+        return (parent, options) => {
+          const { id } = parent
+          if (id) {
+            return {
+              name: InstActions.UPLOAD_LOGO,
+              request: apiServices.institution.uploadLogo(id, value.file),
+              options,
+            }
+          }
+          return null
+        }
+      }
+    }
+  },
   dependencies: {
     type: [Types.Institution],
     build: function (data, options) {
@@ -49,8 +71,40 @@ const Specs = {
   },
   categories: {
     type: [Types.object],
+    parse: function (data) {
+      return {
+        text: data.name,
+        value: data.id,
+      }
+    },
     build: function (data, options) {
     },
+    save: (value, data, options) => {
+      return (parent) => {
+        const { id } = parent;
+        if (id) {
+          console.log(value)
+          const newValue = value.value
+          return {
+            name: InstActions.ADD_CATEGORY,
+            request: apiServices.institution.addCategory(id, newValue)
+          }
+        }
+      }
+    }
+
+  },
+  _save: function (isNew, instance) {
+    if (isNew) {
+      return (parent, options) => ({
+        name: InstActions.CREATE,
+        request: apiServices.institution.create(instance)
+      })
+    }
+    return (parent, options) => ({
+      name: InstActions.UPDATE,
+      request: apiServices.institution.update(instance)
+    })
   }
 }
 

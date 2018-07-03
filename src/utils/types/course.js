@@ -26,29 +26,47 @@ const Specs = {
     },
     build: (value, data, { courses } ) => {
       return courses.find(c => c.id === value)
+      //return value
     },
     save: (value, data, options) => {
-      const { id } = data
-      if (id) {
-        return () => ({
-          name: CourseActions.ADD_PRE,
-          request: apiServices.course.addPrerequisite(id, value.id)
-        })
+      console.log('returning a function for prerequisies')
+      return (parent) => {
+        console.log('--------------')
+        console.log(parent)
+        console.log(value)
+        const { id } = parent
+        if (id) {
+          return {
+            name: CourseActions.ADD_PRE,
+            request: apiServices.course.addPrerequisite(id, value)
+          }
+        }
+        console.log('nothing to do')
+        return null
       }
-      return null
     },
   },
   _save: function (isNew, instance) {
     if (isNew) {
-      return (options) => ({
-        name: CourseActions.CREATE,
-        request: apiServices.course.create(instance)
-      })
+      return (parent, options) => {
+        console.log('this is the parent %o: ' , parent.id)
+        const { id } = parent
+        instance.opportunityId = instance.opportunityId || id
+        return {
+          name: CourseActions.CREATE,
+          request: apiServices.course.create(instance)
+        }
+      }
     }
-    return (options) => ({
-      name: CourseActions.UPDATE,
-      request: apiServices.course.update(instance)
-    })
+    return (parent, options) => {
+      console.log('this is the parent %o: ' , parent.id)
+      const { id } = parent
+      instance.opportunityId = instance.opportunityId || id
+      return {
+        name: CourseActions.UPDATE,
+        request: apiServices.course.update(instance)
+      }
+    }
   }
 }
 
