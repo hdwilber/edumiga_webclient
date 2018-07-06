@@ -1,30 +1,26 @@
 import { setDefault } from './defaults'
 
-export function parseData(specs, data = {}) {
-  const names = Object.keys(specs).filter(name => name.indexOf('_'))
-  //console.log(names)
-  return names.reduce( (acc, name) => {
-    const spec = specs[name]
-    const type = spec.type || spec
-    const value = (data && data[name]) || spec.default || setDefault(type)
+export function parseData(type, data){
 
-    const isArray = type instanceof Array
+  const isArrayType = type instanceof Array
+  const fieldType = isArrayType ? type[0]: type
 
-    let result
-    if (isArray) {
-      const { spec: subSpec } = spec
-      result = subSpec
-        ? value.map(val => parseData(subSpec, val))
-        : value.map(val => (spec.parse ? spec.parse(val): val))
-    } else {
-      const { spec: subSpec } = spec
-      result = subSpec
-        ? parseData(subSpec, value)
-        : spec.parse ? spec.parse(value): value
-    }
-    acc[name] = result
+  const names = Object.keys(fieldType).filter(name => name.indexOf('_') && name.indexOf('default'))
+
+  const children = names.reduce((acc, name) => { 
+    console.log('name data')
+    console.log(name)
+    console.log(data)
+    //console.log(data[name])
+    acc[name] = parseData(fieldType[name], data && data[name])
     return acc
   }, {})
+
+  const value = data || type.default || setDefault(type)
+
+  const ret =  (names.length) ? children : value
+  console.log(ret)
+  return ret
 }
 
 export function buildData(specs, data = {}, options = {}) {

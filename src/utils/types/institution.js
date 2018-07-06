@@ -1,9 +1,9 @@
-import { Types, defaultSpec } from './defaults'
+import { Types } from './defaults'
 import * as InstActions from '../../redux/institution/actions'
 import { apiServices } from '../../services'
 
-const Specs = {
-  id: Types.string,
+const Type = {
+  id: Types.id,
   prename: Types.string,
   name: Types.string,
   description: Types.string,
@@ -12,16 +12,16 @@ const Specs = {
   address: Types.string,
   country: Types.string,
   head: {
-    type: Types.object,
-    parse: (data) => {
+    default: null,
+    _parse: (data) => {
       return (data) 
         ? { value: data.id, text: `${data.prename} ${data.name}`, ref: data }
         : null
     },
-    build: (value) => {
+    _build: (value) => {
       return value ? value.ref: null
     },
-    save: {
+    _save: {
       field: 'parentId',
       value:  (value, built) => {
         return value ? value.value: null
@@ -41,8 +41,8 @@ const Specs = {
     }
   },
   logo: {
-    ...defaultSpec.image,
-    save: function(value, data, options) {
+    ...Types.image,
+    _save: function(value, data, options) {
       if(value.file && data && data.id) {
         const { id } = data
         return (parent, options) => {
@@ -59,27 +59,25 @@ const Specs = {
       }
     }
   },
-  dependencies: {
-    type: [Types.Institution],
-    build: function (data, options) {
+  dependencies: [{
+    _self: true,
+    _build: function (data, options) {
     },
-  },
-  opportunities: {
-    type: [Types.Opportunity],
-    build: function (data, options) {
+  }],
+  opportunities: [{
+    _build: function (data, options) {
     },
-  },
-  categories: {
-    type: [Types.object],
-    parse: function (data) {
+  }],
+  categories: [{
+    _parse: function (data) {
       return {
         text: data.name,
         value: data.id,
       }
     },
-    build: function (data, options) {
+    _build: function (data, options) {
     },
-    save: (value, data, options) => {
+    _save: (value, data, options) => {
       return (parent) => {
         const { id } = parent;
         if (id) {
@@ -92,8 +90,7 @@ const Specs = {
         }
       }
     }
-
-  },
+  }],
   _save: function (isNew, instance) {
     if (isNew) {
       return (parent, options) => ({
@@ -108,5 +105,6 @@ const Specs = {
   }
 }
 
-export default Specs
+
+export default Type
 

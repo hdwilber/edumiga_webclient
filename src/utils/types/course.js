@@ -3,32 +3,29 @@ import * as CourseActions from '../../redux/course/actions'
 import { apiServices } from '../../services'
 
 
-const Specs = {
-  id: defaultSpec.id,
+const Type = {
+  id: Types.id,
   name: Types.string,
   code: Types.string,
   level: {
-    type: Types.number,
     default: 1,
   },
   description: Types.string,
   duration: Types.number,
   published: {
-    type: Types.bool,
     default: true,
   },
   optional: Types.bool,
   type: Types.string,
-  prerequisites: {
-    type: [Types.Prerequisite],
-    parse: function (value) {
+  prerequisites: [{
+    _parse: function (value) {
       return value.id
     },
-    build: (value, data, { courses } ) => {
+    _build: (value, data, { courses } ) => {
       return courses.find(c => c.id === value)
       //return value
     },
-    save: (value, data, options) => {
+    _save: (value, data, options) => {
       console.log('returning a function for prerequisies')
       return (parent) => {
         console.log('--------------')
@@ -45,7 +42,7 @@ const Specs = {
         return null
       }
     },
-  },
+  }],
   _save: function (isNew, instance) {
     if (isNew) {
       return (parent, options) => {
@@ -70,5 +67,5 @@ const Specs = {
   }
 }
 
-export default Specs
+export default Type
 

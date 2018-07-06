@@ -1,6 +1,6 @@
 import { Types, defaultSpec } from './defaults'
 
-const Specs = {
+const Type = {
   id: Types.string,
   displayName: Types.string,
   title: Types.string,
@@ -8,7 +8,6 @@ const Specs = {
   lastName: Types.string,
   birthDate: {
     save: function () {},
-    type: Types.string,
   },
   occupation: Types.string,
   country: Types.string,
@@ -18,15 +17,14 @@ const Specs = {
   phones: [Types.string],
   interests: [Types.string],
   location: {
-    type: Types.object,
     default: {
       point: null,
       zoom: 10,
     }
   },
-  photo: defaultSpec.image,
+  photo: Types.image,
 }
 
-export default Specs
+export default Type
 
 

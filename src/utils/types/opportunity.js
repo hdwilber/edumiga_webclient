@@ -4,13 +4,13 @@ import _ from 'lodash'
 import * as OppActions from '../../redux/opportunity/actions'
 import { apiServices } from '../../services'
 
-const Specs = {
-  id: defaultSpec.id,
+const Type = {
+  id: Types.id,
   name: Types.string,
   duration: Types.number,
   description: Types.string,
   institution: {
-    type: Types.object,
+    default: null,
     parse: (data) => {
       return (data)
         ? { value: data.id, text: `${data.prename} ${data.name}`, ref: data }
@@ -34,7 +34,7 @@ const Specs = {
   type: Types.string,
   degrees: [Types.string],
   logo: {
-    ...defaultSpec.image,
+    ...Types.image,
     save: function(value, data, options) {
       if(value.file && data && data.id) {
         const { id } = data
@@ -52,10 +52,7 @@ const Specs = {
       }
     }
   },
-  courses: {
-    type: [Types.Course],
-    spec: Course,
-  },
+  courses: [Course],
   _save: function (isNew, instance) {
     if (isNew) {
       return (parent, options) => ({
@@ -70,4 +67,4 @@ const Specs = {
   }
 }
 
-export default Specs
+export default Type
