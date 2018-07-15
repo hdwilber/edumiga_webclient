@@ -10,13 +10,14 @@ export const BasicTypes = {
     default: 0,
   },
   string: {
+    _name: 'Basic string',
     default: '',
   },
   object: {
     default: null,
   },
   date: {
-    default: new Date(Date.now()),
+    default: new Date(),
   },
 }
 
@@ -36,15 +37,20 @@ export function parseImage ({url}) {
 export const InstanceTypes = {
   id: {
     ...BasicTypes.string,
-    parse: function (value) {
+    _name: 'Instance Id',
+    _parse: function (value) {
       console.log('Calling this')
       return value || fakeId()
     },
   },
   image: {
+    file: BasicTypes.object,
+    url: BasicTypes.string,
+    fakeUrl: BasicTypes.string,
+    _name: 'Image',
     _parse: function ({ url, ...rest }) {
       return {
-        ...rest,
+        //...rest,
         fakeUrl: '',
         url: url && buildImageUrl(url),
         file: '',

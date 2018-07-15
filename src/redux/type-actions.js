@@ -9,7 +9,9 @@ export class TypeActions {
   }
 
   format(data) {
-    return parseData(this.spec, data)
+    const formatted = parseData(this.spec, data)
+    console.log(formatted)
+    return formatted
   }
 
   build(data) {

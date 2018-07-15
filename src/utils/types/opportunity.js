@@ -5,21 +5,22 @@ import * as OppActions from '../../redux/opportunity/actions'
 import { apiServices } from '../../services'
 
 const Type = {
-  id: Types.id,
+  _name: 'Opportunity',
   name: Types.string,
+  id: Types.id,
   duration: Types.number,
   description: Types.string,
   institution: {
     default: null,
-    parse: (data) => {
+    _parse: (data) => {
       return (data)
         ? { value: data.id, text: `${data.prename} ${data.name}`, ref: data }
         : null
     },
-    build: (value) => {
+    _build: (value) => {
       return value ? value.ref: null
     },
-    save: {
+    _save: {
       field: 'institutionId',
       value:  (value, built) => {
         return value ? value.value: null
@@ -28,14 +29,14 @@ const Type = {
   },
   regime: Types.string,
   published: {
-    type: Types.bool,
+    ...Types.bool,
     default: true,
   },
   type: Types.string,
   degrees: [Types.string],
   logo: {
     ...Types.image,
-    save: function(value, data, options) {
+    _save: function(value, data, options) {
       if(value.file && data && data.id) {
         const { id } = data
         return (parent, options) => {
@@ -53,18 +54,18 @@ const Type = {
     }
   },
   courses: [Course],
-  _save: function (isNew, instance) {
-    if (isNew) {
-      return (parent, options) => ({
-        name: OppActions.CREATE,
-        request: apiServices.opportunity.create(instance)
-      })
-    }
-    return (parent, options) => ({
-      name: OppActions.UPDATE,
-      request: apiServices.opportunity.update(instance)
-    })
-  }
+  //_save: function (isNew, instance) {
+    //if (isNew) {
+      //return (parent, options) => ({
+        //name: OppActions.CREATE,
+        //request: apiServices.opportunity.create(instance)
+      //})
+    //}
+    //return (parent, options) => ({
+      //name: OppActions.UPDATE,
+      //request: apiServices.opportunity.update(instance)
+    //})
+  //}
 }
 
 export default Type

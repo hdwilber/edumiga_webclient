@@ -28,10 +28,11 @@ import withTypesManager from '../../withTypesManager'
 class Editor extends React.PureComponent {
   constructor(props) {
     super(props)
+    const { typesManager: { institution } } = props
     this.state = {
-      ...parseData(Institution),
-      isNew: true,
+      ...institution.format(null),
 
+      isNew: true,
       showInstFastEditor: false,
       instInstFastEditor: {
         value: null,
@@ -52,8 +53,9 @@ class Editor extends React.PureComponent {
 
   findInstitution(id) {
     if (id) {
-      const { find } = this.props
-      find(id)
+      const { typesManager: { institution } } = this.props
+        console.log('finding one')
+      institution.findOne(id)
     }
   }
 

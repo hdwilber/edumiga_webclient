@@ -177,9 +177,10 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.FIND.success: {
+      const { result } = action.payload
       return {
         ...state,
-        current: action.payload.institution,
+        current: result,
         loading: false,
       }
     }

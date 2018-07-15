@@ -1,26 +1,49 @@
 import { setDefault } from './defaults'
+import { Types } from './defaults'
 
-export function parseData(type, data){
+function _getValue(names, type, value) {
+  if (names.length > 0) {
+    const formatted = names.reduce( (acc, name) => {
+      const subValue = value ? value[name]: null
+      acc[name] = parseData(type[name], subValue)
+      return acc
+    }, {})
 
+    return formatted
+  }
+  return value || type.default 
+}
+
+export function parseData(type, value){
   const isArrayType = type instanceof Array
   const fieldType = isArrayType ? type[0]: type
 
-  const names = Object.keys(fieldType).filter(name => name.indexOf('_') && name.indexOf('default'))
+  const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
+  
+  if (isArrayType) {
+    if (!Array.isArray(value)) {
+      return []
+    }
+    const arrayFormatted = value.map(val => {
 
-  const children = names.reduce((acc, name) => { 
-    console.log('name data')
-    console.log(name)
-    console.log(data)
-    //console.log(data[name])
-    acc[name] = parseData(fieldType[name], data && data[name])
-    return acc
-  }, {})
+      if (fieldType._parse) {
+        if (value) {
+          return fieldType._parse(val)
+        }
+        return fieldType.default
+      }
+      return _getValue(names, fieldType, val)
+    })
+    return arrayFormatted
+  }
 
-  const value = data || type.default || setDefault(type)
-
-  const ret =  (names.length) ? children : value
-  console.log(ret)
-  return ret
+  if (fieldType._parse) {
+    if (value) {
+      return fieldType._parse(value)
+    }
+    return fieldType.default
+  }
+  return _getValue(names, fieldType, value)
 }
 
 export function buildData(specs, data = {}, options = {}) {

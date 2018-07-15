@@ -43,7 +43,6 @@ export class InstitutionActions extends TypeActions {
     }
     return info
   }
-
   
   save = function(data, options = {}) {
     const { institution } = this.services
