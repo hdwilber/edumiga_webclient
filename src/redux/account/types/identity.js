@@ -1,4 +1,4 @@
-import { Types, defaultSpec } from './defaults'
+import Types from '../../defaults'
 
 const Type = {
   id: Types.string,
@@ -26,5 +26,4 @@ const Type = {
 }
 
 export default Type
-
 

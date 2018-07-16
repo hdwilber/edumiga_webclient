@@ -1,11 +1,10 @@
-import { setDefault } from './defaults'
-import { Types } from './defaults'
+//import { setDefault } from './defaults'
 
 function _getValue(names, type, value) {
   if (names.length > 0) {
     const formatted = names.reduce( (acc, name) => {
       const subValue = value ? value[name]: null
-      acc[name] = parseData(type[name], subValue)
+      acc[name] = format(type[name], subValue)
       return acc
     }, {})
 
@@ -14,7 +13,7 @@ function _getValue(names, type, value) {
   return value || type.default 
 }
 
-export function parseData(type, value){
+export function format(type, value){
   const isArrayType = type instanceof Array
   const fieldType = isArrayType ? type[0]: type
 
@@ -26,9 +25,9 @@ export function parseData(type, value){
     }
     const arrayFormatted = value.map(val => {
 
-      if (fieldType._parse) {
+      if (fieldType._format) {
         if (value) {
-          return fieldType._parse(val)
+          return fieldType._format(val)
         }
         return fieldType.default
       }
@@ -37,9 +36,9 @@ export function parseData(type, value){
     return arrayFormatted
   }
 
-  if (fieldType._parse) {
+  if (fieldType._format) {
     if (value) {
-      return fieldType._parse(value)
+      return fieldType._format(value)
     }
     return fieldType.default
   }
@@ -51,7 +50,7 @@ export function buildData(specs, data = {}, options = {}) {
   return names.reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec
-    const value = (data && data[name]) || spec.default || setDefault(type)
+    const value = (data && data[name]) || spec.default || null
     const isArray = type instanceof Array
 
     let result 
@@ -82,18 +81,16 @@ export function removeNotValid(specs, data = {}, options = {}) {
 
 export function saveData(specs, data, options) {
   const children = []
-  const { saveSpec }  = specs
   let isNew = false
   const names = Object.keys(specs).filter(name => name.indexOf('_'))
 
   const instance = names.reduce( (acc, name) => {
     const spec = specs[name]
     const type = spec.type || spec
-    const value = (data && data[name]) || spec.default || setDefault(type)
+    const value = (data && data[name]) || spec.default || null
 
     const isArray = type instanceof Array
     const save = spec.save
-    let partial = null
 
     if (name === 'id' && value.indexOf('fake') === 0) {
       isNew = true

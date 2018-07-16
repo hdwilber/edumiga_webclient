@@ -1,6 +1,5 @@
-import { buildImageUrl } from './../../redux/utils'
-import { fakeId } from '../../utils/fake-id'
-import { apiServices } from '../../services'
+import { buildImageUrl } from '../utils/image-url'
+import { fakeId } from '../utils/fake-id'
 
 export const BasicTypes = {
   bool: {
@@ -26,7 +25,7 @@ export function setDefault(type) {
 }
 
 
-export function parseImage ({url}) {
+export function formatImage ({url}) {
   return {
     file: null,
     url: url && (buildImageUrl(url)),
@@ -38,7 +37,7 @@ export const InstanceTypes = {
   id: {
     ...BasicTypes.string,
     _name: 'Instance Id',
-    _parse: function (value) {
+    _format: function (value) {
       console.log('Calling this')
       return value || fakeId()
     },
@@ -48,18 +47,12 @@ export const InstanceTypes = {
     url: BasicTypes.string,
     fakeUrl: BasicTypes.string,
     _name: 'Image',
-    _parse: function ({ url, ...rest }) {
+    _format: function ({ url, ...rest }) {
       return {
         //...rest,
         fakeUrl: '',
         url: url && buildImageUrl(url),
         file: '',
-      }
-    },
-    _build: function ({file, ...rest}) {
-      return {
-        ...rest,
-        file,
       }
     },
     default: {
@@ -70,7 +63,7 @@ export const InstanceTypes = {
   }
 }
 
-export const Types = {
+export default {
   ...BasicTypes,
   ...InstanceTypes,
 }

@@ -4,7 +4,7 @@ import { Button, Card, Icon,
   Image 
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import { buildImageUrl } from '../../../redux/utils'
+import { buildImageUrl } from '../../../utils/image-url'
 import { Viewer as LocationViewer } from '../../../components/location'
 import { nologo } from '../../../utils/constants'
 import OppThumbnail from '../../../components/opportunity/thumbnail'

@@ -4,10 +4,6 @@ import { Header, List } from 'semantic-ui-react'
 import './styles.scss'
 
 class Saver extends React.PureComponent {
-  constructor(props) {
-    super(props)
-  }
-
   renderEvent(ev) {
     const { name, timestamp, status } = ev
     return (

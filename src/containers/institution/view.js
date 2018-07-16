@@ -7,7 +7,7 @@ import { Thumbnail as InstitutionThumb } from '../../components/institution'
 import OpportunityThumb from '../../components/opportunity/thumbnail/thumbnail'
 
 import LocationViewer from '../../components/location/viewer'
-import { buildImageUrl } from '../../redux/utils'
+import { buildImageUrl } from '../../utils/image-url'
 import * as institutionActions from '../../redux/institution/actions'
 import withAuthorization from '../authorization'
 import { UserState } from '../authorization'

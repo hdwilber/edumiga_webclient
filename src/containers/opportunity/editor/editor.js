@@ -9,7 +9,7 @@ import { FormGeneral } from '../../../components/opportunity'
 import { Input as InputInstitution } from '../../../components/institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
-import OppAction, * as opportunityActions from '../../../redux/opportunity/actions'
+import * as opportunityActions from '../../../redux/opportunity/actions'
 
 import { CourseFastEditor } from '../../shared'
 import CourseList from '../../../components/course/list'
@@ -17,7 +17,7 @@ import { Actions } from '../../../utils/constants'
 
 import withAuthorization, { UserState } from '../../../containers/authorization'
 import withApiService from '../../../containers/withApiService'
-import withTypesManager from '../../withTypesManager'
+import { withTypesManager } from '../../shared/types'
 
 
 class Editor extends React.PureComponent {
@@ -38,7 +38,6 @@ class Editor extends React.PureComponent {
 
   findOpportunity(id) {
     if (id) {
-      const { find } = this.props
       const { typesManager: { opportunity } } = this.props
       opportunity.findOne(id)
     }
@@ -100,10 +99,9 @@ class Editor extends React.PureComponent {
   }
 
   actionCourseFastEditor = (action, { ref, value, isNew } ) => {
-
     switch(action) {
       case Actions.save: 
-        const { typesManager: { course } } = this.props
+        //const { typesManager: { course } } = this.props
         const { courses } = this.state
         const newList = isNew
           ? courses.concat([value])
@@ -184,8 +182,8 @@ class Editor extends React.PureComponent {
   }
   render() {
     const { logo, institution, courses } = this.state
-    const { institutions, constants, processing } = this.props
-    const { showCourseFastEditor, courseFastEditor } = this.state
+    const { institutions, constants } = this.props
+    const { showCourseFastEditor } = this.state
 
     return (
       <Grid container stackable>
@@ -259,11 +257,11 @@ function mapDispatchToProps(dispatch) {
   dispatch(institutionActions.findAllOwned())
 
   return {
-    save: (data, opts) => dispatch(opportunityActions.save(data, opts)),
-    find: (id, opts) => dispatch(opportunityActions.findById(id, opts)),
-    create: (data, opts) => dispatch(opportunityActions.create(data, opts)),
-    update: (data, opts) => dispatch(opportunityActions.update(data, opts)),
-    delete: (data, opts) => dispatch(opportunityActions.deletex(data, opts)),
+    //save: (data, opts) => dispatch(opportunityActions.save(data, opts)),
+    //find: (id, opts) => dispatch(opportunityActions.findById(id, opts)),
+    //create: (data, opts) => dispatch(opportunityActions.create(data, opts)),
+    //update: (data, opts) => dispatch(opportunityActions.update(data, opts)),
+    //delete: (data, opts) => dispatch(opportunityActions.deletex(data, opts)),
   }
 }
 

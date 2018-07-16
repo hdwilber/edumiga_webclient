@@ -2,11 +2,9 @@ import { push } from 'react-router-redux'
 import { InstitutionService } from '../../services'
 import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest,
 } from '../utils'
-import { Institution } from '../../utils/types'
-import { fillData as oppFillData } from '../opportunity/actions'
-import { saveData } from '../../utils/types'
-import TypeActions from '../type-actions'
-import { doRequests } from '../../utils/types/converters'
+import Institution from './types/institution'
+import { saveData } from '../../utils/converters'
+import BaseActions from '../base-actions'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
@@ -29,7 +27,7 @@ export const SAVE = createActionLabels('INST_SAVE')
 
 const iService = new InstitutionService()
 
-export class InstitutionActions extends TypeActions {
+class InstitutionActions extends BaseActions {
   constructor(services) {
     super(Institution, services)
     this.attachMethods()
@@ -44,15 +42,6 @@ export class InstitutionActions extends TypeActions {
     return info
   }
   
-  save = function(data, options = {}) {
-    const { institution } = this.services
-    const results = saveData(this.spec, data, options)
-
-    this.dispatch(doRequests(this.spec, results, null))
-
-    return null
-  }
-
   delete = function(id, options) {
     const { opportunity } = this.services
     return {
@@ -61,6 +50,8 @@ export class InstitutionActions extends TypeActions {
     }
   }
 }
+
+export default InstitutionActions
 
 export function save(data, options) {
   return (dispatch, getState) => {
@@ -226,9 +217,9 @@ export function findById(id, refresh = false) {
       }
     },
     (payload) => {
-      dispatch(oppFillData({
-        list: payload.institution.opportunities,
-      }))
+      //dispatch(oppFillData({
+        //list: payload.institution.opportunities,
+      //}))
 
       if (refresh) 
         dispatch(push(`/institution/${payload.id}/edit`))

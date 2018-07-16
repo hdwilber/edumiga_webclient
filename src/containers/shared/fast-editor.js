@@ -4,7 +4,9 @@ import InstitutionForm from '../../components/institution/form-general'
 import OpportunityForm from '../../components/opportunity/form-general'
 import CourseForm from '../../components/course/form-general'
 
-import { Course, Institution, Opportunity } from '../../utils/types'
+import Course from '../../redux/course/types/course'
+import Institution from '../../redux/institution/types/institution'
+import Opportunity from '../../redux/opportunity/types/opportunity'
 
 export function InstitutionFastEditor (props) { return <FastEditor 
     specs={Institution}

@@ -1,12 +1,11 @@
 import React from 'react'
-import { OpportunityActions as Opportunity } from '../redux/opportunity/actions'
-import { CourseActions as Course } from '../redux/course/actions'
-import { InstitutionActions as Institution } from '../redux/institution/actions'
-
-import { apiServices } from '../services'
+import { Identity, Opportunity, Institution, Course } from '../../../redux'
+import { apiServices } from '../../../services'
+export { default as withTypesManager } from './withTypesManager'
 
 export function createTypesManager() {
   const types = {
+    identity: new Identity(apiServices),
     institution: new Institution(apiServices),
     opportunity: new Opportunity(apiServices),
     course: new Course(apiServices),
@@ -25,4 +24,3 @@ export function createTypesManager() {
 }
 export const typesManager = createTypesManager()
 export default React.createContext(typesManager)
-

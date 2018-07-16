@@ -3,26 +3,25 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Segment, Button, Grid, Header } from 'semantic-ui-react'
 
+import { InputImage } from '../../components/media'
 import FormIdentity from '../../components/account/form-identity'
-import SimpleMediaUploader from '../../components/media/image-uploader'
 
 import * as accountActions from '../../redux/account/actions'
 import * as constantsActions from '../../redux/constants/actions'
 
-import { AccountIdentity as IdTemplate, format, formatOutput, } from '../../types'
+import withAuthorization, { UserState } from '../authorization'
+import withApiService from '../withApiService'
+import { withTypesManager } from '../shared/types'
 
 class Identity extends React.Component {
   constructor(props){
     super(props)
 
+    const { typesManager: { identity } } = props
     this.state = {
-      ...format(IdTemplate),
+      ...identity.format(),
       isNew: true,
     }
-
-    this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleClickSave = this.handleClickSave.bind(this)
-    this.handleClickUploadPhoto = this.handleClickUploadPhoto.bind(this)
   }
 
   componentDidMount() {
@@ -31,32 +30,33 @@ class Identity extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { account } = nextProps
-    if (account && account.identity) {
-      const { identity } = account
+    const { identity } = nextProps
+    if (typeof identity !== 'undefined') {
+      const { typesManager: { identity }  } = this.props
       this.setState({
-        ...format(IdTemplate, identity)
+        ...identity.format(identity)
       })
     }
   }
   
-  handleClickSave() {
-    const { account, identityUpdate } = this.props
-    const { identity } = account
-    if (identity) {
-      identityUpdate({
-        ...formatOutput(IdTemplate, this.state)
-      })
-    }
+  handleClickSave = () => {
+    console.log('handle click save')
+    //const { account, identityUpdate } = this.props
+    //const { identity } = account
+    //if (identity) {
+      //identityUpdate({
+        //...formatOutput(IdTemplate, this.state)
+      //})
+    //}
   }
 
-  handleInputChange(e, props) {
+  handleInputChange = (e, props) => {
     this.setState({
       [props.name]: props.value,
     })
   }
 
-  handleClickUploadPhoto() {
+  handleClickUploadPhoto = () => {
     if(this.state.photo.file) {
       const { uploadPhoto } = this.props
       uploadPhoto(this.state.photo.file)
@@ -64,9 +64,9 @@ class Identity extends React.Component {
   }
 
   render() {
-    const { account, constant } = this.props
+    const { identity, constant } = this.props
 
-    if (account && account.identity) {
+    if (identity) {
       const { photo } = this.state
       return (
         <Grid container stackable>
@@ -76,12 +76,10 @@ class Identity extends React.Component {
             </Grid.Column>
             <Grid.Column width={6}>
               <Segment>
-                <SimpleMediaUploader
+                <InputImage
                   name="photo" 
-                  url={photo.fakeUrl === '' ? photo.url : photo.fakeUrl}
                   onChange={this.handleInputChange}
-                  onUpload={this.handleClickUploadPhoto}
-                  disabled={false}
+                  value={photo}
                 />
               </Segment>
             </Grid.Column>
@@ -100,17 +98,26 @@ class Identity extends React.Component {
           </Grid.Row>
         </Grid>
       )
-    } else {
-      return <Header>Loading...</Header>
     }
+    return null
   }
 }
 
-export default connect((state) => ({
-  account: state.account,
-  constant: state.constant,
-}), (dispatch) => ({
-  identityUpdate: (data) => dispatch(accountActions.updateIdentity(data)),
-  uploadPhoto: (file) => dispatch(accountActions.uploadPhoto(file)),
-  constantsGet: (list) => dispatch(constantsActions.get(list)),
-})) (withRouter(Identity))
+function mapStateToProps (state) {
+  return {
+    identity: state.account.identity,
+    constant: state.constant,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    identityUpdate: (data) => dispatch(accountActions.updateIdentity(data)),
+    uploadPhoto: (file) => dispatch(accountActions.uploadPhoto(file)),
+    constantsGet: (list) => dispatch(constantsActions.get(list)),
+  }
+}
+
+const ConnectedIdentity = connect(mapStateToProps, mapDispatchToProps) (withRouter(Identity))
+
+export default withTypesManager(withApiService(withAuthorization(ConnectedIdentity, [UserState.ACCOUNT])))

@@ -1,7 +1,7 @@
-import { Opportunity, buildData, parseData, saveData } from '../utils/types'
 import { processAction } from './utils'
+import { format, buildData } from '../utils/converters'
 
-export class TypeActions {
+class BaseActions {
   constructor(spec, services) {
     this.spec = spec
     this.services = services
@@ -9,7 +9,7 @@ export class TypeActions {
   }
 
   format(data) {
-    const formatted = parseData(this.spec, data)
+    const formatted = format(this.spec, data)
     console.log(formatted)
     return formatted
   }
@@ -40,5 +40,5 @@ export class TypeActions {
   }
 }
 
-export default TypeActions
+export default BaseActions
 

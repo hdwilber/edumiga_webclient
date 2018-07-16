@@ -1,8 +1,7 @@
 import { CourseService } from '../../services'
 import { handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest } from '../utils'
-import { Course } from '../../utils/types'
-
-import { TypeActions } from '../type-actions'
+import Course from './types/course'
+import BaseActions from '../base-actions'
 
 const cService = new CourseService()
 
@@ -20,12 +19,13 @@ export const DEL_PRE = createActionLabels('COURSE_DEL_PRE')
 
 export const FILL_DATA = 'COURSE_FILL_DATA'
 
-export class CourseActions extends TypeActions {
+class CourseActions extends BaseActions {
   constructor(services) {
     super(Course, services)
     this.attachMethods()
   }
 }
+export default CourseActions
 
 export function getTypes(type) {
   return (dispatch, getState) => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Header, Label, Card, Image } from 'semantic-ui-react'
 
-import { buildImageUrl } from '../../../redux/utils'
+import { buildImageUrl } from '../../../utils/image-url'
 import nologo from '../../../images/nologo.svg'
 import './styles.scss'
 

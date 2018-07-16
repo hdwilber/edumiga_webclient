@@ -7,7 +7,7 @@ import * as accountActions from '../redux/account/actions'
 import * as ModalActions from '../redux/modal/actions'
 import '../sass/index.scss'
 import ApiServicesContext, { apiServices } from '../services'
-import TypesManagerContext, { typesManager } from './types'
+import TypesManagerContext, { typesManager } from './shared/types'
 import LoginModal from '../containers/account/modals/login'
 import { Saver } from '../containers/saver'
 

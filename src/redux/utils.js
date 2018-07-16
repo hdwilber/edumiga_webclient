@@ -1,5 +1,3 @@
-const { REACT_APP_API_BASEURL } = process.env
-
 export function withService(action, service) {
   return (...args) => {
     return function(dispatch, getState) {
@@ -250,13 +248,6 @@ export function handleRequest(dispatch, getState, action, request, formatter  = 
 }
 
 // Needs to be refactorized
-export function buildImageUrl(url) {
-  console.log('BUILD BUILD BUILD')
-  console.log(process.env)
-  const { REACT_APP_API_SERVER_NAME } = process.env
-  return `${REACT_APP_API_SERVER_NAME || ''}${REACT_APP_API_BASEURL}${url}`
-}
-
 export function createActionLabels(name) {
   return {
     start: name,

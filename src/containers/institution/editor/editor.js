@@ -12,7 +12,6 @@ import {
 import * as institutionActions from '../../../redux/institution/actions'
 import * as opportunityActions from '../../../redux/opportunity/actions'
 import * as categoryActions from '../../../redux/category/actions'
-import { parseData, Institution } from '../../../utils/types'
 
 import { List as InstList } from '../../../components/institution'
 import { List as OppList } from '../../../components/opportunity'
@@ -21,8 +20,8 @@ import { Actions } from '../../../utils/constants'
 
 import withAuthorization, { UserState } from '../../authorization'
 import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared'
-import withApiService from '../../../containers/withApiService'
-import withTypesManager from '../../withTypesManager'
+import withApiService from '../../withApiService'
+import { withTypesManager } from '../../shared/types'
 
 
 class Editor extends React.PureComponent {
@@ -60,7 +59,7 @@ class Editor extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { institution, location: nextLocation, match: nextMatch } = nextProps
+    const { institution: next, location: nextLocation, match: nextMatch } = nextProps
 
     if (typeof nextLocation !== 'undefined') {
       const { location } = this.props
@@ -69,10 +68,11 @@ class Editor extends React.PureComponent {
         this.findInstitution(institutionId)
       }
     }
-    if (typeof institution !== 'undefined') {
+    if (typeof next !== 'undefined') {
+      const { typesManager: { institution } } = this.props
       this.setState({
-        ...parseData(Institution, institution),
-        isNew: !institution,
+        ...institution.format(next),
+        isNew: !next,
       }, () => {
         window.scroll(window.top)
       })
@@ -86,9 +86,8 @@ class Editor extends React.PureComponent {
   }
 
   handleSave = (event) => {
-    const { save } = this.props
-    const { typesManager } = this.props
-    typesManager.institution.save(this.state, { })
+    const { typesManager: { institution } } = this.props
+    institution.save(this.state, { })
   }
 
   handleOppActions = (action, opportunity) => {

@@ -1,13 +1,13 @@
 import React from 'react'
-import { Grid, Segment, Header, Button, Modal } from 'semantic-ui-react'
-import { parseData, buildData } from '../../utils/types'
+import { Segment, Header, Button, Modal } from 'semantic-ui-react'
+import { format } from '../../utils/converters'
 import { Actions } from '../../utils/constants'
 
 class FastEditor extends React.PureComponent {
   constructor(props) {
     super(props)
     const { specs, value } = props
-    const newValue = value || parseData(specs, null)
+    const newValue = value || format(specs, null)
     this.state = {
       ...newValue,
       isNew: !props.value,
@@ -19,7 +19,7 @@ class FastEditor extends React.PureComponent {
 
     if (typeof value !== 'undefined') {
       const { specs } = this.props
-      const newValue = value || parseData(specs, null)
+      const newValue = value || format(specs, null)
       this.setState({
         ...newValue,
         isNew: !value,
@@ -41,7 +41,7 @@ class FastEditor extends React.PureComponent {
   }
 
   handleClickSave = () => {
-    const { specs, value, onAction, constants } = this.props
+    const { value, onAction } = this.props
     //const data = buildData(specs, this.state, constants)
     const data = this.state
     onAction(Actions.save, {

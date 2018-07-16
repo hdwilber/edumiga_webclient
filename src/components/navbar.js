@@ -4,7 +4,7 @@ import { Responsive, Icon, Button, Dropdown } from 'semantic-ui-react'
 import MainLogo from '../components/navbar/main-logo'
 import './styles.scss'
 
-import { buildImageUrl } from '../redux/utils'
+import { buildImageUrl } from '../utils/image-url'
 import DropdownImage from './dropdown-image/dropdown-image'
 
 class Navbar extends React.Component {

@@ -5,6 +5,8 @@ import { createActionTypesObject, dispatchRequestActions, createActionLabels, ha
   withService,
 } from '../utils'
 import * as ModalActions from '../modal/actions'
+import BaseActions from '../base-actions'
+import Identity from './types/identity'
 
 export const CREATE = createActionTypesObject('ACCOUNT_CREATE')
 export const LOGIN = createActionTypesObject('SESSION_LOGIN')
@@ -20,6 +22,14 @@ export const CALCULATE = createActionLabels('CALCULATE')
 
 const aService = new AccountService()
 const iService = new IdentityService()
+
+class IdentityActions extends BaseActions {
+  constructor(services) {
+    super(Identity, services)
+    this.attachMethods()
+  }
+}
+export default IdentityActions
 
 function _calculate(service, data, options) {
   return {
