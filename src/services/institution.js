@@ -16,6 +16,8 @@ class Institution extends Service {
           scope: {
             include: ['logo', 'account']
           }
+        }, {
+          relation: 'categories',
         }],
       ...filter,
     }
@@ -32,30 +34,12 @@ class Institution extends Service {
     return this.createUploadRequest(`${id}/uploadLogo`, file)
   }
 
-  getAllOwned(filter = {}) {
-    const defaultFilter = {
-      where: {
-        parentId: {
-          exists: false,
-        },
-        adminLevel: 'main',
-        accountId: this.session && this.session.accountId,
-      },
-      include: [
-        {
-          relation: 'account',
-        },
-        {
-          relation: 'logo',
-        },
-        {
-          relation: 'media',
-        },
-      ],
 
-      ...filter,
-    }
-    return this.createRequest('GET', `?filter=${JSON.stringify(defaultFilter)}`, null, false)
+  getAllOwned() {
+    return this.createRequest('GET', `owned`)
+  }
+  getAllOwnedResumes() {
+    return this.createRequest('GET', `owned`)
   }
 
 
@@ -100,21 +84,23 @@ class Institution extends Service {
     return this.createRequest('GET', `?filter=${JSON.stringify(defaultFilter)}`, null, false)
   }
 
-  getAllResumes() {
-    const defaultFilter = {
-      where: {
-        adminLevel: 'main',
-      },
-      include: [
-        {
-          relation: 'logo',
+  getAllResumes(owned = false) {
+    let filter = {}
+    if (owned) {
+      filter = {
+        where: {
+          parentId: {
+            exists: false,
+          },
+          adminLevel: 'main',
+          accountId: this.session && this.session.accountId,
         },
-        {
-          relation: 'media',
-        },
-      ],
+        includes: [
+          'logo'
+        ]
+      }
     }
-    return this.createRequest('GET', `resumes?filter=${JSON.stringify(defaultFilter)}`, null, false)
+    return this.createRequest('GET', `resumes?filter=${JSON.stringify(filter)}`, null, false)
   }
 
   addOpportunity(id, data) {
@@ -139,6 +125,13 @@ class Institution extends Service {
 
   deleteI(id) {
     return this.createRequest('DELETE', `${id}`)
+  }
+
+  addCategory(id, cid) {
+    return this.createRequest('PUT', `${id}/categories/rel/${cid}`)
+  }
+  delCategory(id, cid) {
+    return this.createRequest('DELETE', `${id}/categories/rel/${cid}`)
   }
 }
 

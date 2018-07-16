@@ -1,4 +1,5 @@
 import * as actions from './actions'
+import { Names } from './actions'
 
 const initialState = {
   current: null,
@@ -50,24 +51,24 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.CREATE.start: {
+    case Names.CREATE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.CREATE.success: {
-      const { inList, opportunity } = action.payload
+    case Names.CREATE.success: {
+      const { inList, result } = action.payload
       return {
         ...state,
-        current: opportunity,
-        list: inList ? state.list.concat([opportunity]) : state.list,
+        current: result,
+        list: inList ? state.list.concat([result]) : state.list,
         loading: false,
       }
     }
 
-    case actions.CREATE.failed: {
+    case Names.CREATE.failed: {
       return {
         ...state,
         current: null,
@@ -75,25 +76,26 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND.start: {
+    case Names.FIND.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.FIND.success: {
-      const { opportunity } = action.payload
+    case Names.FIND.success: {
+      const { result } = action.payload
+      console.log(action.payload)
       return {
         ...state,
-        current: opportunity,
-        courses: opportunity.courses.filter(c => !c.draft),
+        current: result,
+        courses: result.courses.filter(c => !c.draft),
         list: null,
         loading: false,
       }
     }
 
-    case actions.FIND.failed: {
+    case Names.FIND.failed: {
       return {
         ...state,
         loading: false,
@@ -219,14 +221,14 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.DELETE.start: {
+    case Names.DELETE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.DELETE.success: {
+    case Names.DELETE.success: {
       const { id, inList } = action.payload
       if (inList) {
         return {
@@ -243,7 +245,7 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.DELETE.failed: {
+    case Names.DELETE.failed: {
       return {
         ...state,
         loading: false,

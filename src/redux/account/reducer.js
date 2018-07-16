@@ -113,7 +113,6 @@ export default function accountReducer(state = initialState, action) {
       }
     }
     case actions.FIND.success: {
-      console.log(action.payload)
       const { result } = action.payload
       const identities = result.identities || []
       delete result.identities
@@ -135,20 +134,21 @@ export default function accountReducer(state = initialState, action) {
     }
 
     case actions.IDENTITY_UPDATE.failed: {
+      const { error } = action.payload
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error,
       }
     }
     case actions.IDENTITY_UPDATE.success: {
-      const identity = action.payload
+      const { result } = action.payload
       return {
         ...state,
         loading: false,
         identity: {
           ...state.identity,
-          ...identity,
+          ...result,
         }
       }
     }

@@ -1,0 +1,23 @@
+.edumiga-treeview-node {
+  margin-left: 2em;
+  margin-top: 3px;
+  margin-bottom: 2px;
+
+  &.main-node {
+    margin-left: 0em;
+  }
+}
+
+.edumiga-treeview-container {
+  .edumiga-treeview-selections {
+    > div {
+      margin-bottom: 5px;
+      margin-right: 5px;
+    }
+  }
+  .edumiga-treeview-nodes {
+    .ui.button {
+      border: none !important;
+    }
+  }
+}

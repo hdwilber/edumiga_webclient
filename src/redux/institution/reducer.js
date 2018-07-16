@@ -59,9 +59,7 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.UPDATE.success: {
-      const { isDependency, institution, single } = action.payload
-      console.log('UPDATE')
-      console.log(action.payload)
+      const { isDependency, institution } = action.payload
       if(isDependency) {
         const list = state.current.dependencies.map(d => (d.id === institution.id) ? institution: d)
         return {
@@ -179,9 +177,10 @@ export default function institutionReducer(state = initialState, action) {
     }
 
     case actions.FIND.success: {
+      const { result } = action.payload
       return {
         ...state,
-        current: action.payload.institution,
+        current: result,
         loading: false,
       }
     }
@@ -198,14 +197,15 @@ export default function institutionReducer(state = initialState, action) {
       return {
         ...state,
         loading: true,
+        current: null,
       }
     }
 
     case actions.FIND_RESUME.success: {
-      const { result: resume } = action.payload
+      const { result } = action.payload
       return {
         ...state,
-        resume,
+        current: result,
         loading: false,
       }
     }

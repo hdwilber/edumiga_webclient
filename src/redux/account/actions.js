@@ -1,9 +1,12 @@
 import { AccountService } from '../../services'
 import { push } from 'react-router-redux'
 import IdentityService from '../../services/identity'
-import { createActionTypesObject, dispatchRequestActions, createActionLabels, handleRequest } from '../utils'
-
+import { createActionTypesObject, dispatchRequestActions, createActionLabels, handleRequest,
+  withService,
+} from '../utils'
 import * as ModalActions from '../modal/actions'
+import BaseActions from '../base-actions'
+import Identity from './types/identity'
 
 export const CREATE = createActionTypesObject('ACCOUNT_CREATE')
 export const LOGIN = createActionTypesObject('SESSION_LOGIN')
@@ -15,33 +18,76 @@ export const IDENTITY_UPDATE = createActionLabels('IDENTITY_UPDATE')
 export const UPLOAD_PHOTO = createActionLabels('IDENTITY_UPLOAD_PHOTO')
 export const CONFIRM = createActionLabels('CONFIRM')
 export const RECONFIRM = createActionLabels('RECONFIRM')
+export const CALCULATE = createActionLabels('CALCULATE')
 
 const aService = new AccountService()
 const iService = new IdentityService()
 
-export function create(data, options = {}) {
-  return (dispatch, getState) => {
-    const request = aService.create(data)
-    return dispatchRequestActions(dispatch, CREATE, request, 
-      {
-        postThen: (result) => {
-          if (options && options.modal)
-            dispatch(ModalActions.hide(options.modal.name))
-        }
-      }, 
-      options
-    )
+class IdentityActions extends BaseActions {
+  constructor(services) {
+    super(Identity, services)
+    this.attachMethods()
   }
 }
+export default IdentityActions
 
-export function updateIdentity(data) {
-  return (dispatch, getState) => {
-    const { session } = getState().account
-    iService.setSession(session)
-    const request = iService.update(data)
-    return handleRequest(dispatch, getState, IDENTITY_UPDATE, request)
+function _calculate(service, data, options) {
+  return {
+    name: CALCULATE,
+    request: service.login(data),
+    postThen: (dispatch, result, options) => {
+      if (options && options.modal)
+        dispatch(ModalActions.hide(options.modal.name))
+    },
+    options,
   }
 }
+export const calculate = withService(_calculate, aService)
+
+function _create(service, data, options) {
+  return {
+    name: CREATE,
+    request: service.create(data),
+    postThen: (dispatch, result, options) => {
+      if (options && options.modal)
+        dispatch(ModalActions.hide(options.modal.name))
+    },
+    options,
+  }
+}
+export const create = withService(_create, aService)
+
+//export function create(data, options = {}) {
+  //return (dispatch, getState) => {
+    //const request = aService.create(data)
+    //return dispatchRequestActions(dispatch, CREATE, request, 
+      //{
+        //postThen: (result) => {
+          //if (options && options.modal)
+            //dispatch(ModalActions.hide(options.modal.name))
+        //}
+      //}, 
+      //options
+    //)
+  //}
+//}
+
+function _updateIdentity(service, data) {
+  return {
+    name: IDENTITY_UPDATE,
+    request: iService.update(data),
+  }
+}
+export const updateIdentity = withService(_updateIdentity, aService)
+
+//export function updateIdentity(data) {
+  //return (dispatch, getState) => {
+    //const { session } = getState().account
+    //iService.setSession(session)
+    //const request = iService.update(data)
+    //return handleRequest(dispatch, getState, IDENTITY_UPDATE, request)
+  //}
+//}
 
 export function login(data, options = {}) {
   return (dispatch, getState) => {

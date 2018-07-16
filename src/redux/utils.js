@@ -1,4 +1,60 @@
-const { REACT_APP_API_BASEURL } = process.env
+export function withService(action, service) {
+  return (...args) => {
+    return function(dispatch, getState) {
+      const { session } = getState().account
+      if( args.service ) {
+        args.service.setSession(session)
+      }
+      const actionInfo = action(service, ...args)
+      return processAction(dispatch, actionInfo)
+    }
+  }
+}
+
+export function processAction (dispatch, info) {
+  if (!info) {
+    console.log('Nothing to do')
+    return null
+  }
+  const { name, request, format, postThen, postCatch, options } = info
+
+  request.then(response => {
+    if (response.ok) {
+      return response.json ? response.json(): Promise.resolve({})
+    }
+    return Promise.reject({error: 'Not everything was ok'})
+  })
+  .then(data => {
+    const result = format ? format(data): data
+    dispatch({
+      type: name.success,
+      payload: {
+        result,
+        options,
+      }
+    })
+    if (postThen) postThen(dispatch, result, options)
+  })
+  .catch(error => {
+    console.log(error)
+    dispatch({
+      type: name.failed,
+      payload: {
+        error,
+        options,
+      }
+    })
+
+    if (postCatch) postCatch(dispatch, error, options)
+  })
+
+  return dispatch({
+    type: name.start,
+    payload: {
+      options,
+    }
+  })
+}
 
 export function createActionTypesObject(base) {
   return {
@@ -192,11 +248,6 @@ export function handleRequest(dispatch, getState, action, request, formatter  = 
 }
 
 // Needs to be refactorized
-export function buildImageUrl(url) {
-  const { REACT_APP_API_SERVER_NAME } = process.env
-  return `${REACT_APP_API_SERVER_NAME || ''}${REACT_APP_API_BASEURL}${url}`
-}
-
 export function createActionLabels(name) {
   return {
     start: name,

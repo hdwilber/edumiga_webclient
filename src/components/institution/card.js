@@ -1,29 +1,20 @@
 import React from 'react'
-import { Button, Label, Card, Image, Icon } from 'semantic-ui-react'
+import { Label, Card, Image, Icon } from 'semantic-ui-react'
 
-import { buildImageUrl } from '../../redux/utils'
+import { buildImageUrl } from '../../utils/image-url'
 import nologo from '../../images/nologo.svg'
 
 export const ActionTypes = {
   DELETE: 3,
 }
 
-function renderOwnerActions (props) {
-  const { institution, onAction } = props
-  return (
-    <div>
-      <Button icon='delete' onClick={(e) => onAction(ActionTypes.DELETE, institution)}>
-      </Button> 
-    </div>
-  )
-}
 const InstCard = (props) => {
   const { institution, onClick } = props
   if (institution) {
     const { 
       logo, type, prename, name, 
       description, levels, 
-      stats } = institution
+      resume = {}} = institution
     return (
       <Card onClick={onClick}>
         <Card.Content>
@@ -52,12 +43,12 @@ const InstCard = (props) => {
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
-          { stats && (
+          { resume.stats && (
             <p>
               <Icon name='building' />
-              {stats.dependencies} Dependencies
+              {resume.dependencies.length} Dependencies
               <Icon name='list' />
-              {stats.opportunities} Opportunities
+              {resume.stats.opportunities} Opportunities
             </p>
           )}
         </Card.Content>

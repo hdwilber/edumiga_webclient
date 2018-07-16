@@ -13,10 +13,6 @@ class LoginModal extends React.Component {
     this.handleRegister = this.handleRegister.bind(this)
   }
 
-
-  componentDidMount() {
-    console.log(this.props.visible)
-  }
   handleLogin(data) {
     const { name, login } = this.props
     login(data, { modal: { name } } )

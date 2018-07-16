@@ -38,7 +38,7 @@ class Course extends Service {
     return this.createRequest('DELETE', `${id}`)
   }
 
-  addPrerequisites(id, rid) {
+  addPrerequisite(id, rid) {
     return this.createRequest('PUT', `${id}/prerequisites/rel/${rid}`)
   }
 

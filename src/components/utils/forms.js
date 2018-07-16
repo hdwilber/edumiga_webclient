@@ -49,7 +49,7 @@ const CustomFinalField = (props) => {
 const CustomFinalForm = (props) => {
   const { error, onSubmit, submitLabel, errorMessage, loading, extraButtons } = props
   function renderForm(formProps) {
-    const { handleSubmit, pristine, validate, values } = formProps
+    const { handleSubmit, pristine, values } = formProps
     return ( 
       <Form onSubmit={handleSubmit}
       >

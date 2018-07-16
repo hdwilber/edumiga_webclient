@@ -1,7 +1,10 @@
 import { push } from 'react-router-redux'
 import { InstitutionService } from '../../services'
-import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest } from '../utils'
-import { fillData as oppFillData } from '../opportunity/actions'
+import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest,
+} from '../utils'
+import Institution from './types/institution'
+import { saveData } from '../../utils/converters'
+import BaseActions from '../base-actions'
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
@@ -16,8 +19,58 @@ export const ADD_OPPORTUNITY = createActionLabels('INST_ADD_OPPORTUNITY')
 export const REM_OPPORTUNITY = createActionLabels('INST_REM_OPPORTUNITY')
 export const UNSET = 'INST_UNSET'
 export const SET_CURRENT = 'INST_SET'
+export const ADD_CATEGORY = createActionLabels('INST_ADD_CATEGORY')
+export const DEL_CATEGORY = createActionLabels('INST_DEL_CATEGORY')
+
+export const FULL_SAVING = createActionLabels('INST_FULL_SAVING')
+export const SAVE = createActionLabels('INST_SAVE')
 
 const iService = new InstitutionService()
+
+class InstitutionActions extends BaseActions {
+  constructor(services) {
+    super(Institution, services)
+    this.attachMethods()
+  }
+
+  findOne = function(id, options) {
+    const { institution } = this.services
+    const info  = {
+      request: institution.get(id),
+      name: FIND,
+    }
+    return info
+  }
+  
+  delete = function(id, options) {
+    const { opportunity } = this.services
+    return {
+      name: DELETE,
+      request: opportunity.deletex(id)
+    }
+  }
+}
+
+export default InstitutionActions
+
+export function save(data, options) {
+  return (dispatch, getState) => {
+    const result = saveData(Institution, data, options)
+    const request = iService.update(result.savable)
+    result.onHold.forEach(a => {
+      switch(a.name) {
+        case 'logo':
+          const { value } = a
+          if (value.file) {
+            dispatch(uploadLogo(result.savable.id, value.file))
+          }
+          break;
+      }
+    })
+
+    return dispatchRequestActions(dispatch, SAVE, request)
+  }
+}
 
 export function unset() {
   return {
@@ -44,6 +97,18 @@ export function findAllOwned(options) {
     const { account } = getState()
     iService.setSession(account.session)
     const request = iService.getAllOwned()
+    return dispatchRequestActions(dispatch, FIND_ALL, request,
+      {
+      },
+      options)
+  }
+}
+
+export function findAllOwnedResumes(options) {
+  return (dispatch, getState) => {
+    const { account } = getState()
+    iService.setSession(account.session)
+    const request = iService.getAllOwnedResumes()
     return dispatchRequestActions(dispatch, FIND_ALL, request,
       {
         format: function(data) {
@@ -152,9 +217,9 @@ export function findById(id, refresh = false) {
       }
     },
     (payload) => {
-      dispatch(oppFillData({
-        list: payload.institution.opportunities,
-      }))
+      //dispatch(oppFillData({
+        //list: payload.institution.opportunities,
+      //}))
 
       if (refresh) 
         dispatch(push(`/institution/${payload.id}/edit`))
@@ -177,6 +242,15 @@ export function findAllResumes() {
         }
       }
     )
+  }
+}
+
+export function addCategory(id, cat) {
+  return (dispatch, getState) => {
+    const { account } = getState
+    iService.setSession(account.session)
+    const request = iService.addCategory(id, cat.id)
+    return dispatchRequestActions(dispatch, ADD_CATEGORY, request)
   }
 }
 
