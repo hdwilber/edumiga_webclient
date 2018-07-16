@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Icon, Button, Grid, Header, Segment } from 'semantic-ui-react'
-
 import { InputImage } from '../../../components/media'
 import { 
   FormGeneral,
@@ -10,7 +9,6 @@ import {
 } from '../../../components/institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
-import * as opportunityActions from '../../../redux/opportunity/actions'
 import * as categoryActions from '../../../redux/category/actions'
 
 import { List as InstList } from '../../../components/institution'
@@ -48,6 +46,9 @@ class Editor extends React.PureComponent {
     const { match } = this.props
     const { institutionId } = match.params
     this.findInstitution(institutionId)
+    const { typesManager: { institution, opportunity } } = this.props
+    opportunity.getTypes()
+    institution.getTypes()
   }
 
   findInstitution(id) {
@@ -345,16 +346,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   dispatch(categoryActions.findAll())
-  dispatch(institutionActions.getTypes())
-  dispatch(opportunityActions.getTypes())
+  //dispatch(institutionActions.getTypes())
   dispatch(institutionActions.findAllOwned())
 
   return {
-    find: (id, opts) => dispatch(institutionActions.findById(id, opts)),
-    save: (data, opts) => dispatch(institutionActions.save(data, opts)),
-    create: (data, opts) => dispatch(institutionActions.create(data, opts)),
-    update: (data, opts) => dispatch(institutionActions.update(data, opts)),
-    delete: (data, opts) => dispatch(institutionActions.deleteI(data, opts)),
   }
 }
 

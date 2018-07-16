@@ -46,8 +46,10 @@ class Editor extends React.PureComponent {
   componentDidMount() {
     const { match } = this.props
     const { opportunityId } = match.params
-
     this.findOpportunity(opportunityId)
+
+    const { typesManager: { opportunity } } = this.props
+    opportunity.getTypes()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -253,7 +255,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  dispatch(opportunityActions.getTypes())
+  //dispatch(opportunityActions.getTypes())
   dispatch(institutionActions.findAllOwned())
 
   return {

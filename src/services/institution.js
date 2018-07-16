@@ -112,7 +112,7 @@ class Institution extends Service {
   }
 
   getTypes() {
-    return this.createRequest('GET', `/types`, null, false)
+    return this.createRequest('GET', `types`, null, false)
   }
 
   addDependency(id, data) {

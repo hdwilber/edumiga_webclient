@@ -1,8 +1,5 @@
 import { OpportunityService, CourseService } from '../../services'
-import { 
-  dispatchRequestActions,
-  handleRequestEmptyO, handleRequestO,createActionLabels, handleRequest, handleRequestEmpty,
-} from '../utils'
+import { createActionLabels } from '../utils'
 
 import { fillData as courseFillData } from '../course/actions'
 import { saveData } from '../../utils/converters'
@@ -55,6 +52,14 @@ class OpportunityActions extends BaseActions {
     return info
   }
 
+  getTypes = function () {
+    const { opportunity } = this.services
+    const info = {
+      request: opportunity.getTypes(),
+      name: Names.GET_TYPES
+    }
+  }
+
   delete = function(id, options) {
     const { opportunity } = this.services
     return {
@@ -82,12 +87,12 @@ export default OpportunityActions
   //}
 //}
 
-export function getTypes(type) {
-  return (dispatch, getState) => {
-    const request = oService.getTypes()
-    return handleRequest(dispatch, getState, GET_TYPES, request)
-  }
-}
+//export function getTypes(type) {
+  //return (dispatch, getState) => {
+    //const request = oService.getTypes()
+    //return handleRequest(dispatch, getState, GET_TYPES, request)
+  //}
+//}
 
 
 //export function fillData(data) {

@@ -42,6 +42,15 @@ class InstitutionActions extends BaseActions {
     return info
   }
   
+  getTypes = function() {
+    const { institution } = this.services
+    const info = {
+      request: institution.getTypes(),
+      name: GET_TYPES
+    }
+    return info
+  }
+
   delete = function(id, options) {
     const { opportunity } = this.services
     return {
@@ -85,12 +94,12 @@ export function setCurrent(institution) {
   }
 }
 
-export function getTypes() {
-  return (dispatch, getState) => {
-    const request = iService.getTypes()
-    return handleRequest(dispatch, getState, GET_TYPES, request)
-  }
-}
+//export function getTypes() {
+  //return (dispatch, getState) => {
+    //const request = iService.getTypes()
+    //return handleRequest(dispatch, getState, GET_TYPES, request)
+  //}
+//}
 
 export function findAllOwned(options) {
   return (dispatch, getState) => {
