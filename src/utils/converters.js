@@ -1,5 +1,3 @@
-//import { setDefault } from './defaults'
-
 function _getValue(names, type, value) {
   if (names.length > 0) {
     const formatted = names.reduce( (acc, name) => {
@@ -7,7 +5,6 @@ function _getValue(names, type, value) {
       acc[name] = format(type[name], subValue)
       return acc
     }, {})
-
     return formatted
   }
   return value || type.default 
@@ -26,7 +23,7 @@ export function format(type, value){
     const arrayFormatted = value.map(val => {
 
       if (fieldType._format) {
-        if (value) {
+        if (val) {
           return fieldType._format(val)
         }
         return fieldType.default
@@ -44,6 +41,28 @@ export function format(type, value){
   }
   return _getValue(names, fieldType, value)
 }
+
+export function save(type, value, options = {}) {
+  const isArrayType = type instanceof Array
+  const fieldType = isArrayType ? type[0]: type
+
+  const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
+
+  const children = names.reduce((acc, name) => {
+    const subType = fieldType[name]
+    if(subType._save) {
+      const partial = save(subType, value[name], options)
+      if (partial) return partial
+    }
+    acc[name] = value
+    return acc
+  }, {})
+
+  const { _save } = fieldType
+  if (_save) return fieldType._save(value)
+  return value
+}
+
 
 export function buildData(specs, data = {}, options = {}) {
   const names = Object.keys(specs).filter(name => name.indexOf('_'))
@@ -162,7 +181,6 @@ export function doRequests(specs, info, data) {
         }
       })
       .then(data => {
-        //console.log('Got resuls')
         dispatch({
           type: 'TEST_' +name.success,
           payload: {
@@ -196,10 +214,6 @@ export function doRequests(specs, info, data) {
         type: 'RUN_REQUESTS'
       }
     } else {
-      // parent data
-      //console.log('---------------++---')
-      //console.log('Not with Spec')
-      //console.log(info)
       dispatch(doRequests(null, {
         instance: info,
         children: [],

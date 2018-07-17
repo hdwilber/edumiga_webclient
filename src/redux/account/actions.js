@@ -8,11 +8,19 @@ import * as ModalActions from '../modal/actions'
 import BaseActions from '../base-actions'
 import Identity from './types/identity'
 
+export const Names = {
+  FIND: createActionLabels('Identity/find'),
+  CREATE: createActionLabels('Identity/create'),
+  UPDATE: createActionLabels('Identity/Update'),
+  UPLOAD_PHOTO: createActionLabels('Identity/UploadPhoto'),
+}
+
 export const CREATE = createActionTypesObject('ACCOUNT_CREATE')
 export const LOGIN = createActionTypesObject('SESSION_LOGIN')
 export const FIND = createActionTypesObject('ACCOUNT_FIND')
 
 export const LOGOUT = createActionLabels('SESSION_LOGOUT')
+
 export const RESTORE = createActionLabels('SESSION_RESTORE')
 export const IDENTITY_UPDATE = createActionLabels('IDENTITY_UPDATE')
 export const UPLOAD_PHOTO = createActionLabels('IDENTITY_UPLOAD_PHOTO')

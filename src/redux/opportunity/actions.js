@@ -58,6 +58,7 @@ class OpportunityActions extends BaseActions {
       request: opportunity.getTypes(),
       name: Names.GET_TYPES
     }
+    return info
   }
 
   delete = function(id, options) {

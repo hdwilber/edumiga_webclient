@@ -1,5 +1,5 @@
 import { processAction } from './utils'
-import { format, buildData } from '../utils/converters'
+import { save, format, buildData } from '../utils/converters'
 
 class BaseActions {
   constructor(spec, services) {
@@ -10,6 +10,12 @@ class BaseActions {
 
   format(data) {
     const formatted = format(this.spec, data)
+    console.log(formatted)
+    return formatted
+  }
+
+  save(data) {
+    const formatted = save(this.spec, data, {})
     console.log(formatted)
     return formatted
   }

@@ -30,17 +30,19 @@ class Identity extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { identity } = nextProps
-    if (typeof identity !== 'undefined') {
+    const { identity: next } = nextProps
+    if (typeof next !== 'undefined') {
       const { typesManager: { identity }  } = this.props
       this.setState({
-        ...identity.format(identity)
+        ...identity.format(next)
       })
     }
   }
   
   handleClickSave = () => {
-    console.log('handle click save')
+    const { typesManager: {  identity } } = this.props
+    identity.save(this.state)
+    //console.log('handle click save')
     //const { account, identityUpdate } = this.props
     //const { identity } = account
     //if (identity) {
@@ -64,8 +66,9 @@ class Identity extends React.Component {
   }
 
   render() {
+    console.log('La puta madre')
+    console.log(this.state)
     const { identity, constant } = this.props
-
     if (identity) {
       const { photo } = this.state
       return (

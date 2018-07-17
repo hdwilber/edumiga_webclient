@@ -6,6 +6,14 @@ import Institution from './types/institution'
 import { saveData } from '../../utils/converters'
 import BaseActions from '../base-actions'
 
+export const Names = {
+  FIND: createActionLabels('Inst/Find'),
+  CREATE: createActionLabels('Inst/Create'),
+  UPDATE: createActionLabels('Inst/Update'),
+  DELETE: createActionLabels('Inst/Delete'),
+  GET_TYPES: createActionLabels('Inst/GetTypes'),
+}
+
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
 export const LIST = createActionLabels('INST_LIST')
@@ -36,8 +44,8 @@ class InstitutionActions extends BaseActions {
   findOne = function(id, options) {
     const { institution } = this.services
     const info  = {
+      name: Names.FIND,
       request: institution.get(id),
-      name: FIND,
     }
     return info
   }
@@ -46,7 +54,7 @@ class InstitutionActions extends BaseActions {
     const { institution } = this.services
     const info = {
       request: institution.getTypes(),
-      name: GET_TYPES
+      name: Names.GET_TYPES
     }
     return info
   }

@@ -19,7 +19,7 @@ class FastEditor extends React.PureComponent {
 
     if (typeof value !== 'undefined') {
       const { specs } = this.props
-      const newValue = value || format(specs, null)
+      const newValue = value || null
       this.setState({
         ...newValue,
         isNew: !value,
@@ -42,7 +42,6 @@ class FastEditor extends React.PureComponent {
 
   handleClickSave = () => {
     const { value, onAction } = this.props
-    //const data = buildData(specs, this.state, constants)
     const data = this.state
     onAction(Actions.save, {
       ref: value,
@@ -57,9 +56,15 @@ class FastEditor extends React.PureComponent {
       onCancel,
       constants = {},
     } = this.props
+    const { isNew } = this.state
 
     return (
-      <Modal onClose={onCancel} open={visible} >
+      <Modal 
+        closeOnDocumentClick={false} 
+        closeOnDimmerClick={false} 
+        onClose={onCancel} open={visible}
+        closeIcon
+      >
         { this.renderHeader() }
         <Modal.Content>
           <Segment>
@@ -77,7 +82,7 @@ class FastEditor extends React.PureComponent {
                 loading={processing}
                 disabled={processing}
               >
-                Add
+                { isNew ? 'Add': 'Update' }
               </Button>
               <Button secondary onClick={onCancel} >Cancel</Button>
             </Button.Group>

@@ -15,6 +15,7 @@ import { List as InstList } from '../../../components/institution'
 import { List as OppList } from '../../../components/opportunity'
 
 import { Actions } from '../../../utils/constants'
+import * as constantsActions from '../../../redux/constants/actions'
 
 import withAuthorization, { UserState } from '../../authorization'
 import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared'
@@ -43,18 +44,19 @@ class Editor extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { match } = this.props
+    const { constantsGet, match } = this.props
     const { institutionId } = match.params
     this.findInstitution(institutionId)
     const { typesManager: { institution, opportunity } } = this.props
     opportunity.getTypes()
     institution.getTypes()
+
+    constantsGet(['countries', 'categories'])
   }
 
   findInstitution(id) {
     if (id) {
       const { typesManager: { institution } } = this.props
-        console.log('finding one')
       institution.findOne(id)
     }
   }
@@ -331,7 +333,7 @@ class Editor extends React.PureComponent {
 }
 
 function mapStateToProps (state) {
-  const { institution, opportunity } = state
+  const { institution, opportunity, constant } = state
   return {
     institution: institution.current,
     institutions: institution.list,
@@ -340,6 +342,7 @@ function mapStateToProps (state) {
       ...institution.constants,
       ...opportunity.constants,
       categories: state.category.list,
+      countries: constant.constants.countries,
     }
   }
 }
@@ -350,6 +353,7 @@ function mapDispatchToProps (dispatch) {
   dispatch(institutionActions.findAllOwned())
 
   return {
+    constantsGet: (list) => dispatch(constantsActions.get(list)),
   }
 }
 
