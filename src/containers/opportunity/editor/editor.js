@@ -81,8 +81,8 @@ class Editor extends React.PureComponent {
   handleSave = () => {
     //const { save, opportunity } = this.props
     //save(this.state, { opportunity } )
-    const { typesManager: { opportunity } } = this.props
-    opportunity.save(this.state)
+    const { opportunity: current, typesManager: { opportunity } } = this.props
+    opportunity.save(this.state, current)
   }
 
   handleInputChange = (e, props) => {

@@ -15,6 +15,7 @@ export const Names = {
   UPDATE: createActionLabels('Opp/Update'),
   DELETE: createActionLabels('Opp/Delete'),
   GET_TYPES: createActionLabels('Opp/GetTypes'),
+  UPLOAD_LOGO: createActionLabels('Opp/UploadLogo'),
 }
 
 export const GET_TYPES = createActionLabels('OPP_GET_TYPES')

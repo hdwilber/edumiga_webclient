@@ -24,17 +24,20 @@ const Type = {
   },
   photo: {
     ...Types.image,
-    _save: function toSave(services, data) {
-      return (parent, options) => {
-        const { id } = parent
-        const { identity } = services
-        const { file } = data
-        const request = identity.uploadPhoto(id, file)
-        return {
-          name: Names.UPLOAD_PHOTO,
-          request,
+    _save: function (services, data) {
+      const { file } = data
+      if (file) {
+        return (parent, options) => {
+          const { id } = parent
+          const { identity } = services
+          const request = identity.uploadPhoto(id, file)
+          return {
+            action: Names.UPLOAD_PHOTO,
+            request,
+          }
         }
       }
+      return null
     }
   },
   _save: function (services, data) {
@@ -42,7 +45,7 @@ const Type = {
       const { identity } = services
       const request = identity.update(data)
       return {
-        name: Names.UPDATE,
+        action: Names.UPDATE,
         request,
       }
     }

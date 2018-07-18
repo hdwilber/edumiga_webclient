@@ -27,6 +27,7 @@ class Identity extends React.Component {
   componentDidMount() {
     const { constantsGet } = this.props
     constantsGet(['countries', 'categories'])
+    console.log(this.props)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -40,16 +41,8 @@ class Identity extends React.Component {
   }
   
   handleClickSave = () => {
-    const { typesManager: {  identity } } = this.props
-    identity.save(this.state)
-    //console.log('handle click save')
-    //const { account, identityUpdate } = this.props
-    //const { identity } = account
-    //if (identity) {
-      //identityUpdate({
-        //...formatOutput(IdTemplate, this.state)
-      //})
-    //}
+    const { identity: initial, typesManager: {  identity } } = this.props
+    identity.save(this.state, initial)
   }
 
   handleInputChange = (e, props) => {
@@ -66,8 +59,6 @@ class Identity extends React.Component {
   }
 
   render() {
-    console.log('La puta madre')
-    console.log(this.state)
     const { identity, constant } = this.props
     if (identity) {
       const { photo } = this.state

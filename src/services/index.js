@@ -1,5 +1,6 @@
 import React from 'react'
 import AccountService from './account'
+import IdentityService from './identity'
 import InstitutionService from './institution'
 import OpportunityService  from './opportunity'
 import CourseService from './course'
@@ -8,6 +9,7 @@ import Service from './service'
 
 export function createApiServices() {
   const services = {
+    identity: new IdentityService(),
     account: new AccountService(),
     institution: new InstitutionService(),
     opportunity: new OpportunityService(),

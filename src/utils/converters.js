@@ -42,26 +42,68 @@ export function format(type, value){
   return _getValue(names, fieldType, value)
 }
 
-export function save(type, value, options = {}) {
+export function save(type, value, oldValue, services, name, options = {}) {
   const isArrayType = type instanceof Array
   const fieldType = isArrayType ? type[0]: type
 
   const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
 
-  const children = names.reduce((acc, name) => {
+  const children = []
+
+  const data = names.reduce((acc, name) => {
     const subType = fieldType[name]
-    if(subType._save) {
-      const partial = save(subType, value[name], options)
-      if (partial) return partial
+    const subFieldType = isArrayType ? subType[0]: subType
+
+    if(subFieldType._save) {
+      const { _save } = subFieldType
+      if (typeof _save === 'function') {
+        children.push(save(subFieldType, value[name], oldValue && oldValue[name], services, name, options))
+      }
+      else if(typeof _save === 'object') {
+        const { name: newName, format } = _save
+        acc[newName] = format(value[name])
+      }
+    } else {
+      acc[name] = value[name]
     }
-    acc[name] = value
+
     return acc
   }, {})
 
   const { _save } = fieldType
-  if (_save) return fieldType._save(value)
-  return value
+  const saveObj = typeof _save === 'function' && _save(services, data)
+
+  return {
+    name,
+    save: saveObj,
+    children,
+  }
 }
+
+export function runSave(tree, parent, options) {
+  return new Promise((resolve, reject) => {
+    const { name, save, children } = tree
+    console.log('Saving: %o', name)
+
+    if (save) {
+      const { action, request } = save(parent, options)
+      request.then(response => {
+        return response.json()
+      })
+      .then(part => {
+        console.log(part)
+        console.log('Why I can')
+        resolve({
+          result: part,
+          children: children.map(child => runSave(child, part, options))
+        })
+      })
+    } else {
+      resolve(null)
+    }
+  })
+}
+
 
 
 export function buildData(specs, data = {}, options = {}) {
