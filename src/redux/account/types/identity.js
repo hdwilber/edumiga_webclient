@@ -24,10 +24,10 @@ const Type = {
   },
   photo: {
     ...Types.image,
-    _save: function (services, data) {
+    _save: function (data, oldData) {
       const { file } = data
       if (file) {
-        return (parent, options) => {
+        return (parent, services, options) => {
           const { id } = parent
           const { identity } = services
           const request = identity.uploadPhoto(id, file)
@@ -40,8 +40,8 @@ const Type = {
       return null
     }
   },
-  _save: function (services, data) {
-    return (parent, options) => {
+  _save: function (data, oldData) {
+    return (parent, services, options) => {
       const { identity } = services
       const request = identity.update(data)
       return {

@@ -42,22 +42,31 @@ export function format(type, value){
   return _getValue(names, fieldType, value)
 }
 
-export function save(type, value, oldValue, services, name, options = {}) {
+export function save(type, value, oldValue, preValue, services, name, options = {}) {
   const isArrayType = type instanceof Array
   const fieldType = isArrayType ? type[0]: type
 
   const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
 
   const children = []
-
   const data = names.reduce((acc, name) => {
     const subType = fieldType[name]
-    const subFieldType = isArrayType ? subType[0]: subType
+    const isArray = Array.isArray(subType)
+    const subFieldType = isArray ? subType[0]: subType
 
     if(subFieldType._save) {
       const { _save } = subFieldType
       if (typeof _save === 'function') {
-        children.push(save(subFieldType, value[name], oldValue && oldValue[name], services, name, options))
+        if (isArray) {
+          const { _preSaveAll } = subFieldType
+          const preValue = _preSaveAll && _preSaveAll(value[name], oldValue[name])
+          const list = value[name].map((val, index) => {
+            return save(subFieldType, val, oldValue[name][index], preValue, services, name, options)
+          })
+          children.push(list)
+        } else {
+          children.push(save(subFieldType, value[name], oldValue && oldValue[name], {}, services, name, options))
+        }
       }
       else if(typeof _save === 'object') {
         const { name: newName, format } = _save
@@ -71,31 +80,57 @@ export function save(type, value, oldValue, services, name, options = {}) {
   }, {})
 
   const { _save } = fieldType
-  const saveObj = typeof _save === 'function' && _save(services, data)
+  const saveObj = (Object.keys(data).length) 
+    ? typeof _save === 'function' && _save(data, oldValue[name], preValue)
+    : _save(value, oldValue, preValue)
 
   return {
     name,
     save: saveObj,
     children,
   }
+
+
 }
 
-export function runSave(tree, parent, options) {
+export function runSave(tree, parent, services, options) {
+  if (Array.isArray(tree)) {
+    const requests = tree.map( subTree => {
+      return new Promise((resolve, reject) => {
+        const { name, save, children } = subTree
+        console.log('Saving: %o', name)
+
+        if (save) {
+          const { action, request } = save(parent, services, options)
+          request.then(response => {
+            return response.json()
+          })
+          .then(part => {
+            resolve({
+              result: part,
+              children: children.map(child => runSave(child, part, services, options))
+            })
+          })
+        } else {
+          resolve(null)
+        }
+      })
+    })
+    return Promise.all(requests)
+  }
   return new Promise((resolve, reject) => {
     const { name, save, children } = tree
     console.log('Saving: %o', name)
 
     if (save) {
-      const { action, request } = save(parent, options)
+      const { action, request } = save(parent, services, options)
       request.then(response => {
         return response.json()
       })
       .then(part => {
-        console.log(part)
-        console.log('Why I can')
         resolve({
           result: part,
-          children: children.map(child => runSave(child, part, options))
+          children: children.map(child => runSave(child, part, services, options))
         })
       })
     } else {

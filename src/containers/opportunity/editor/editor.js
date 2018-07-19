@@ -79,8 +79,6 @@ class Editor extends React.PureComponent {
   }
 
   handleSave = () => {
-    //const { save, opportunity } = this.props
-    //save(this.state, { opportunity } )
     const { opportunity: current, typesManager: { opportunity } } = this.props
     opportunity.save(this.state, current)
   }

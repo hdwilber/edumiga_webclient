@@ -18,8 +18,6 @@ const Type = {
     _save: {
       name: 'institutionId',
       format:  (value) => {
-        console.log('Instituttionasfsdkfjalsdkfjaskf')
-        console.log(value)
         return value ? value.value: null
       }
     }
@@ -33,10 +31,10 @@ const Type = {
   degrees: [Types.string],
   logo: {
     ...Types.image,
-    _save: function (services, data) {
+    _save: function (data, oldData) {
       const { file } = data
       if (file) {
-        return (parent, options) => {
+        return (parent, services, options) => {
           const { id } = parent
           const { opportunity } = services
           const request = opportunity.uploadLogo(id, file)
@@ -49,12 +47,32 @@ const Type = {
       return null
     }
   },
-  courses: [Course],
-  _save: (services, data) => {
+  courses: [{
+    ...Course,
+    _save: function(data, oldData) {
+      console.log('Saving course: %o', data.name)
+      return (parent, services, options) => {
+        console.log(parent)
+        const { id } = data
+        const { course } = services
+        const isNew = id.indexOf('fake') === 0
+        console.log('with new oppo Id: %o', parent.id)
+        const  request = isNew 
+          ? course.create({...data, opportunityId: parent.id})
+          : course.update(data)
+
+        return {
+          action: isNew ? Names.ADD_COURSE: Names.UPDATE_COURSE,
+          request
+        }
+      }
+    },
+  }],
+  _save: (data, oldData) => {
     const { id }  = data
     const isNew = id.indexOf('fake') === 0
     
-    return (parent, options) => {
+    return (parent, services, options) => {
       const { opportunity } = services
       const request = opportunity.update(data)
       return {
