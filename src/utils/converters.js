@@ -42,55 +42,63 @@ export function format(type, value){
   return _getValue(names, fieldType, value)
 }
 
-export function save(type, value, oldValue, preValue, services, name, options = {}) {
-  const isArrayType = type instanceof Array
+export function save(type, name, value, old, options) {
+  const isArrayType = Array.isArray(type)
   const fieldType = isArrayType ? type[0]: type
-
-  const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
-
   const children = []
-  const data = names.reduce((acc, name) => {
-    const subType = fieldType[name]
-    const isArray = Array.isArray(subType)
-    const subFieldType = isArray ? subType[0]: subType
-
-    if(subFieldType._save) {
-      const { _save } = subFieldType
-      if (typeof _save === 'function') {
-        if (isArray) {
-          const { _preSaveAll } = subFieldType
-          const preValue = _preSaveAll && _preSaveAll(value[name], oldValue[name])
-          const list = value[name].map((val, index) => {
-            return save(subFieldType, val, oldValue[name][index], preValue, services, name, options)
-          })
-          children.push(list)
-        } else {
-          children.push(save(subFieldType, value[name], oldValue && oldValue[name], {}, services, name, options))
-        }
-      }
-      else if(typeof _save === 'object') {
-        const { name: newName, format } = _save
-        acc[newName] = format(value[name])
-      }
-    } else {
-      acc[name] = value[name]
-    }
-
-    return acc
-  }, {})
 
   const { _save } = fieldType
-  const saveObj = (Object.keys(data).length) 
-    ? typeof _save === 'function' && _save(data, oldValue[name], preValue)
-    : _save(value, oldValue, preValue)
+  if (_save ) {
+    const { isAtomic, name: newName, format, create, before, after } = _save
+    if (isArrayType) {
+      if (isAtomic) {
+        const newValue = format ? format(value, old) : value
+        console.log('before to 1')
+        return {
+          name: newName || name,
+          save: create ? create(newValue, old): null,
+          children: []
+        }
+      } else {
+        const { beforeAll } = _save
+        return value.map((val, index) => {
+          const oldVal = old && old[index]
+          const newVal = format ? format(val, oldVal) : val
+          return save(fieldType, `${name}:${index}`, newVal, oldVal, options)
+        })
+      }
+    } else {
+      const children = []
+      const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
+      const data = names.reduce((acc, name) => {
+        const subValue = value[name]
+        const subOldValue = old && old[name]
+        const subType = fieldType[name]
+        const isArray = Array.isArray(subType)
+        const subFieldType = isArray ? subType[0]: subType
 
-  return {
-    name,
-    save: saveObj,
-    children,
+        const { _save: _subSave } = subFieldType
+
+        if (_subSave) {
+          const { isAtomic, name: newName, format, create, } = _subSave
+          if (create) {
+            children.push(save(subType, name, subValue, subOldValue, options))
+          } else {
+            acc[newName || name] = format ? format(subValue, subOldValue) : subValue
+          }
+        } else {
+          acc[name] = subValue
+        }
+        return acc
+      }, {})
+
+      return {
+        name,
+        children,
+        save: create ?  create(value, old, data) : null
+      }
+    }
   }
-
-
 }
 
 export function runSave(tree, parent, services, options) {
@@ -102,15 +110,21 @@ export function runSave(tree, parent, services, options) {
 
         if (save) {
           const { action, request } = save(parent, services, options)
-          request.then(response => {
-            return response.json()
-          })
-          .then(part => {
-            resolve({
-              result: part,
-              children: children.map(child => runSave(child, part, services, options))
+          if (request) {
+            request.then(response => {
+              return response.json()
             })
-          })
+            .then(part => {
+              resolve({
+                result: part,
+                children: children.map(child => runSave(child, part, services, options))
+              })
+            })
+          } else {
+            console.log('not a request')
+            console.log(action)
+            resolve(null)
+          }
         } else {
           resolve(null)
         }
@@ -124,20 +138,89 @@ export function runSave(tree, parent, services, options) {
 
     if (save) {
       const { action, request } = save(parent, services, options)
-      request.then(response => {
-        return response.json()
-      })
-      .then(part => {
-        resolve({
-          result: part,
-          children: children.map(child => runSave(child, part, services, options))
+      if (request) {
+        request.then(response => {
+          return response.json()
         })
-      })
+        .then(part => {
+          resolve({
+            result: part,
+            children: children.map(child => runSave(child, part, services, options))
+          })
+        })
+      } else {
+        console.log(action)
+        console.log('something wrong')
+        console.log(request)
+        resolve(null)
+      }
     } else {
       resolve(null)
     }
   })
 }
+
+//export function save(type, value, oldValue, preValue, services, name, options = {}) {
+  //const isArrayType = type instanceof Array
+  //const fieldType = isArrayType ? type[0]: type
+
+  //const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
+
+  //const children = []
+  //const data = names.reduce((acc, name) => {
+    //const subType = fieldType[name]
+    //const isArray = Array.isArray(subType)
+    //const subFieldType = isArray ? subType[0]: subType
+
+    //if(subFieldType._save) {
+      //const { _save } = subFieldType
+      //if (typeof _save === 'function') {
+        //if(isArray) {
+          //const { _preSaveAll, _asUnit }  = subFieldType
+          //if (_asUnit) {
+            //const preValue = _preSaveAll && _preSaveAll(value[name], oldValue[name])
+            //children.push(subFieldType, value[name], oldValue, preValue, services, name, options)
+          //} else {
+            //const { _preSaveAll } = subFieldType
+            //const preValue = _preSaveAll && _preSaveAll(value[name], oldValue[name])
+            //const list = value[name].map((val, index) => {
+              //return save(subFieldType, val, oldValue[name][index], preValue, services, name, options)
+            //})
+            //children.push(list)
+          //}
+        //} else {
+          //children.push(save(subFieldType, value[name], oldValue && oldValue[name], {}, services, name, options))
+        //}
+      //}
+      //else if(typeof _save === 'object') {
+        //const { name: newName, format } = _save
+        //acc[newName] = format(value[name])
+      //}
+    //} else {
+      //acc[name] = value[name]
+    //}
+
+    //return acc
+  //}, {})
+
+  //const { _save, _beforeSaveAll } = fieldType
+  //const hasNames = !Object.keys(data).length
+  //const saveObj = hasNames
+    //? typeof _save === 'function' && _save(data, oldValue[name], preValue)
+    //: _save(value, oldValue, preValue)
+
+  //const beforeSave = typeof _beforeSaveAll=== 'function' ? _beforeSaveAll(value, oldValue[name], preValue)
+    //: null
+
+  //return {
+    //name,
+    //beforeSave,
+    //save: saveObj,
+    //children,
+  //}
+
+
+//}
 
 
 

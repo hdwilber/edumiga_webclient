@@ -14,14 +14,17 @@ class BaseActions {
   }
 
   save(data, oldData) {
-    const savingSpecs = save(this.spec, data, oldData, {}, this.services, null, {})
+    const savingSpecs = save(this.spec, 'Root', data, oldData, {})
+    //const newsavingSpecs = newSave(this.spec, 'root', data, oldData, {})
     // Specs to save
     console.log(savingSpecs)
+
     const promise = runSave(savingSpecs, {}, this.services, {})
-    promise.then(data => {
-      console.log('finsihed')
-      console.log(data)
-    })
+
+    //promise.then(data => {
+      //console.log('finsihed')
+      //console.log(data)
+    //})
     return {}
   }
 

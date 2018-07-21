@@ -31,53 +31,57 @@ const Type = {
   degrees: [Types.string],
   logo: {
     ...Types.image,
-    _save: function (data, oldData) {
-      const { file } = data
-      if (file) {
-        return (parent, services, options) => {
-          const { id } = parent
-          const { opportunity } = services
-          const request = opportunity.uploadLogo(id, file)
-          return {
-            action: Names.UPLOAD_PHOTO,
-            request,
+    _save: { 
+      create: function (data, oldData) {
+        const { file } = data
+        if (file) {
+          return (parent, services, options) => {
+            const { id } = parent
+            const { opportunity } = services
+            const request = opportunity.uploadLogo(id, file)
+            return {
+              action: Names.UPLOAD_PHOTO,
+              request,
+            }
           }
         }
+        return null
       }
-      return null
     }
   },
   courses: [{
     ...Course,
-    _save: function(data, oldData) {
-      console.log('Saving course: %o', data.name)
-      return (parent, services, options) => {
-        console.log(parent)
-        const { id } = data
-        const { course } = services
-        const isNew = id.indexOf('fake') === 0
-        console.log('with new oppo Id: %o', parent.id)
-        const  request = isNew 
-          ? course.create({...data, opportunityId: parent.id})
-          : course.update(data)
+    _save: {
+      create: function(value, old, data) {
+        console.log('Saving course: %o', data.name)
+        return (parent, services, options) => {
+          const { id } = data
+          const { course } = services
+          const isNew = id.indexOf('fake') === 0
+          const  request = isNew 
+            ? course.create({...data, opportunityId: parent.id})
+            : course.update(data)
 
-        return {
-          action: isNew ? Names.ADD_COURSE: Names.UPDATE_COURSE,
-          request
+          return {
+            action: isNew ? Names.ADD_COURSE: Names.UPDATE_COURSE,
+            request
+          }
         }
-      }
-    },
+      },
+    }
   }],
-  _save: (data, oldData) => {
-    const { id }  = data
-    const isNew = id.indexOf('fake') === 0
-    
-    return (parent, services, options) => {
-      const { opportunity } = services
-      const request = opportunity.update(data)
-      return {
-        action: isNew ? Names.CREATE: Names.UPDATE,
-        request,
+  _save: {
+    create: (value, old, data) => {
+      const { id }  = data
+      const isNew = id.indexOf('fake') === 0
+      console.log('Opportunity will save: %o ', data)
+      return (parent, services, options) => {
+        const { opportunity } = services
+        const request = opportunity.update(data)
+        return {
+          action: isNew ? Names.CREATE: Names.UPDATE,
+          request,
+        }
       }
     }
   }

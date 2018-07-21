@@ -22,53 +22,53 @@ const Type = {
     _format: function (value) {
       return value.id
     },
-    _preSaveAll: function (value, oldValue = []) {
-      const remove = []
-      const add = []
+    _save: {
+      isAtomic: true,
+      create: function (value = [], oldValue = []) {
+        const add = []
+        const remove = []
 
-      value.forEach(val => {
-        const exists = oldValue.find(oval => val === oval.id)
-        if (!exists) {
-          add.push(val)
+        value.forEach(val => {
+          const exists = oldValue.find(oval => val === oval.id)
+          if (!exists) {
+            add.push(val)
+          }
+        })
+
+        oldValue.forEach(oval => {
+          const exists = value.find(val => val === oval.id)
+          if (!exists) {
+            remove.push(oval.id)
+          }
+        })
+
+        if (add.length === 0 && remove.length === 0) {
+          return null
         }
-      })
 
-      oldValue.forEach(oval => {
-        const exists = value.find(val => val === oval.id)
-        if (!exists) {
-          remove.push(oval.id)
-        }
-      })
-      return {
-        remove,
-        add,
-      }
-    },
-    _save: function (value, oldValue, preValue) {
-      const remove = preValue.remove.find(pv => value === pv)
-      const add = preValue.add.find(pv => value === pv)
-
-      if (add && !remove) {
-        return function(parent, services, options) {
+        return (parent, services, options) => {
           const { id } = parent
           const { course } = services
-          return {
+
+          const main = add.map(e => ({
             action: Names.ADD_PRE,
-            request: course.addPrerequisite(id, value),
-          }
-        }
-      } else if (!add && remove) {
-        return function(parent, services, options) {
-          const { id } = parent
-          const { course } = services
-          return {
-            action: Names.DEL_PRE,
-            request: course.delPrerequisite(id, value),
+            request: course.addPrerequisite(id, e)
+          }))
+
+          if (remove.length === 0) {
+            return main
+          } else {
+            const first = [{
+              action: Names.DEL_PRE,
+              request: course.delAllPrerequisites(id)
+            }]
+            console.log('A complete one')
+            console.log(first.concat(main))
+            return first.concat(main)
           }
         }
       }
-      return null
-    },
+    }
   }],
 }
 
