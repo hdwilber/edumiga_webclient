@@ -24,16 +24,8 @@ const Type = {
     },
     _save: {
       isAtomic: true,
-      create: function (value = [], oldValue = []) {
-        const add = []
+      beforeAll: function (value = [], oldValue = []) {
         const remove = []
-
-        value.forEach(val => {
-          const exists = oldValue.find(oval => val === oval.id)
-          if (!exists) {
-            add.push(val)
-          }
-        })
 
         oldValue.forEach(oval => {
           const exists = value.find(val => val === oval.id)
@@ -42,31 +34,42 @@ const Type = {
           }
         })
 
-        if (add.length === 0 && remove.length === 0) {
+        if (remove.length === 0) {
           return null
         }
 
         return (parent, services, options) => {
-          const { id } = parent
           const { course } = services
-
-          const main = add.map(e => ({
-            action: Names.ADD_PRE,
-            request: course.addPrerequisite(id, e)
-          }))
-
-          if (remove.length === 0) {
-            return main
-          } else {
-            const first = [{
-              action: Names.DEL_PRE,
-              request: course.delAllPrerequisites(id)
-            }]
-            console.log('A complete one')
-            console.log(first.concat(main))
-            return first.concat(main)
+          const { id } = parent
+          return {
+            action: Names.DEL_PRE,
+            request: course.delAllPrerequisites(id)
           }
         }
+      },
+
+      create: function (value = [], oldValue = []) {
+        const add = []
+        value.forEach(val => {
+          const exists = oldValue.find(oval => val === oval.id)
+          if (!exists) {
+            add.push(val)
+          }
+        })
+
+        if (add.length > 0) {
+          return (parent, services, options) => {
+            console.log('Calling this one')
+            const { id } = parent
+            const { course } = services
+
+            return add.map(tid => ({
+              action: Names.ADD_PRE,
+              request: course.addPrerequisite(id, tid)
+            }))
+          }
+        }
+        return null
       }
     }
   }],

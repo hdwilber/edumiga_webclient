@@ -19,6 +19,9 @@ const Type = {
       name: 'institutionId',
       format:  (value) => {
         return value ? value.value: null
+      },
+      check: ({value}, oldValue) => {
+        return (value !== oldValue.id)
       }
     }
   },
@@ -53,7 +56,7 @@ const Type = {
     ...Course,
     _save: {
       create: function(value, old, data) {
-        console.log('Saving course: %o', data.name)
+        console.log('Saving course: %o', old.name)
         return (parent, services, options) => {
           const { id } = data
           const { course } = services
@@ -73,16 +76,19 @@ const Type = {
   _save: {
     create: (value, old, data) => {
       const { id }  = data
-      const isNew = id.indexOf('fake') === 0
-      console.log('Opportunity will save: %o ', data)
-      return (parent, services, options) => {
-        const { opportunity } = services
-        const request = opportunity.update(data)
-        return {
-          action: isNew ? Names.CREATE: Names.UPDATE,
-          request,
+      if (id) {
+        const isNew = id.indexOf('fake') === 0
+        console.log('Opportunity will save: %o ', data)
+        return (parent, services, options) => {
+          const { opportunity } = services
+          const request = opportunity.update(data)
+          return {
+            action: isNew ? Names.CREATE: Names.UPDATE,
+            request,
+          }
         }
       }
+      return null
     }
   }
 }

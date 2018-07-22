@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 function _getValue(names, type, value) {
   if (names.length > 0) {
     const formatted = names.reduce( (acc, name) => {
@@ -49,18 +51,17 @@ export function save(type, name, value, old, options) {
 
   const { _save } = fieldType
   if (_save ) {
-    const { isAtomic, name: newName, format, create, before, after } = _save
+    const { isAtomic, name: newName, check, format, create, beforeAll, after } = _save
     if (isArrayType) {
       if (isAtomic) {
         const newValue = format ? format(value, old) : value
-        console.log('before to 1')
         return {
           name: newName || name,
           save: create ? create(newValue, old): null,
+          beforeAll: beforeAll ? beforeAll(newValue, old): null,
           children: []
         }
       } else {
-        const { beforeAll } = _save
         return value.map((val, index) => {
           const oldVal = old && old[index]
           const newVal = format ? format(val, oldVal) : val
@@ -69,8 +70,10 @@ export function save(type, name, value, old, options) {
       }
     } else {
       const children = []
+
       const names = Object.keys(fieldType).filter(name => (name.indexOf('_') && name.indexOf('default')))
       const data = names.reduce((acc, name) => {
+
         const subValue = value[name]
         const subOldValue = old && old[name]
         const subType = fieldType[name]
@@ -80,22 +83,40 @@ export function save(type, name, value, old, options) {
         const { _save: _subSave } = subFieldType
 
         if (_subSave) {
-          const { isAtomic, name: newName, format, create, } = _subSave
+          const { isAtomic, name: newName, format, create, check } = _subSave
           if (create) {
             children.push(save(subType, name, subValue, subOldValue, options))
           } else {
-            acc[newName || name] = format ? format(subValue, subOldValue) : subValue
+            const subFormatted = format ? format(subValue, subOldValue) : subValue
+            if (check) {
+              if (check(subValue, subOldValue))
+                acc[newName || name] = subFormatted
+            } else {
+              acc[newName || name] = subFormatted
+            }
           }
         } else {
-          acc[name] = subValue
+          const isEqual = _.isEqual(subValue, subOldValue)
+          if (!isEqual)
+            acc[name] = subValue
         }
         return acc
       }, {})
 
+      if (value['id']) {
+        data.id = value['id']
+      }
+
+      const newNamesCount = Object.keys(data).length
+
       return {
         name,
+        old,
+        value,
+        data,
         children,
-        save: create ?  create(value, old, data) : null
+        beforeAll: newNamesCount > 1 && beforeAll ? beforeAll(value, old): null,
+        save: newNamesCount > 1 && create ? create(value, old, data) : null
       }
     }
   }
@@ -105,9 +126,40 @@ export function runSave(tree, parent, services, options) {
   if (Array.isArray(tree)) {
     const requests = tree.map( subTree => {
       return new Promise((resolve, reject) => {
-        const { name, save, children } = subTree
-        console.log('Saving: %o', name)
+        const { name, save, beforeAll, children } = subTree
 
+        if (beforeAll) {
+          const resBeforeAll = beforeAll(parent, services, options)
+
+          if (resBeforeAll) {
+            const { action, request } = resBeforeAll
+            console.log(tree)
+            request.then(res => res.json())
+            .then(subData => {
+              if (save) {
+                const { action, request } = save(parent, services, options)
+                if (request) {
+                  request.then(response => {
+                    return response.json()
+                  })
+                  .then(part => {
+                    resolve({
+                      result: part,
+                      children: children.map(child => runSave(child, part, services, options))
+                    })
+                  })
+                } else {
+                  console.log('not a request')
+                  console.log(action)
+                  console.log(name)
+                  resolve(null)
+                }
+              } else {
+                resolve(null)
+              }
+            })
+          }
+        }
         if (save) {
           const { action, request } = save(parent, services, options)
           if (request) {
@@ -133,29 +185,59 @@ export function runSave(tree, parent, services, options) {
     return Promise.all(requests)
   }
   return new Promise((resolve, reject) => {
-    const { name, save, children } = tree
+    const { name, save, children, beforeAll } = tree
     console.log('Saving: %o', name)
 
-    if (save) {
-      const { action, request } = save(parent, services, options)
-      if (request) {
-        request.then(response => {
-          return response.json()
-        })
-        .then(part => {
-          resolve({
-            result: part,
-            children: children.map(child => runSave(child, part, services, options))
-          })
-        })
-      } else {
-        console.log(action)
-        console.log('something wrong')
-        console.log(request)
-        resolve(null)
+    if (beforeAll) {
+      const resBeforeAll = beforeAll(parent, services, options)
+
+      if (resBeforeAll) {
+        const { action, request } = resBeforeAll
+
+        if (save) {
+          const { action, request } = save(parent, services, options)
+          if (request) {
+            request.then(response => {
+              return response.json()
+            })
+            .then(part => {
+              resolve({
+                result: part,
+                children: children.map(child => runSave(child, part, services, options))
+              })
+            })
+          } else {
+            console.log(action)
+            console.log('something wrong')
+            console.log(request)
+            resolve(null)
+          }
+        } else {
+          resolve(null)
+        }
       }
     } else {
-      resolve(null)
+      if (save) {
+        const { action, request } = save(parent, services, options)
+        if (request) {
+          request.then(response => {
+            return response.json()
+          })
+          .then(part => {
+            resolve({
+              result: part,
+              children: children.map(child => runSave(child, part, services, options))
+            })
+          })
+        } else {
+          console.log(action)
+          console.log('something wrong')
+          console.log(request)
+          resolve(null)
+        }
+      } else {
+        resolve(null)
+      }
     }
   })
 }
