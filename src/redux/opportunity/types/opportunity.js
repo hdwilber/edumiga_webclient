@@ -79,7 +79,7 @@ const Type = {
       if (id) {
         const isNew = id.indexOf('fake') === 0
         console.log('Opportunity will save: %o ', data)
-        return (parent, services, options) => {
+        return (services, options, parent, ) => {
           const { opportunity } = services
           const request = opportunity.update(data)
           return {

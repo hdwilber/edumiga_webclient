@@ -122,6 +122,64 @@ export function save(type, name, value, old, options) {
   }
 }
 
+export async function runSave2(node, parent, services, options) {
+  const { name, old, value, data, children, beforeAll, save } = node
+
+  const beforeSaveInfo = beforeAll && beforeAll(services, options, parent, value, old, data)
+  const results = {}
+  const info = { beforeAll: beforeSaveInfo }
+
+  if (beforeSaveInfo) {
+    const { action, request } = beforeSaveInfo
+    const beforeResponse = await request
+    if (beforeResponse.ok) {
+      const beforeResult = await beforeResponse.json()
+      results.beforeAll = beforeResult
+
+      const saveInfo = save && save(services, options, parent, value, old, data, results)
+      info.save = saveInfo
+      if (saveInfo) {
+        const { action, request } = saveInfo
+        const saveResponse = await request
+        if (saveResponse.ok) {
+          results.save = await request.json()
+        }
+      } else {
+        console.log('%o : finished with BeforeOnly', name)
+      }
+    }
+  } else {
+    const saveInfo = save && save(services, options, parent, value, old, data, results)
+    info.save = saveInfo
+    if (saveInfo) {
+      const { action, request } = saveInfo
+      const saveResponse = await request
+      if (saveResponse.ok) {
+        results.save = await request.json()
+      }
+    } else {
+      console.log('%o : finished with BeforeOnly', name)
+    }
+  }
+  const childrenProcess = children.map(child => {
+    return runSave2(child, results, services, options)
+  })
+
+  const childrenResults = await Promise.all(childrenProcess)
+
+  return {
+    before: {
+      info: info.beforeAll,
+      result: results.beforeAll,
+    },
+    save: {
+      info: info.save,
+      result: results.save,
+    },
+    children: childrenResults
+  }
+}
+
 export function runSave(tree, parent, services, options) {
   if (Array.isArray(tree)) {
     const requests = tree.map( subTree => {

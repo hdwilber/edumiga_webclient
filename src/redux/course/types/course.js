@@ -58,7 +58,7 @@ const Type = {
         })
 
         if (add.length > 0) {
-          return (parent, services, options) => {
+          return (services, options, parent) => {
             console.log('Calling this one')
             const { id } = parent
             const { course } = services

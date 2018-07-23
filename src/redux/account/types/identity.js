@@ -41,7 +41,7 @@ const Type = {
     }
   },
   _save: function (data, oldData) {
-    return (parent, services, options) => {
+    return (services, options, parent) => {
       const { identity } = services
       const request = identity.update(data)
       return {
