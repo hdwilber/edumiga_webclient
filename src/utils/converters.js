@@ -123,7 +123,13 @@ export function save(type, name, value, old, options) {
 }
 
 export async function runSave2(node, parent, services, options) {
+  if (Array.isArray(node)) {
+    return node.map(no => runSave2(no, parent, services, options))
+  }
+
   const { name, old, value, data, children, beforeAll, save } = node
+    //console.log('The name: %o', name)
+    //console.log('The node: %o', node)
 
   const beforeSaveInfo = beforeAll && beforeAll(services, options, parent, value, old, data)
   const results = {}
@@ -134,6 +140,7 @@ export async function runSave2(node, parent, services, options) {
     const beforeResponse = await request
     if (beforeResponse.ok) {
       const beforeResult = await beforeResponse.json()
+        console.log('Partial:  %o', beforeResult)
       results.beforeAll = beforeResult
 
       const saveInfo = save && save(services, options, parent, value, old, data, results)
@@ -142,7 +149,7 @@ export async function runSave2(node, parent, services, options) {
         const { action, request } = saveInfo
         const saveResponse = await request
         if (saveResponse.ok) {
-          results.save = await request.json()
+          results.save = await saveResponse.json()
         }
       } else {
         console.log('%o : finished with BeforeOnly', name)
@@ -155,18 +162,19 @@ export async function runSave2(node, parent, services, options) {
       const { action, request } = saveInfo
       const saveResponse = await request
       if (saveResponse.ok) {
-        results.save = await request.json()
+        console.log(saveResponse)
+        results.save = await saveResponse.json()
+        console.log('Having resutls : %o', results.save)
       }
     } else {
       console.log('%o : finished with BeforeOnly', name)
     }
   }
   const childrenProcess = children.map(child => {
-    return runSave2(child, results, services, options)
+    return runSave2(child, { results, value, old, data } , services, options)
   })
 
   const childrenResults = await Promise.all(childrenProcess)
-
   return {
     before: {
       info: info.beforeAll,

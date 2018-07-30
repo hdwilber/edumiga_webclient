@@ -22,10 +22,12 @@ class BaseActions {
 
     const promise = runSave2(savingSpecs, {}, this.services, {})
 
+    
     promise.then(data => {
-      console.log('finsihed')
+      //console.log('FINSISHED')
       console.log(data)
     })
+    .catch(error => console.log(error))
     return {}
   }
 
