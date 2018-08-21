@@ -1,5 +1,5 @@
 import { processAction } from './utils'
-import { save, format, runSave, runSave2, buildData, } from '../utils/converters'
+import { save, format, saveRun, runSave, runSave2, buildData, } from '../utils/converters'
 
 class BaseActions {
   constructor(spec, services) {
@@ -15,19 +15,18 @@ class BaseActions {
 
   save(data, oldData) {
     const savingSpecs = save(this.spec, 'Root', data, oldData, {})
-    //const newsavingSpecs = newSave(this.spec, 'root', data, oldData, {})
-    // Specs to save
     console.log(savingSpecs)
     console.log('calling the saving funtion')
 
-    const promise = runSave2(savingSpecs, {}, this.services, {})
-
-    
+    const promise = saveRun(savingSpecs, {}, this.services, {})
     promise.then(data => {
-      //console.log('FINSISHED')
+      console.log('FINSISHED')
       console.log(data)
     })
-    .catch(error => console.log(error))
+    .catch(error => {
+      console.log('something went wrong, we are going to solve the issue')
+      console.log(error)
+    })
     return {}
   }
 

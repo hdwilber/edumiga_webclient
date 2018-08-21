@@ -28,7 +28,8 @@ export function format(type, value){
         if (val) {
           return fieldType._format(val)
         }
-        return fieldType.default
+        //return fieldType.default
+        return typeof fieldType.default === 'function' ? fieldType.default() : fieldType.default
       }
       return _getValue(names, fieldType, val)
     })
@@ -39,10 +40,12 @@ export function format(type, value){
     if (value) {
       return fieldType._format(value)
     }
-    return fieldType.default
-  }
+    return typeof fieldType.default === 'function' ? fieldType.default() : fieldType.default
+  } 
+
   return _getValue(names, fieldType, value)
 }
+
 
 export function save(type, name, value, old, options) {
   const isArrayType = Array.isArray(type)
@@ -51,21 +54,18 @@ export function save(type, name, value, old, options) {
 
   const { _save } = fieldType
   if (_save ) {
-    const { isAtomic, name: newName, check, format, create, beforeAll, after } = _save
+    const { isAtomic, name: newName, check, format, create, beforeAll } = _save
+
     if (isArrayType) {
-      if (isAtomic) {
-        const newValue = format ? format(value, old) : value
-        return {
-          name: newName || name,
-          save: create ? create(newValue, old): null,
-          beforeAll: beforeAll ? beforeAll(newValue, old): null,
-          children: []
-        }
-      } else {
-        return value.map((val, index) => {
+      return {
+        name: newName || name,
+        beforeAll: beforeAll ? beforeAll(value, old): null,
+        value,
+        old,
+        data: null,
+        children: value.map((val, index) => {
           const oldVal = old && old[index]
-          const newVal = format ? format(val, oldVal) : val
-          return save(fieldType, `${name}:${index}`, newVal, oldVal, options)
+          return save(fieldType, `${name}:${index}`, val, oldVal, options)
         })
       }
     } else {
@@ -111,15 +111,56 @@ export function save(type, name, value, old, options) {
 
       return {
         name,
-        old,
-        value,
-        data,
+        values: { 
+          old,
+          value,
+          data,
+        },
         children,
-        beforeAll: newNamesCount > 1 && beforeAll ? beforeAll(value, old): null,
         save: newNamesCount > 1 && create ? create(value, old, data) : null
       }
     }
   }
+}
+export async function saveRun(node, parent, services, options) {
+
+  const { beforeAll, name, values, children, save } = node
+  const newParent = { 
+    parent,
+    values,
+  }
+  const beforeAllInfo = beforeAll ? beforeAll(services, options, newParent, values): null
+
+  if (beforeAllInfo) {
+    const { info, request } = beforeAllInfo
+    const beforeAllResponse = await request
+    if (beforeAllResponse.ok) {
+      try {
+        newParent.beforeAll = await beforeAllResponse.json()
+      } catch(e) {
+        console.log('Error here 1')
+      }
+    }
+  }
+
+  const saveInfo = save ? save(services, options, newParent, values) : null
+  if (saveInfo) {
+    const { info, request } = saveInfo
+    const saveResponse = await request
+    if (saveResponse.ok) {
+      try {
+        newParent.save = await saveResponse.json()
+      } catch(e) {
+        console.log('Error here 2')
+      }
+    }
+  }
+
+  newParent.children = await Promise.all(children.map(child => {
+    return  saveRun(child, newParent, services, options)
+  }))
+
+  return newParent
 }
 
 export async function runSave2(node, parent, services, options) {
@@ -131,28 +172,40 @@ export async function runSave2(node, parent, services, options) {
     //console.log('The name: %o', name)
     //console.log('The node: %o', node)
 
-  const beforeSaveInfo = beforeAll && beforeAll(services, options, parent, value, old, data)
+  const beforeSaveInfo = beforeAll && beforeAll(services, options, parent, { value, old, data } )
+
   const results = {}
   const info = { beforeAll: beforeSaveInfo }
 
   if (beforeSaveInfo) {
     const { action, request } = beforeSaveInfo
     const beforeResponse = await request
-    if (beforeResponse.ok) {
-      const beforeResult = await beforeResponse.json()
-        console.log('Partial:  %o', beforeResult)
-      results.beforeAll = beforeResult
+    if (beforeResponse) {
+      if (beforeResponse.ok) {
+        const beforeResult = await beforeResponse.json()
+          console.log('Partial:  %o', beforeResult)
+        results.beforeAll = beforeResult
 
-      const saveInfo = save && save(services, options, parent, value, old, data, results)
-      info.save = saveInfo
-      if (saveInfo) {
-        const { action, request } = saveInfo
-        const saveResponse = await request
-        if (saveResponse.ok) {
-          results.save = await saveResponse.json()
+        const saveInfo = save && save(services, options, parent, value, old, data, results)
+        console.log('Save ingo 1')
+        console.log(saveInfo)
+        info.save = saveInfo
+        if (saveInfo) {
+          const { action, request } = saveInfo
+          const saveResponse = await request
+          if (saveResponse) {
+            if (saveResponse.ok) {
+              try { 
+                results.save = await saveResponse.json()
+              } catch(error) {
+                console.log('something went wrong')
+                results.save = null
+              }
+            }
+          }
+        } else {
+          console.log('%o : finished with BeforeOnly', name)
         }
-      } else {
-        console.log('%o : finished with BeforeOnly', name)
       }
     }
   } else {
@@ -160,11 +213,21 @@ export async function runSave2(node, parent, services, options) {
     info.save = saveInfo
     if (saveInfo) {
       const { action, request } = saveInfo
+        console.log('Save ingo 2')
+        console.log(saveInfo)
       const saveResponse = await request
-      if (saveResponse.ok) {
-        console.log(saveResponse)
-        results.save = await saveResponse.json()
-        console.log('Having resutls : %o', results.save)
+      if (saveResponse) {
+        if (saveResponse.ok) {
+          try { 
+            results.save = await saveResponse.json()
+          } catch(error) {
+            console.log('something went wrong 2')
+            console.log(request)
+            console.log(saveResponse)
+            results.save = null
+          }
+          console.log('Having resutls : %o', results.save || 'Is null')
+        }
       }
     } else {
       console.log('%o : finished with BeforeOnly', name)
@@ -206,13 +269,25 @@ export function runSave(tree, parent, services, options) {
                 const { action, request } = save(parent, services, options)
                 if (request) {
                   request.then(response => {
-                    return response.json()
+                    if (response.ok) {
+                      try { 
+                        return response.json()
+                      } catch(error) {
+                        return Promise.resolve(null)
+                      }
+                    } else {
+                      return Promise.resolve(null)
+                    }
                   })
                   .then(part => {
-                    resolve({
-                      result: part,
-                      children: children.map(child => runSave(child, part, services, options))
-                    })
+                    if (part) {
+                      resolve({
+                        result: part,
+                        children: children.map(child => runSave(child, part, services, options))
+                      })
+                    } else {
+                      resolve(null)
+                    }
                   })
                 } else {
                   console.log('not a request')
@@ -230,13 +305,25 @@ export function runSave(tree, parent, services, options) {
           const { action, request } = save(parent, services, options)
           if (request) {
             request.then(response => {
-              return response.json()
+              if (response.ok) {
+                try { 
+                  return response.json()
+                } catch(error) {
+                  return Promise.resolve(null)
+                }
+              } else {
+                return Promise.resolve(null)
+              }
             })
             .then(part => {
-              resolve({
-                result: part,
-                children: children.map(child => runSave(child, part, services, options))
-              })
+              if (part) {
+                resolve({
+                  result: part,
+                  children: children.map(child => runSave(child, part, services, options))
+                })
+              } else {
+                resolve(null)
+              }
             })
           } else {
             console.log('not a request')
@@ -264,13 +351,25 @@ export function runSave(tree, parent, services, options) {
           const { action, request } = save(parent, services, options)
           if (request) {
             request.then(response => {
-              return response.json()
+              if (response.ok) {
+                try { 
+                  return response.json()
+                } catch(error) {
+                  return Promise.resolve(null)
+                }
+              } else {
+                return Promise.resolve(null)
+              }
             })
             .then(part => {
-              resolve({
-                result: part,
-                children: children.map(child => runSave(child, part, services, options))
-              })
+              if (part) {
+                resolve({
+                  result: part,
+                  children: children.map(child => runSave(child, part, services, options))
+                })
+              } else {
+                resolve(0)
+              }
             })
           } else {
             console.log(action)
@@ -287,13 +386,25 @@ export function runSave(tree, parent, services, options) {
         const { action, request } = save(parent, services, options)
         if (request) {
           request.then(response => {
-            return response.json()
+            if (response.ok) {
+              try { 
+                return response.json()
+              } catch(error) {
+                return Promise.resolve(null)
+              }
+            } else {
+              return Promise.resolve(null)
+            }
           })
           .then(part => {
-            resolve({
-              result: part,
-              children: children.map(child => runSave(child, part, services, options))
-            })
+            if (part) {
+              resolve({
+                result: part,
+                children: children.map(child => runSave(child, part, services, options))
+              })
+            } else {
+              resolve(0)
+            }
           })
         } else {
           console.log(action)

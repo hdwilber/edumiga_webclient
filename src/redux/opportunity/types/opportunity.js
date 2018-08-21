@@ -38,7 +38,7 @@ const Type = {
       create: function (value, old, data) {
         const { file } = data
         if (file) {
-          return (services, options, parent, value, old, data, results) => {
+          return (services, options, parent, { value, old, data }, results) => {
             const { id } = parent
             const { opportunity } = services
             const request = opportunity.uploadLogo(id, file)
@@ -56,8 +56,7 @@ const Type = {
     ...Course,
     _save: {
       create: function(value, old, data) {
-        console.log('Saving course: %o', (value && value.name || old && old.name) )
-        return (services, options, parent, value, old, data, results) => {
+        return (services, options, parent ) => {
           console.log('Results in courses')
           console.log('parent: %o', parent)
           const { id } = data
@@ -66,14 +65,14 @@ const Type = {
           let oppId
 
           if (parent) {
-            const { value, results, old, data } = parent
-            if (results.save && results.save.id) {
-              oppId = results.save.id
+            const { parent: { parent: oppParent } } = parent
+            if (oppParent.values.save && oppParent.values.save.id) {
+              oppId = oppParent.values.save.id
             }
-            else if (value && value.id)
-              oppId = value.id
-            else if (old && old.id)
-              oppId = old.id
+            else if (oppParent.values.value && oppParent.values.value.id)
+              oppId = oppParent.values.value.id
+            else if (oppParent.values.old && oppParent.values.old.id)
+              oppId = oppParent.values.old.id
 
           }
           if (isNew) {
@@ -98,7 +97,7 @@ const Type = {
       if (id) {
         const isNew = id.indexOf('fake') === 0
         console.log('Opportunity will save: %o ', data)
-        return (services, options, parent,  value, old, data, results) => {
+        return (services, options, parent,  { value, old, data }, results) => {
           console.log('Data: %o', data)
           const { opportunity } = services
           const request = opportunity.update(data)

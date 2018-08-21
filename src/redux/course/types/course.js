@@ -23,8 +23,8 @@ const Type = {
       return value.id
     },
     _save: {
-      isAtomic: true,
       beforeAll: function (value = [], oldValue = []) {
+        console.log('Create something')
         const remove = []
 
         oldValue.forEach(oval => {
@@ -38,9 +38,12 @@ const Type = {
           return null
         }
 
-        return (parent, services, options) => {
+        return (services, options, parent, { value, old, data }) => {
+          console.log('Before all func')
+          console.log(parent)
           const { course } = services
-          const { id } = parent
+          const { data : { id } } = parent
+
           return {
             action: Names.DEL_PRE,
             request: course.delAllPrerequisites(id)
@@ -48,7 +51,8 @@ const Type = {
         }
       },
 
-      create: function (value = [], oldValue = []) {
+      create: (value = [], oldValue = [], data) => {
+        console.log('HWOOOOOOCreate something 2')
         const add = []
         value.forEach(val => {
           const exists = oldValue.find(oval => val === oval.id)
@@ -57,10 +61,12 @@ const Type = {
           }
         })
 
+        console.log(add)
         if (add.length > 0) {
-          return (services, options, parent) => {
-            console.log('Calling this one')
-            const { id } = parent
+          return (services, options, parent, { value, old, data }) => {
+            console.log('Calling this one over her')
+            console.log(data)
+            const { data: { id } } = parent
             const { course } = services
 
             return add.map(tid => ({
