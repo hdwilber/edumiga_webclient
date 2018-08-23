@@ -89,8 +89,8 @@ class Editor extends React.PureComponent {
   }
 
   handleSave = (event) => {
-    const { typesManager: { institution } } = this.props
-    institution.save(this.state, { })
+    const { institution: current, typesManager: { institution } } = this.props
+    institution.save(this.state, current)
   }
 
   handleOppActions = (action, opportunity) => {
@@ -270,6 +270,7 @@ class Editor extends React.PureComponent {
   render() {
     const { logo, head, dependencies, opportunities } = this.state
     const { institutions, constants } = this.props
+    console.log(this.state)
     return (
       <Grid container stackable>
         { this.renderHeader() }

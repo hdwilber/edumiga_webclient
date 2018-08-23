@@ -16,8 +16,6 @@ class BaseActions {
   save(data, oldData) {
     const savingSpecs = save(this.spec, 'Root', data, oldData, {})
     console.log(savingSpecs)
-    console.log('calling the saving funtion')
-
     const promise = saveRun(savingSpecs, {}, this.services, {})
     promise.then(data => {
       console.log('FINSISHED')

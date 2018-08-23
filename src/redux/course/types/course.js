@@ -24,8 +24,11 @@ const Type = {
     },
     _save: {
       beforeAll: function (value = [], oldValue = []) {
-        console.log('Create something')
         const remove = []
+
+          console.log('-----!!1')
+          console.log(value)
+          console.log(oldValue)
 
         oldValue.forEach(oval => {
           const exists = value.find(val => val === oval.id)
@@ -38,11 +41,14 @@ const Type = {
           return null
         }
 
-        return (services, options, parent, { value, old, data }) => {
+        return (services, options, parent, { value, old, data } = {}) => {
           console.log('Before all func')
           console.log(parent)
           const { course } = services
-          const { data : { id } } = parent
+          //const { data : { id } } = parent
+          const { parent: courseParent } = parent
+          const { values: { data: { id }} } = courseParent
+
 
           return {
             action: Names.DEL_PRE,
@@ -52,27 +58,19 @@ const Type = {
       },
 
       create: (value = [], oldValue = [], data) => {
-        console.log('HWOOOOOOCreate something 2')
-        const add = []
-        value.forEach(val => {
-          const exists = oldValue.find(oval => val === oval.id)
-          if (!exists) {
-            add.push(val)
-          }
-        })
-
-        console.log(add)
-        if (add.length > 0) {
-          return (services, options, parent, { value, old, data }) => {
+        if(value)  {
+          return (services, options, parent, { value, old, data } = {} ) => {
             console.log('Calling this one over her')
-            console.log(data)
-            const { data: { id } } = parent
+            console.log(parent)
+            const { parent: { parent: courseParent } } = parent
+            const { values: { data: { id }} } = courseParent
+            console.log(courseParent)
             const { course } = services
 
-            return add.map(tid => ({
+            return {
               action: Names.ADD_PRE,
-              request: course.addPrerequisite(id, tid)
-            }))
+              request: course.addPrerequisite(id, value)
+            }
           }
         }
         return null

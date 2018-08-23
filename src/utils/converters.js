@@ -89,6 +89,11 @@ export function save(type, name, value, old, options) {
           } else {
             const subFormatted = format ? format(subValue, subOldValue) : subValue
             if (check) {
+              console.log('before to check')
+                console.log(value)
+                console.log(old)
+                console.log(subOldValue)
+              console.log(subValue)
               if (check(subValue, subOldValue))
                 acc[newName || name] = subFormatted
             } else {
@@ -107,8 +112,6 @@ export function save(type, name, value, old, options) {
         data.id = value['id']
       }
 
-      const newNamesCount = Object.keys(data).length
-
       return {
         name,
         values: { 
@@ -117,7 +120,7 @@ export function save(type, name, value, old, options) {
           data,
         },
         children,
-        save: newNamesCount > 1 && create ? create(value, old, data) : null
+        save: create ? create(value, old, data) : null
       }
     }
   }

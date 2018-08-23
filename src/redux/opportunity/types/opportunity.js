@@ -20,7 +20,10 @@ const Type = {
       format:  (value) => {
         return value ? value.value: null
       },
-      check: ({value}, oldValue) => {
+      check: (value, oldValue) => {
+        if (!value && !oldValue) {
+          return false
+        }
         return (value !== oldValue.id)
       }
     }
@@ -56,9 +59,9 @@ const Type = {
     ...Course,
     _save: {
       create: function(value, old, data) {
+        if (Object.keys(data).length === 1)
+          return null
         return (services, options, parent ) => {
-          console.log('Results in courses')
-          console.log('parent: %o', parent)
           const { id } = data
           const { course } = services
           const isNew = id.indexOf('fake') === 0
@@ -93,6 +96,10 @@ const Type = {
   }],
   _save: {
     create: (value, old, data) => {
+
+      if (Object.keys(data).length === 1)
+        return null
+
       const { id }  = data
       if (id) {
         const isNew = id.indexOf('fake') === 0
