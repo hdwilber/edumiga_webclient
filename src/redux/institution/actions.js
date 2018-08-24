@@ -3,8 +3,16 @@ import { InstitutionService } from '../../services'
 import { dispatchRequestActions, handleRequestEmptyO, handleRequestO, createActionLabels, handleRequest,
 } from '../utils'
 import Institution from './types/institution'
-import { saveData } from '../../utils/converters'
 import BaseActions from '../base-actions'
+
+export const Names = {
+  FIND: createActionLabels('Inst/Find'),
+  CREATE: createActionLabels('Inst/Create'),
+  UPDATE: createActionLabels('Inst/Update'),
+  DELETE: createActionLabels('Inst/Delete'),
+  GET_TYPES: createActionLabels('Inst/GetTypes'),
+  FIND_RESUME: createActionLabels('Inst/GetResume'),
+}
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
 export const CREATE = createActionLabels('INST_CREATE')
@@ -21,6 +29,7 @@ export const UNSET = 'INST_UNSET'
 export const SET_CURRENT = 'INST_SET'
 export const ADD_CATEGORY = createActionLabels('INST_ADD_CATEGORY')
 export const DEL_CATEGORY = createActionLabels('INST_DEL_CATEGORY')
+export const DEL_ALL_CATEGORIES = createActionLabels('INST_DEL_ALL_CATEGORIES')
 
 export const FULL_SAVING = createActionLabels('INST_FULL_SAVING')
 export const SAVE = createActionLabels('INST_SAVE')
@@ -36,12 +45,30 @@ class InstitutionActions extends BaseActions {
   findOne = function(id, options) {
     const { institution } = this.services
     const info  = {
+      name: Names.FIND,
       request: institution.get(id),
-      name: FIND,
     }
     return info
   }
-  
+
+  findResume = function (id) {
+    const { institution } = this.services
+    const info = {
+      name: Names.FIND_RESUME,
+      request: institution.getResume(id)
+    }
+    return info
+  }
+
+  getTypes = function() {
+    const { institution } = this.services
+    const info = {
+      request: institution.getTypes(),
+      name: Names.GET_TYPES
+    }
+    return info
+  }
+
   delete = function(id, options) {
     const { opportunity } = this.services
     return {
@@ -53,24 +80,24 @@ class InstitutionActions extends BaseActions {
 
 export default InstitutionActions
 
-export function save(data, options) {
-  return (dispatch, getState) => {
-    const result = saveData(Institution, data, options)
-    const request = iService.update(result.savable)
-    result.onHold.forEach(a => {
-      switch(a.name) {
-        case 'logo':
-          const { value } = a
-          if (value.file) {
-            dispatch(uploadLogo(result.savable.id, value.file))
-          }
-          break;
-      }
-    })
+//export function save(data, options) {
+  //return (dispatch, getState) => {
+    //const result = saveData(Institution, data, options)
+    //const request = iService.update(result.savable)
+    //result.onHold.forEach(a => {
+      //switch(a.name) {
+        //case 'logo':
+          //const { value } = a
+          //if (value.file) {
+            //dispatch(uploadLogo(result.savable.id, value.file))
+          //}
+          //break;
+      //}
+    //})
 
-    return dispatchRequestActions(dispatch, SAVE, request)
-  }
-}
+    //return dispatchRequestActions(dispatch, SAVE, request)
+  //}
+//}
 
 export function unset() {
   return {
@@ -85,12 +112,12 @@ export function setCurrent(institution) {
   }
 }
 
-export function getTypes() {
-  return (dispatch, getState) => {
-    const request = iService.getTypes()
-    return handleRequest(dispatch, getState, GET_TYPES, request)
-  }
-}
+//export function getTypes() {
+  //return (dispatch, getState) => {
+    //const request = iService.getTypes()
+    //return handleRequest(dispatch, getState, GET_TYPES, request)
+  //}
+//}
 
 export function findAllOwned(options) {
   return (dispatch, getState) => {

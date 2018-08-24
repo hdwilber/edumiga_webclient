@@ -28,22 +28,22 @@ export default function opportunityReducer(state = initialState, action) {
       }
     }
 
-    case actions.GET_TYPES.start: {
+    case Names.GET_TYPES.start: {
       return {
         ...state,
         loading: true,
       }
     }
-    case actions.GET_TYPES.success: {
-      const data = action.payload
+    case Names.GET_TYPES.success: {
+      const { result } = action.payload
       return {
         ...state,
         loading: false,
-        constants: data,
+        constants: result,
       }
     }
 
-    case actions.GET_TYPES.failed: {
+    case Names.GET_TYPES.failed: {
       return {
         ...state,
         loading: false,

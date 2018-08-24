@@ -71,6 +71,8 @@ class FormGeneral extends React.PureComponent {
       },
       constants,
     } = this.props
+    const { countries } = constants
+    const countryObj = countries && countries.find(c => country.value === c.id)
     return (
       <Form>
         <Form.Group widths="equal">
@@ -86,7 +88,7 @@ class FormGeneral extends React.PureComponent {
             <label>Country</label>
             <Select value={country} name="country" 
               onChange={onChange} 
-              options={[]}
+              options={countries}
             />
           </Form.Field>
 
@@ -94,7 +96,7 @@ class FormGeneral extends React.PureComponent {
             <label>State</label>
             <Select value={state} name="state" 
               onChange={onChange} 
-              options={[]}
+              options={countryObj ? countryObj.states : []}
             />
           </Form.Field>
 

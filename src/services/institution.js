@@ -112,7 +112,7 @@ class Institution extends Service {
   }
 
   getTypes() {
-    return this.createRequest('GET', `/types`, null, false)
+    return this.createRequest('GET', `types`, null, false)
   }
 
   addDependency(id, data) {
@@ -132,6 +132,10 @@ class Institution extends Service {
   }
   delCategory(id, cid) {
     return this.createRequest('DELETE', `${id}/categories/rel/${cid}`)
+  }
+
+  delAllCategories(id) {
+    return this.createRequest('DELETE', `${id}/categories`)
   }
 }
 

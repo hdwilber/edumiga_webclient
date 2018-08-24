@@ -27,27 +27,22 @@ class Identity extends React.Component {
   componentDidMount() {
     const { constantsGet } = this.props
     constantsGet(['countries', 'categories'])
+    console.log(this.props)
   }
 
   componentWillReceiveProps(nextProps) {
-    const { identity } = nextProps
-    if (typeof identity !== 'undefined') {
+    const { identity: next } = nextProps
+    if (typeof next !== 'undefined') {
       const { typesManager: { identity }  } = this.props
       this.setState({
-        ...identity.format(identity)
+        ...identity.format(next)
       })
     }
   }
   
   handleClickSave = () => {
-    console.log('handle click save')
-    //const { account, identityUpdate } = this.props
-    //const { identity } = account
-    //if (identity) {
-      //identityUpdate({
-        //...formatOutput(IdTemplate, this.state)
-      //})
-    //}
+    const { identity: initial, typesManager: {  identity } } = this.props
+    identity.save(this.state, initial)
   }
 
   handleInputChange = (e, props) => {
@@ -65,7 +60,6 @@ class Identity extends React.Component {
 
   render() {
     const { identity, constant } = this.props
-
     if (identity) {
       const { photo } = this.state
       return (

@@ -45,6 +45,10 @@ class Course extends Service {
   delPrerequisite(id, rid) {
     return this.createRequest('DELETE', `${id}/prerequisites/rel/${rid}`)
   }
+
+  delAllPrerequisites(id) {
+    return this.createRequest('DELETE', `${id}/prerequisites`)
+  }
 }
 
 export default Course

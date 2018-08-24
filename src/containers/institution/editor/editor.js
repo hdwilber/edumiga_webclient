@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Icon, Button, Grid, Header, Segment } from 'semantic-ui-react'
-
 import { InputImage } from '../../../components/media'
 import { 
   FormGeneral,
@@ -10,13 +9,13 @@ import {
 } from '../../../components/institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
-import * as opportunityActions from '../../../redux/opportunity/actions'
 import * as categoryActions from '../../../redux/category/actions'
 
 import { List as InstList } from '../../../components/institution'
 import { List as OppList } from '../../../components/opportunity'
 
 import { Actions } from '../../../utils/constants'
+import * as constantsActions from '../../../redux/constants/actions'
 
 import withAuthorization, { UserState } from '../../authorization'
 import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared'
@@ -45,15 +44,19 @@ class Editor extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { match } = this.props
+    const { constantsGet, match } = this.props
     const { institutionId } = match.params
     this.findInstitution(institutionId)
+    const { typesManager: { institution, opportunity } } = this.props
+    opportunity.getTypes()
+    institution.getTypes()
+
+    constantsGet(['countries', 'categories'])
   }
 
   findInstitution(id) {
     if (id) {
       const { typesManager: { institution } } = this.props
-        console.log('finding one')
       institution.findOne(id)
     }
   }
@@ -86,8 +89,8 @@ class Editor extends React.PureComponent {
   }
 
   handleSave = (event) => {
-    const { typesManager: { institution } } = this.props
-    institution.save(this.state, { })
+    const { institution: current, typesManager: { institution } } = this.props
+    institution.save(this.state, current)
   }
 
   handleOppActions = (action, opportunity) => {
@@ -267,6 +270,7 @@ class Editor extends React.PureComponent {
   render() {
     const { logo, head, dependencies, opportunities } = this.state
     const { institutions, constants } = this.props
+    console.log(this.state)
     return (
       <Grid container stackable>
         { this.renderHeader() }
@@ -330,7 +334,7 @@ class Editor extends React.PureComponent {
 }
 
 function mapStateToProps (state) {
-  const { institution, opportunity } = state
+  const { institution, opportunity, constant } = state
   return {
     institution: institution.current,
     institutions: institution.list,
@@ -339,22 +343,18 @@ function mapStateToProps (state) {
       ...institution.constants,
       ...opportunity.constants,
       categories: state.category.list,
+      countries: constant.constants.countries,
     }
   }
 }
 
 function mapDispatchToProps (dispatch) {
   dispatch(categoryActions.findAll())
-  dispatch(institutionActions.getTypes())
-  dispatch(opportunityActions.getTypes())
+  //dispatch(institutionActions.getTypes())
   dispatch(institutionActions.findAllOwned())
 
   return {
-    find: (id, opts) => dispatch(institutionActions.findById(id, opts)),
-    save: (data, opts) => dispatch(institutionActions.save(data, opts)),
-    create: (data, opts) => dispatch(institutionActions.create(data, opts)),
-    update: (data, opts) => dispatch(institutionActions.update(data, opts)),
-    delete: (data, opts) => dispatch(institutionActions.deleteI(data, opts)),
+    constantsGet: (list) => dispatch(constantsActions.get(list)),
   }
 }
 

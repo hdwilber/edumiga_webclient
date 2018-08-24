@@ -37,10 +37,8 @@ export const InstanceTypes = {
   id: {
     ...BasicTypes.string,
     _name: 'Instance Id',
-    _format: function (value) {
-      console.log('Calling this')
-      return value || fakeId()
-    },
+    default: fakeId,
+    _format: value => value,
   },
   image: {
     file: BasicTypes.object,

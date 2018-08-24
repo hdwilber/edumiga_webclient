@@ -9,7 +9,6 @@ import { FormGeneral } from '../../../components/opportunity'
 import { Input as InputInstitution } from '../../../components/institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
-import * as opportunityActions from '../../../redux/opportunity/actions'
 
 import { CourseFastEditor } from '../../shared'
 import CourseList from '../../../components/course/list'
@@ -46,8 +45,10 @@ class Editor extends React.PureComponent {
   componentDidMount() {
     const { match } = this.props
     const { opportunityId } = match.params
-
     this.findOpportunity(opportunityId)
+
+    const { typesManager: { opportunity } } = this.props
+    opportunity.getTypes()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,10 +78,8 @@ class Editor extends React.PureComponent {
   }
 
   handleSave = () => {
-    //const { save, opportunity } = this.props
-    //save(this.state, { opportunity } )
-    const { typesManager: { opportunity } } = this.props
-    opportunity.save(this.state)
+    const { opportunity: current, typesManager: { opportunity } } = this.props
+    opportunity.save(this.state, current)
   }
 
   handleInputChange = (e, props) => {
@@ -253,7 +252,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  dispatch(opportunityActions.getTypes())
   dispatch(institutionActions.findAllOwned())
 
   return {

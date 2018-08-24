@@ -1,6 +1,5 @@
 import React from 'react'
 import TypesManagerContext from './index'
-import { connect } from 'react-redux'
 
 function withTypesManager(Component) {
   return (props) => {

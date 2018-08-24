@@ -70,7 +70,7 @@ const FormIdentity = (props) => {
             <label>Country</label>
             <Select value={data.country} name="country" 
               onChange={onInputChange} 
-              options={countries}
+              options={countries || []}
             />
           </Form.Field>
 
@@ -87,12 +87,12 @@ const FormIdentity = (props) => {
           />
         </Form.Group>
 
-        <Form.Group grouped inline>
+        <Form.Group grouped>
           <label>Interests</label>
           {categories && categories.map (l => {
             return (
               <Form.Checkbox
-                key={l.key}
+                key={l.value}
                 label={l.text} value={l.value} name="interests" 
                 onChange={handleCheckboxChange} 
                 checked={data.interests ? data.interests.indexOf(l.value) > -1: false}

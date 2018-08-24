@@ -1,5 +1,5 @@
 import { processAction } from './utils'
-import { format, buildData } from '../utils/converters'
+import { save, format, runSave, buildData, } from '../utils/converters'
 
 class BaseActions {
   constructor(spec, services) {
@@ -10,8 +10,22 @@ class BaseActions {
 
   format(data) {
     const formatted = format(this.spec, data)
-    console.log(formatted)
     return formatted
+  }
+
+  save(data, oldData) {
+    const savingSpecs = save(this.spec, 'Root', data, oldData, {})
+    console.log(savingSpecs)
+    const promise = runSave(savingSpecs, {}, this.services, {})
+    promise.then(data => {
+      console.log('FINSISHED')
+      console.log(data)
+    })
+    .catch(error => {
+      console.log('something went wrong, we are going to solve the issue')
+      console.log(error)
+    })
+    return {}
   }
 
   build(data) {
@@ -20,7 +34,6 @@ class BaseActions {
 
   attachMethods() {
     Object.keys(this).forEach( name => {
-      console.log(typeof this[name])
       if (typeof this[name] === 'function') {
         if (name !== 'format' && name !== 'build' && name !== 'attachMethods' && name !== 'dispatchAction') {
           this[name] = this.dispatchAction(this[name])

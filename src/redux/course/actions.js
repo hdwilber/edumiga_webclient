@@ -4,6 +4,12 @@ import Course from './types/course'
 import BaseActions from '../base-actions'
 
 const cService = new CourseService()
+export const Names = {
+  CREATE: createActionLabels('Course/create'),
+  UPDATE: createActionLabels('Course/update'),
+  ADD_PRE: createActionLabels('Course/addPre'),
+  DEL_PRE: createActionLabels('Course/delPre'),
+}
 
 export const GET_TYPES = createActionLabels('COURSE_GET_TYPES')
 export const SET = 'COURSE_SET'

@@ -8,11 +8,11 @@ import OpportunityThumb from '../../components/opportunity/thumbnail/thumbnail'
 
 import LocationViewer from '../../components/location/viewer'
 import { buildImageUrl } from '../../utils/image-url'
-import * as institutionActions from '../../redux/institution/actions'
 import withAuthorization from '../authorization'
 import { UserState } from '../authorization'
 import { nologo } from '../../utils/constants'
-
+import withApiService from '../withApiService'
+import { withTypesManager } from '../shared/types'
 
 class View extends React.Component {
   constructor(props) {
@@ -31,16 +31,14 @@ class View extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { match } = this.props
     const { institutionId } = match.params
+
     if (!this.findResume(institutionId)) {
       const { history } = this.props
       history.pop()
     }
-  }
-  componentDidMount() {
-
   }
 
   handleInputChange(e, props) {
@@ -56,8 +54,8 @@ class View extends React.Component {
 
   findResume(id) {
     if (id) {
-      const { findResume } = this.props
-      findResume(id)
+      const { typesManager: { institution } } = this.props
+      institution.findResume(id)
       return true
     }
     return false
@@ -120,7 +118,6 @@ class View extends React.Component {
     if (!processing && inst) {
       const { logo, resume: { dependencies, opportunities } = {} } = inst
       const locations = this.prepareLocations(inst, dependencies)
-      console.log(locations)
       return (
         <Grid container>
           <Grid.Column width={16}>
@@ -199,9 +196,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-
   return {
-    findResume: (id) => dispatch(institutionActions.findResumeById(id)),
   }
 }
 
@@ -210,4 +205,4 @@ const ConnectedComponent = connect(
     mapDispatchToProps,
   ) (withRouter(View))
 
-export default withAuthorization(ConnectedComponent, UserState.ACCOUNT)
+export default withTypesManager(withApiService(withAuthorization(ConnectedComponent, UserState.ACCOUNT)))
