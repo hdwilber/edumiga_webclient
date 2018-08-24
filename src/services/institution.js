@@ -133,6 +133,10 @@ class Institution extends Service {
   delCategory(id, cid) {
     return this.createRequest('DELETE', `${id}/categories/rel/${cid}`)
   }
+
+  delAllCategories(id) {
+    return this.createRequest('DELETE', `${id}/categories`)
+  }
 }
 
 export default Institution

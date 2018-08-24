@@ -9,7 +9,6 @@ import { FormGeneral } from '../../../components/opportunity'
 import { Input as InputInstitution } from '../../../components/institution'
 
 import * as institutionActions from '../../../redux/institution/actions'
-import * as opportunityActions from '../../../redux/opportunity/actions'
 
 import { CourseFastEditor } from '../../shared'
 import CourseList from '../../../components/course/list'
@@ -253,7 +252,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  //dispatch(opportunityActions.getTypes())
   dispatch(institutionActions.findAllOwned())
 
   return {

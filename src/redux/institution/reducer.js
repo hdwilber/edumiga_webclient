@@ -193,7 +193,7 @@ export default function institutionReducer(state = initialState, action) {
         list: null,
       }
     }
-    case actions.FIND_RESUME.start: {
+    case Names.FIND_RESUME.start: {
       return {
         ...state,
         loading: true,
@@ -201,7 +201,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_RESUME.success: {
+    case Names.FIND_RESUME.success: {
       const { result } = action.payload
       return {
         ...state,

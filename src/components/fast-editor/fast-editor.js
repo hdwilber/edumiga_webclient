@@ -18,7 +18,6 @@ class FastEditor extends React.PureComponent {
     const { value } = nextProps
 
     if (typeof value !== 'undefined') {
-      const { specs } = this.props
       const newValue = value || null
       this.setState({
         ...newValue,
