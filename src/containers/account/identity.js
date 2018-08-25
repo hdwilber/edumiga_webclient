@@ -2,16 +2,10 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Segment, Button, Grid, Header } from 'semantic-ui-react'
-
 import { InputImage } from '../../components/media'
 import FormIdentity from '../../components/account/form-identity'
-
-import * as accountActions from '../../redux/account/actions'
 import * as constantsActions from '../../redux/constants/actions'
-
 import withAuthorization, { UserState } from '../authorization'
-import withApiService from '../withApiService'
-import { withTypesManager } from '../shared/types'
 
 class Identity extends React.Component {
   constructor(props){
@@ -49,13 +43,6 @@ class Identity extends React.Component {
     this.setState({
       [props.name]: props.value,
     })
-  }
-
-  handleClickUploadPhoto = () => {
-    if(this.state.photo.file) {
-      const { uploadPhoto } = this.props
-      uploadPhoto(this.state.photo.file)
-    }
   }
 
   render() {
@@ -106,12 +93,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    identityUpdate: (data) => dispatch(accountActions.updateIdentity(data)),
-    uploadPhoto: (file) => dispatch(accountActions.uploadPhoto(file)),
     constantsGet: (list) => dispatch(constantsActions.get(list)),
   }
 }
 
 const ConnectedIdentity = connect(mapStateToProps, mapDispatchToProps) (withRouter(Identity))
 
-export default withTypesManager(withApiService(withAuthorization(ConnectedIdentity, [UserState.ACCOUNT])))
+export default withAuthorization(ConnectedIdentity, [UserState.ACCOUNT])

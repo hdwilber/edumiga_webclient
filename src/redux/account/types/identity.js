@@ -24,29 +24,34 @@ const Type = {
   },
   photo: {
     ...Types.image,
-    _save: function (data, oldData) {
-      const { file } = data
-      if (file) {
-        return (parent, services, options) => {
-          const { id } = parent
-          const { identity } = services
-          const request = identity.uploadPhoto(id, file)
-          return {
-            action: Names.UPLOAD_PHOTO,
-            request,
+    _save: {
+      create: function (value, old, data) {
+        const { file } = value
+        if (file) {
+          return (services, options, parent, { value, old, data }, results) => {
+            const { parent: { values: idValues }  } = parent
+            const { data: { id } } = idValues
+            const { identity } = services
+            const request = identity.uploadPhoto(id, file)
+            return {
+              action: Names.UPLOAD_PHOTO,
+              request,
+            }
           }
         }
+        return null
       }
-      return null
     }
   },
-  _save: function (data, oldData) {
-    return (services, options, parent) => {
-      const { identity } = services
-      const request = identity.update(data)
-      return {
-        action: Names.UPDATE,
-        request,
+  _save: {
+    create: function (value, old, data) {
+      return (services, options, parent) => {
+        const { identity } = services
+        const request = identity.update(data)
+        return {
+          action: Names.UPDATE,
+          request,
+        }
       }
     }
   }

@@ -6,7 +6,7 @@ export const Actions = {
   EDIT: 1,
   REMOVE: 2,
 }
-export class List extends React.PureComponent {
+export class List extends React.Component {
   shouldComponentUpdate(nextProps) {
     return !(nextProps.items === this.props.items)
   }

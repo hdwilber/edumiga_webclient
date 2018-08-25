@@ -67,10 +67,9 @@ class View extends React.Component {
       const { key } = this.props.location
 
       if (key !== next) {
-        const { findResume } = this.props
         const { match } = nextProps
         const { institutionId } = match.params
-        findResume(institutionId)
+        this.findResume(institutionId)
       }
     }
   }

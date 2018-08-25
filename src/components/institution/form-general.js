@@ -88,7 +88,7 @@ class FormGeneral extends React.PureComponent {
             <label>Country</label>
             <Select value={country} name="country" 
               onChange={onChange} 
-              options={countries}
+              options={countries || []}
             />
           </Form.Field>
 

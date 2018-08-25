@@ -15,11 +15,8 @@ import CourseList from '../../../components/course/list'
 import { Actions } from '../../../utils/constants'
 
 import withAuthorization, { UserState } from '../../../containers/authorization'
-import withApiService from '../../../containers/withApiService'
-import { withTypesManager } from '../../shared/types'
 
-
-class Editor extends React.PureComponent {
+class Editor extends React.Component {
   constructor(props) {
     super(props)
 
@@ -266,5 +263,5 @@ function mapDispatchToProps(dispatch) {
 
 const ConnectedOpportunity = connect(mapStateToProps, mapDispatchToProps)(withRouter(Editor))
 
-export default withTypesManager(withApiService(withAuthorization(ConnectedOpportunity, [UserState.ACCOUNT])))
+export default withAuthorization(ConnectedOpportunity, [UserState.ACCOUNT])
 

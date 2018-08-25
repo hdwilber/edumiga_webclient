@@ -19,8 +19,6 @@ import * as constantsActions from '../../../redux/constants/actions'
 
 import withAuthorization, { UserState } from '../../authorization'
 import { InstitutionFastEditor, OpportunityFastEditor } from '../../shared'
-import withApiService from '../../withApiService'
-import { withTypesManager } from '../../shared/types'
 
 
 class Editor extends React.PureComponent {
@@ -270,7 +268,6 @@ class Editor extends React.PureComponent {
   render() {
     const { logo, head, dependencies, opportunities } = this.state
     const { institutions, constants } = this.props
-    console.log(this.state)
     return (
       <Grid container stackable>
         { this.renderHeader() }
@@ -350,7 +347,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   dispatch(categoryActions.findAll())
-  //dispatch(institutionActions.getTypes())
   dispatch(institutionActions.findAllOwned())
 
   return {
@@ -360,5 +356,5 @@ function mapDispatchToProps (dispatch) {
 
 const ConnectedEditor = connect(mapStateToProps, mapDispatchToProps)(withRouter(Editor))
 
-export default withTypesManager(withApiService(withAuthorization(ConnectedEditor, [UserState.ACCOUNT])))
+export default withAuthorization(ConnectedEditor, [UserState.ACCOUNT])
 
