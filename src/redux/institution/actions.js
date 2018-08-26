@@ -12,6 +12,8 @@ export const Names = {
   DELETE: createActionLabels('Inst/Delete'),
   GET_TYPES: createActionLabels('Inst/GetTypes'),
   FIND_RESUME: createActionLabels('Inst/GetResume'),
+  ADD_CATEGORY: createActionLabels('Inst/AddCategory'),
+  DEL_ALL_CATEGORIES: createActionLabels('Inst/DelAllCategories'),
 }
 
 export const GET_TYPES = createActionLabels('INST_GET_TYPES')
@@ -29,7 +31,6 @@ export const UNSET = 'INST_UNSET'
 export const SET_CURRENT = 'INST_SET'
 export const ADD_CATEGORY = createActionLabels('INST_ADD_CATEGORY')
 export const DEL_CATEGORY = createActionLabels('INST_DEL_CATEGORY')
-export const DEL_ALL_CATEGORIES = createActionLabels('INST_DEL_ALL_CATEGORIES')
 
 export const FULL_SAVING = createActionLabels('INST_FULL_SAVING')
 export const SAVE = createActionLabels('INST_SAVE')

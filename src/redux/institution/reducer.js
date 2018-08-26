@@ -51,17 +51,17 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.UPDATE.start: {
+    case Names.UPDATE.start: {
       return {
         ...state,
         laoding: true,
       }
     }
 
-    case actions.UPDATE.success: {
-      const { isDependency, institution } = action.payload
+    case Names.UPDATE.success: {
+      const { isDependency, result } = action.payload
       if(isDependency) {
-        const list = state.current.dependencies.map(d => (d.id === institution.id) ? institution: d)
+        const list = state.current.dependencies.map(d => (d.id === result.id) ? result: d)
         return {
           ...state,
           loading: false,
@@ -76,12 +76,12 @@ export default function institutionReducer(state = initialState, action) {
           loading: false,
           current: {
             ...state.current,
-            ...institution,
+            ...result,
           },
         }
       }
     }
-    case actions.UPDATE.failed: {
+    case Names.UPDATE.failed: {
       return {
         ...state,
         loading: false,
@@ -89,14 +89,14 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.CREATE.start: {
+    case Names.CREATE.start: {
       return {
         ...state,
         loading: true,
       }
     }
 
-    case actions.CREATE.success: {
+    case Names.CREATE.success: {
       const { institution, isDependency } = action.payload
       console.log('CREATE')
       console.log(action.payload)

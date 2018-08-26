@@ -109,7 +109,7 @@ const Type = {
           const { opportunity } = services
           const request = opportunity.update(data)
           return {
-            action: isNew ? Names.CREATE: Names.UPDATE,
+            action: isNew ? Names.CREATE : Names.UPDATE,
             request,
           }
         }

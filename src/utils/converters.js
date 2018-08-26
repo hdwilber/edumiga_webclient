@@ -118,7 +118,8 @@ export function save(type, name, value, old, options) {
     }
   }
 }
-export async function runSave(node, parent, services, options) {
+
+export async function runSave(node, parent, services, options, dispatch) {
 
   const { beforeAll, values, children, save } = node
   const newParent = { 
@@ -128,32 +129,99 @@ export async function runSave(node, parent, services, options) {
   const beforeAllInfo = beforeAll ? beforeAll(services, options, newParent, values): null
 
   if (beforeAllInfo) {
-    const { request } = beforeAllInfo
+    const { action, request, options: infoOptions } = beforeAllInfo
+
+    dispatch({
+      type: action.start,
+      payload: {
+        options: infoOptions,
+      }
+    })
+
     const beforeAllResponse = await request
     if (beforeAllResponse.ok) {
+      const { format, postThen } = beforeAllInfo
+      let result
+
       try {
-        newParent.beforeAll = await beforeAllResponse.json()
+        const temp = await beforeAllResponse.json()
+        result = format ? format(temp): temp
+        newParent.beforeAll = result
       } catch(e) {
         console.log('Error here 1')
       }
+
+      dispatch({
+        type: action.success,
+        payload: {
+          result: newParent.beforeAll || {},
+          options: infoOptions,
+        }
+      })
+      if (postThen) postThen(dispatch, result, infoOptions)
+    } else {
+      const { postCatch, } = beforeAllInfo
+      const error = await beforeAllResponse.text()
+      dispatch({
+        type: action.failed,
+        payload: {
+          error,
+          options: infoOptions,
+        }
+      })
+      if (postCatch) postCatch(dispatch, error, infoOptions)
     }
   }
 
   const saveInfo = save ? save(services, options, newParent, values) : null
   if (saveInfo) {
-    const { request } = saveInfo
+    const { action, request, options: infoOptions } = saveInfo
+
+    dispatch({
+      type: action.start,
+      payload: {
+        options: infoOptions,
+      }
+    })
+
     const saveResponse = await request
     if (saveResponse.ok) {
+      const { format, postThen } = saveInfo
+      let result
       try {
-        newParent.save = await saveResponse.json()
+        const temp = await saveResponse.json()
+        result = format ? format(temp): temp
+        newParent.save = result
       } catch(e) {
         console.log('Error here 2')
       }
+
+      dispatch({
+        type: action.success,
+        payload: {
+          result: newParent.save || {},
+          options: infoOptions,
+        }
+      })
+
+      if (postThen) postThen(dispatch, result, infoOptions)
+    } else {
+      const { postCatch, } = saveInfo
+      const error = await save.text()
+      dispatch({
+        type: action.success,
+        payload: {
+          error,
+          options: infoOptions,
+        }
+      })
+
+      if(postCatch) postCatch(dispatch, error, infoOptions)
     }
   }
 
   newParent.children = await Promise.all(children.map(child => {
-    return  runSave(child, newParent, services, options)
+    return  runSave(child, newParent, services, options, dispatch)
   }))
 
   return newParent
@@ -174,7 +242,6 @@ export function buildData(specs, data = {}, options = {}) {
         built && subAcc.push(built)
         return subAcc
       }, [])
-      //console.log(result)
     } else {
       result = spec.build ? spec.build(value, data, options): value
     }
@@ -185,62 +252,3 @@ export function buildData(specs, data = {}, options = {}) {
   }, {})
 }
 
-/*
- *export function doRequests(specs, info, data) {
- *  return (dispatch, getState) => {
- *    const { instance, children } = info
- *    //console.log(info)
- *    if (instance) {
- *      const { name, request } = instance(data)
- *
- *      request.then(response => {
- *        if (response.ok) {
- *          //console.log('ok')
- *          return response.json()
- *        }
- *      })
- *      .then(data => {
- *        dispatch({
- *          type: 'TEST_' +name.success,
- *          payload: {
- *            result: data,
- *          }
- *        })
- *        
- *        if (specs) {
- *          children.forEach(child => {
- *            const { name, value } = child
- *            const spec = specs[name]
- *            const type = spec.type || spec
- *            const isArray = type instanceof Array
- *
- *            if (isArray) {
- *              value.forEach(val => {
- *                dispatch(doRequests(spec.spec, val, data))
- *              })
- *            } else {
- *              dispatch(doRequests(spec.spec, value, data))
- *            }
- *          })
- *        }
- *      })
- *      .catch(error => {
- *        console.log('error')
- *        console.log(error)
- *      })
- *
- *      return {
- *        type: 'RUN_REQUESTS'
- *      }
- *    } else {
- *      dispatch(doRequests(null, {
- *        instance: info,
- *        children: [],
- *      }, data))
- *    }
- *    return {
- *      type: 'RUN_REQUESTS_ENDED',
- *    }
- *  }
- *}
- */

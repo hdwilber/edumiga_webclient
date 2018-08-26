@@ -38,7 +38,7 @@ class LocationViewer extends React.Component {
     if (locations) {
       return locations.map( ({point, info}) => {
         return (
-          <Marker key={point.lat} position={point} >
+          <Marker key={point ? point.lat: Date.now()} position={point} >
             <Popup>
               <span>{info}</span>
             </Popup>

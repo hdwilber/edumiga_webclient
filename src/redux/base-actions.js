@@ -16,7 +16,7 @@ class BaseActions {
   save(data, oldData) {
     const savingSpecs = save(this.spec, 'Root', data, oldData, {})
     console.log(savingSpecs)
-    const promise = runSave(savingSpecs, {}, this.services, {})
+    const promise = runSave(savingSpecs, {}, this.services, {}, this.dispatch)
     promise.then(data => {
       console.log('FINSISHED')
       console.log(data)
