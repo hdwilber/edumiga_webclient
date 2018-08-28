@@ -7,6 +7,7 @@ const Type = {
   name: Types.string,
   id: Types.id,
   duration: Types.number,
+  durationUnit: Types.string,
   description: Types.string,
   institution: {
     default: null,

@@ -11,7 +11,9 @@ const FormGeneral = (props) => {
   }
 
   const { 
-    name, degrees, description, duration, type, regime, 
+    name, degrees, description, duration, 
+    durationUnit,
+    type, regime, 
     published,
   } = value
   return (
@@ -35,9 +37,12 @@ const FormGeneral = (props) => {
           onChange={onChange} 
         />
       </Form.Field>
-      <Form.Group widths="equal">
+      <Form.Group>
         <Form.Input value={duration} name="duration" onChange={onChange} 
           label="Duration" type="number"
+        />
+        <Form.Input value={durationUnit} name="durationUnit" onChange={onChange} 
+          label="Units" type="text"
         />
         <Form.Field>
           <label>Type</label>

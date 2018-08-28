@@ -254,14 +254,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  dispatch(institutionActions.findAllOwned())
-
   return {
-    //save: (data, opts) => dispatch(opportunityActions.save(data, opts)),
-    //find: (id, opts) => dispatch(opportunityActions.findById(id, opts)),
-    //create: (data, opts) => dispatch(opportunityActions.create(data, opts)),
-    //update: (data, opts) => dispatch(opportunityActions.update(data, opts)),
-    //delete: (data, opts) => dispatch(opportunityActions.deletex(data, opts)),
   }
 }
 
