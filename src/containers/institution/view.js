@@ -51,6 +51,10 @@ class View extends React.Component {
     const { history } = this.props
     history.push(`/institution/${institution.id}`)
   }
+  handleOpportunityClick = (opportunity) => {
+    const { history } = this.props
+    history.push(`/opportunity/${opportunity.id}`)
+  }
 
   findResume(id) {
     if (id) {
@@ -158,7 +162,9 @@ class View extends React.Component {
               <Card.Group stackable itemsPerRow={5}>
                 { opportunities && opportunities.slice(0,5).map((opp,idx) => {
                     return (
-                      <OpportunityThumb key={opp.name}
+                      <OpportunityThumb 
+                        key={opp.name}
+                        onClick={() => this.handleOpportunityClick(opp)}
                         opportunity={opp} 
                       />
                     )

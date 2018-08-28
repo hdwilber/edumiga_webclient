@@ -7,8 +7,13 @@ import BaseActions from '../base-actions'
 
 export const Names = {
   FIND: createActionLabels('Inst/Find'),
+  FIND_ALL: createActionLabels('Inst/FindAll'),
   CREATE: createActionLabels('Inst/Create'),
   UPDATE: createActionLabels('Inst/Update'),
+  OPP_CREATE: createActionLabels('Inst/OppCreate'),
+  OPP_UPDATE: createActionLabels('Inst/OppUpdate'),
+  DEP_CREATE: createActionLabels('Inst/DepCreate'),
+  DEP_UPDATE: createActionLabels('Inst/DepUpdate'),
   DELETE: createActionLabels('Inst/Delete'),
   GET_TYPES: createActionLabels('Inst/GetTypes'),
   FIND_RESUME: createActionLabels('Inst/GetResume'),
@@ -48,6 +53,21 @@ class InstitutionActions extends BaseActions {
     const info  = {
       name: Names.FIND,
       request: institution.get(id),
+    }
+    return info
+  }
+
+  findAll = function (options) {
+    const { institution } = this.services
+    const info = {
+      name: Names.FIND_ALL,
+      request: institution.getAllResumes(),
+      format: (data) => {
+        return {
+          ...data,
+          single: true,
+        }
+      }
     }
     return info
   }

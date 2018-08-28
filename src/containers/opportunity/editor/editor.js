@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Icon, Grid, Button, Segment, Header } from 'semantic-ui-react'
 
 import { InputImage } from '../../../components/media'
@@ -152,6 +152,7 @@ class Editor extends React.Component {
 
   renderActionButtons() {
     const { isNew } = this.state
+    const { opportunity: { id } } = this.props
     return (
       <Button.Group floated="right" size='medium'>
         <Button 
@@ -160,6 +161,7 @@ class Editor extends React.Component {
         >
           <Icon name={isNew ? 'plus': 'save'} />{ isNew ? 'Create': 'Save' }
         </Button>
+        <Button as={Link} to={`/opportunity/${id}`} secondary><Icon name="eye" />View</Button>
         <Button secondary><Icon name="remove" />Delete</Button>
       </Button.Group>
     )
@@ -178,61 +180,64 @@ class Editor extends React.Component {
   }
   render() {
     const { logo, institution, courses } = this.state
-    const { institutions, constants } = this.props
+    const { institutions, constants, opportunity } = this.props
     const { showCourseFastEditor } = this.state
 
-    return (
-      <Grid container stackable>
-        <Grid.Column width={16}>
-          { this.renderHeader() }
-        </Grid.Column>
-        <Grid.Column width={6}>
-          <Segment>
-            <InputInstitution name="institution" value={institution}
-              institutions={institutions}
-              onChange={this.handleInputChange}
-              unselected="This opportunity does not belong to an institution. Add one"
-            />
-          </Segment>
-          <Segment>
-            <Header size="medium">Logo Profile</Header>
-            <InputImage
-              name="logo" 
-              onChange={this.handleInputChange}
-              value={logo}
-            />
-          </Segment>
-        </Grid.Column>
+    if (opportunity) {
+      return (
+        <Grid container stackable>
+          <Grid.Column width={16}>
+            { this.renderHeader() }
+          </Grid.Column>
+          <Grid.Column width={6}>
+            <Segment>
+              <InputInstitution name="institution" value={institution}
+                institutions={institutions}
+                onChange={this.handleInputChange}
+                unselected="This opportunity does not belong to an institution. Add one"
+              />
+            </Segment>
+            <Segment>
+              <Header size="medium">Logo Profile</Header>
+              <InputImage
+                name="logo" 
+                onChange={this.handleInputChange}
+                value={logo}
+              />
+            </Segment>
+          </Grid.Column>
 
-        <Grid.Column width={10}>
-          <Segment>
-            <Header size="medium">Overview</Header>
-            <FormGeneral onChange={this.handleInputChange}
-              value={this.state}
-              constants={constants}
-            />
-          </Segment>
+          <Grid.Column width={10}>
+            <Segment>
+              <Header size="medium">Overview</Header>
+              <FormGeneral onChange={this.handleInputChange}
+                value={this.state}
+                constants={constants}
+              />
+            </Segment>
 
-          <Segment>
-            <Header size="medium">Courses
-              {this.renderCoursesActionButtons()}
-            </Header>
-            <CourseList items={courses}
-              onClickAction={this.courseListClickAction}
+            <Segment>
+              <Header size="medium">Courses
+                {this.renderCoursesActionButtons()}
+              </Header>
+              <CourseList items={courses}
+                onClickAction={this.courseListClickAction}
+              />
+            </Segment>
+          </Grid.Column>
+          { showCourseFastEditor && (
+            <CourseFastEditor
+              onAction={this.actionCourseFastEditor}
+              onCancel={this.closeCourseFastEditor}
+              visible={this.state.showCourseFastEditor}
+              courses={courses}
+              {...this.state.courseFastEditor}
             />
-          </Segment>
-        </Grid.Column>
-        { showCourseFastEditor && (
-          <CourseFastEditor
-            onAction={this.actionCourseFastEditor}
-            onCancel={this.closeCourseFastEditor}
-            visible={this.state.showCourseFastEditor}
-            courses={courses}
-            {...this.state.courseFastEditor}
-          />
-        )}
-      </Grid>
-    )
+          )}
+        </Grid>
+      )
+    }
+    return <h1>Loading</h1>
   }
 }
 

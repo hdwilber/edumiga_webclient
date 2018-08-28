@@ -8,7 +8,6 @@ import {
   Input as InputInstitution 
 } from '../../../components/institution'
 
-import * as institutionActions from '../../../redux/institution/actions'
 import * as categoryActions from '../../../redux/category/actions'
 
 import { List as InstList } from '../../../components/institution'
@@ -347,8 +346,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   dispatch(categoryActions.findAll())
-  dispatch(institutionActions.findAllOwned())
-
   return {
     constantsGet: (list) => dispatch(constantsActions.get(list)),
   }

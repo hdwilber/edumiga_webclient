@@ -1,77 +1,84 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { Modal, Card, Header } from 'semantic-ui-react'
 import { Card as InstitutionCard, Resume as InstitutionResume } from '../../components/institution'
 
 import { ActionTypes } from '../../components/institution/card'
-
-import * as institutionActions from '../../redux/institution/actions'
+import withApiService from '../withApiService'
+import { withTypesManager } from '../shared/types'
+import withAuthorization from '../authorization'
+import { UserState } from '../authorization'
 
 class InstList extends React.Component {
   constructor(props) {
     super(props)
-    this.handleCardAction = this.handleCardAction.bind(this)
     this.state = {
       showDetails: false,
-    }
-  }
-
-  componentDidMount() {
-    const { location, institutionFindAllResumes } = this.props
-    const { owned } = location.query
-
-    if (owned === 'me') {
-      const { institutionFindAllOwnedResumes } = this.props
-      institutionFindAllOwnedResumes()
-    } else {
-      institutionFindAllResumes()
-    }
-  }
-
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location && nextProps.location.key) {
-      if (nextProps.location.key !== this.props.location.key) {
-        const { owned } = nextProps.location.query
-        if (owned === 'me') {
-          const { institutionFindAllOwnedResumes } = this.props
-          institutionFindAllOwnedResumes()
-        } else {
-          const { institutionFindAllResumes } = this.props
-          institutionFindAllResumes()
-        }
+      detailsModal: {
+        institution: null,
       }
     }
   }
 
-  handleCardAction(type, institution) {
+  componentDidMount() {
+    this.findAllResumes()
+  }
+
+  findAllResumes = () => {
+    const { typesManager: { institution } } = this.props
+    institution.findAll()
+  }
+
+  handleCardAction = (type, institution) => {
     if(type === ActionTypes.DELETE) {
-      const {institutionDelete} = this.props
-      institutionDelete(institution.id, {inList: true})
+      const { typesManager: { institution } } = this.props
+      institution.delete(institution.id)
     }
   }
 
   handleCardClick = (event, institution) => {
     event.preventDefault()
-    const { institutionSet, } = this.props
-    institutionSet(institution)
     this.setState({
       showDetails: true,
+      detailsModal: {
+        institution,
+      }
     })
   }
 
+  handleDetailsModalClose = (e) => {
+    this.setState({
+      showDetails: false,
+      detailsModal: {
+        institution: null,
+      }
+    })
+  }
+
+  handleClickDependency = (dep) => {
+    const { id } = dep
+    const { history } = this.props
+    history.push(`/institution/${id}`)
+  }
+
+  handleClickOpportunity = (opp) => {
+    const { id } = opp
+    const { history } = this.props
+    history.push(`/opportunity/${id}`)
+  }
+
   render() {
-    const { account, institution, size = "huge" } = this.props
-    if (institution) {
+    const { session, institutions, size = "huge" } = this.props
+    if (institutions) {
+      const { showDetails, detailsModal } = this.state
       return (
         <React.Fragment>
             <Header size={size}>Institutions</Header>
             <Card.Group stackable itemsPerRow={4}>
-              {(institution.list) &&(
-                institution.list.map((i,idx) => {
+              {(institutions) &&(
+                institutions.map((i,idx) => {
                   return (
-                    <InstitutionCard key={idx} session={account && account.session} 
+                    <InstitutionCard key={idx} session={session} 
                       institution={i} 
                       onAction={this.handleCardAction}
                       onClick={(e) => this.handleCardClick(e, i)}
@@ -81,10 +88,13 @@ class InstList extends React.Component {
               )}
             </Card.Group>
           <Modal 
-            onClose={() => this.setState({showDetails: false})}
+            onClose={this.handleDetailsModalClose}
             closeOnDocumentClick 
-            open={this.state.showDetails}>
-            <InstitutionResume institution={institution.current}
+            open={showDetails}>
+            <InstitutionResume
+              institution={detailsModal.institution}
+              onClickDependency={this.handleClickDependency}
+              onClickOpportunity={this.handleClickOpportunity}
             />
           </Modal>
         </React.Fragment>
@@ -95,15 +105,19 @@ class InstList extends React.Component {
   }
 }
 
-export default connect((state) => ({
-  account: state.account,
-  institution: state.institution,
-}), (dispatch) => ({
-  institutionFindAllResumes: (filter) => dispatch(institutionActions.findAllResumes(filter)),
-  institutionFindAllOwnedResumes: (options) => dispatch(institutionActions.findAllOwnedResumes(options)),
-  institutionFind: (id, opts) => dispatch(institutionActions.findById(id, opts)),
-  institutionFindResume: (id, opts) => dispatch(institutionActions.findResumeById(id, opts)),
-  institutionUpdate: (data) => dispatch(institutionActions.update(data)),
-  institutionDelete: (id, opts) => dispatch(institutionActions.deleteI(id, opts)),
-  institutionSet: (inst) => dispatch(institutionActions.setCurrent(inst)),
-})) (withRouter(InstList))
+function mapStateToProps(state) {
+  const { institution, account } = state
+  return {
+    institutions: institution.list,
+    session: account.session,
+    constants: institution.constants,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+  }
+}
+
+const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps) (InstList)
+export default withTypesManager(withApiService(withAuthorization(ConnectedComponent, UserState.ACCOUNT)))

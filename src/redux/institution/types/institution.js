@@ -1,6 +1,5 @@
 import Types from '../../defaults'
 import { Names } from '../actions'
-import { Names as OppNames } from '../../opportunity/actions'
 import Opportunity from '../../opportunity/types/opportunity'
 
 const CategoryType = {
@@ -186,7 +185,7 @@ const Type = {
             }
             const request = isNew ? institution.create(data) : institution.update(data)
             return {
-              action: isNew ? Names.CREATE: Names.UPDATE,
+              action: isNew ? Names.DEP_CREATE: Names.DEP_UPDATE,
               request,
             }
           }
@@ -227,7 +226,7 @@ const Type = {
             : opportunity.update(data)
 
           return {
-            action: isNew ? OppNames.CREATE: OppNames.UPDATE,
+            action: isNew ? Names.OPP_CREATE: Names.OPP_UPDATE,
             request
           }
         }

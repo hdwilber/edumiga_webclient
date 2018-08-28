@@ -218,7 +218,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_ALL.start: {
+    case Names.FIND_ALL.start: {
       return {
         ...state,
         list: null,
@@ -226,8 +226,9 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_ALL.success: {
+    case Names.FIND_ALL.success: {
       const { result: { list, count } } = action.payload
+        console.log(action.payload)
       return {
         ...state,
         current: null,
@@ -237,7 +238,7 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    case actions.FIND_ALL.failed: {
+    case Names.FIND_ALL.failed: {
       return {
         ...state,
         loading: false,
@@ -247,17 +248,146 @@ export default function institutionReducer(state = initialState, action) {
       }
     }
 
-    //case actions.SET_CURRENT_OPP: {
-      //return {
-        //...state,
-        //currentOpp: action.payload.opp,
-      //}
-    //}
-
     case actions.ADD_OPPORTUNITY.start: {
       return {
         ...state,
         loading: true,
+      }
+    }
+
+    case Names.DEP_CREATE.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case Names.DEP_CREATE.success: {
+      const { result } = action.payload
+      const { dependencies } = state.current
+
+      const newList = dependencies.concat([result])
+
+      return {
+        ...state,
+        loading: true,
+        current: {
+          ...state.current,
+          dependencies: newList,
+        }
+      }
+    }
+
+    case Names.DEP_CREATE.failed: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
+    case Names.DEP_UPDATE.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case Names.DEP_UPDATE.failed: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
+    case Names.DEP_UPDATE.success: {
+      const { result } = action.payload
+      const { dependencies } = state.current
+
+      const newList = dependencies.map(dep => {
+        if (dep.id === result.id) {
+          return {
+            ...dep,
+            ...result,
+          }
+        }
+        return dep
+      })
+
+      return {
+        ...state,
+        loading: true,
+        current: {
+          ...state.current,
+          dependencies: newList,
+        }
+      }
+    }
+
+    case Names.OPP_CREATE.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case Names.OPP_CREATE.success: {
+      const { result } = action.payload
+      const { opportunities } = state.current
+
+      const newList = opportunities.concat([result])
+
+      return {
+        ...state,
+        loading: true,
+        current: {
+          ...state.current,
+          opportunities: newList,
+        }
+      }
+    }
+
+    case Names.OPP_CREATE.failed: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
+    case Names.OPP_UPDATE.start: {
+      return {
+        ...state,
+        loading: true,
+      }
+    }
+    case Names.OPP_UPDATE.failed: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    }
+
+    case Names.OPP_UPDATE.success: {
+      const { result } = action.payload
+      const { opportunities } = state.current
+
+      const newList = opportunities.map(opp => {
+        if (opp.id === result.id) {
+          return {
+            ...opp,
+            ...result,
+          }
+        }
+        return opp
+      })
+
+      return {
+        ...state,
+        loading: true,
+        current: {
+          ...state.current,
+          opportunities: newList,
+        }
       }
     }
 

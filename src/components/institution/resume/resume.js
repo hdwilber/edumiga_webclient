@@ -12,7 +12,7 @@ import InstThumbnail from '../thumbnail'
 import './styles.scss'
 
 const Resume = props => {
-  const { institution } = props
+  const { institution, onClickOpportunity, onClickDependency } = props
 
   if(institution) {
     const { 
@@ -96,7 +96,10 @@ const Resume = props => {
                   {renderTitle()}
                   <Card.Group itemsPerRow={2}>
                     { dependencies.slice(0,4).map( dep =>(
-                        <InstThumbnail key={dep.id} institution={dep}/>)
+                        <InstThumbnail 
+                          onClick={(e) => onClickDependency(dep)} 
+                          key={dep.id} institution={dep}
+                        />)
                       )
                     }
                   </Card.Group>
@@ -106,7 +109,10 @@ const Resume = props => {
                   <Header size="small">Opportunities: ({stats.opportunities})</Header>
                   <Card.Group itemsPerRow={2}>
                     { opportunities.slice(0,4).map( opp =>(
-                        <OppThumbnail key={opp.id} opportunity={opp}/>)
+                        <OppThumbnail 
+                          onClick={(e) => onClickOpportunity(opp)}
+                          key={opp.id} opportunity={opp}
+                        />)
                       )
                     }
                   </Card.Group>

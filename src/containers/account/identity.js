@@ -27,7 +27,7 @@ class Identity extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { identity: next } = nextProps
     if (typeof next !== 'undefined') {
-      const { typesManager: { identity }  } = this.props
+      const { typesManager: { identity } } = this.props
       this.setState({
         ...identity.format(next)
       })

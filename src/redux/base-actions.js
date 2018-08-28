@@ -13,6 +13,10 @@ class BaseActions {
     return formatted
   }
 
+  delete(id, data, oldData) {
+    return null
+  }
+
   save(data, oldData) {
     const savingSpecs = save(this.spec, 'Root', data, oldData, {})
     console.log(savingSpecs)
